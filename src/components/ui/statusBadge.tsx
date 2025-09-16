@@ -11,15 +11,15 @@ const statusBadgeVariants = cva(
     variants: {
       variant: {
         allowed:
-          "bg-secundary text-muted-foreground",
+          "bg-background text-muted-foreground",
         denied:
-          "bg-secundary text-muted-foreground",
+          "bg-background text-muted-foreground",
         pending:
-          "bg-secundary text-muted-foreground",
+          "bg-background text-muted-foreground",
         appeal:
-          "bg-secundary text-muted-foreground",
+          "bg-background text-muted-foreground",
         review:
-          "bg-secundary text-muted-foreground",
+          "bg-background text-muted-foreground",
       },
     },
     defaultVariants: {

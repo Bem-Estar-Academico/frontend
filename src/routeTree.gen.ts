@@ -10,17 +10,11 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as EditaisIndexRouteImport } from './routes/editais/index'
 import { Route as EditaisCriarRouteImport } from './routes/editais/criar'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const EditaisIndexRoute = EditaisIndexRouteImport.update({
-  id: '/editais/',
-  path: '/editais/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const EditaisCriarRoute = EditaisCriarRouteImport.update({
@@ -32,31 +26,27 @@ const EditaisCriarRoute = EditaisCriarRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/editais/criar': typeof EditaisCriarRoute
-  '/editais': typeof EditaisIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/editais/criar': typeof EditaisCriarRoute
-  '/editais': typeof EditaisIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/editais/criar': typeof EditaisCriarRoute
-  '/editais/': typeof EditaisIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/editais/criar' | '/editais'
+  fullPaths: '/' | '/editais/criar'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/editais/criar' | '/editais'
-  id: '__root__' | '/' | '/editais/criar' | '/editais/'
+  to: '/' | '/editais/criar'
+  id: '__root__' | '/' | '/editais/criar'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   EditaisCriarRoute: typeof EditaisCriarRoute
-  EditaisIndexRoute: typeof EditaisIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -66,13 +56,6 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/editais/': {
-      id: '/editais/'
-      path: '/editais'
-      fullPath: '/editais'
-      preLoaderRoute: typeof EditaisIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/editais/criar': {
@@ -88,7 +71,6 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   EditaisCriarRoute: EditaisCriarRoute,
-  EditaisIndexRoute: EditaisIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

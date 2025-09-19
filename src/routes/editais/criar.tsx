@@ -38,8 +38,8 @@ function CreateEdital() {
   const [currentTitle, setCurrentTitle] = useState("")
   const [search, setSearch] = useState("")
 
-  const [Coordenadores, setCoordenadores] = useState<User[]>([])
-  const [Assistentes, setAssistentes] = useState<User[]>([])
+  const [coordenadores, setCoordenadores] = useState<User[]>([])
+  const [assistentes, setAssistentes] = useState<User[]>([])
 
   const handleAdd = (title: string) => {
     setCurrentTitle(title)
@@ -50,13 +50,13 @@ function CreateEdital() {
   const availableUsers = useMemo(() => {
     const currentIds =
       currentTitle === "Coordenadores"
-        ? new Set(Coordenadores.map(u => u.id))
-        : new Set(Assistentes.map(u => u.id))
+        ? new Set(coordenadores.map(u => u.id))
+        : new Set(assistentes.map(u => u.id))
 
     return allUsers
       .filter(u => !currentIds.has(u.id))
       .filter(u => u.name.toLowerCase().includes(search.toLowerCase()))
-  }, [currentTitle, search, Coordenadores, Assistentes])
+  }, [currentTitle, search, coordenadores, assistentes])
 
   const handleSelectUser = (user: User) => {
     if (currentTitle === "Coordenadores") {
@@ -67,35 +67,29 @@ function CreateEdital() {
   }
 
   return (
-    <div className="text-center space-y-6">
+    <div className="flex flex-col gap-6">
       <UserList
         title="Coordenadores"
         onAdd={handleAdd}
         onDelete={(id: number) =>
           setCoordenadores(prev => {
-            if (prev.length <= 1) {
-              alert("É obrigatório ter pelo menos 1 coordenador.")
-              return prev
-            }
             return prev.filter(u => u.id !== id)
           })
         }
-        list={Coordenadores}
+        list={coordenadores}
       />
-
       <UserList
         title="Assistentes"
         onAdd={handleAdd}
         onDelete={(id: number) =>
           setAssistentes(prev => prev.filter(u => u.id !== id))
         }
-        list={Assistentes}
+        list={assistentes}
       />
-
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="sm:max-w-[500px]">
           <DialogHeader>
-            <DialogTitle>Adicionar em {currentTitle}</DialogTitle>
+            <DialogTitle>Lista de Usuários</DialogTitle>
           </DialogHeader>
 
           <div className="grid gap-4 py-4">
@@ -126,7 +120,7 @@ function CreateEdital() {
                     </div>
                     <Button
                       size="sm"
-                      variant="secondary"
+                      variant="ghost"
                       onClick={() => handleSelectUser(user)}
                       className="cursor-pointer"
                     >
@@ -138,9 +132,9 @@ function CreateEdital() {
             </div>
           </div>
 
-          <DialogFooter>
+          <DialogFooter className="sm:justify-start">
             <DialogClose asChild>
-              <Button variant="outline" className="cursor-pointer">Cancelar</Button>
+              <Button variant="secondary" className="cursor-pointer">Fechar</Button>
             </DialogClose>
           </DialogFooter>
         </DialogContent>

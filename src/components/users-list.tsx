@@ -5,15 +5,14 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 type User = { id: number; img: string; name: string }
 
 interface UserListProps {
-  title: string
-  onAdd: (title: string) => void
-  onDelete: (id: number) => void
-  list: User[]
+  readonly title: string
+  readonly onAdd: (title: string) => void
+  readonly onDelete: (id: number) => void
+  readonly list: User[]
 }
 
 export function UserList({ title, onAdd, onDelete, list }: UserListProps) {
   return (
-    <>
       <div>
         <div className="flex px-2 py-2 items-center justify-between bg-background border">
           <div className="text-sm font-medium">{title}</div>
@@ -32,9 +31,9 @@ export function UserList({ title, onAdd, onDelete, list }: UserListProps) {
         <div>
           {list.length === 0 ? ( 
             <div
-                className="flex px-2 py-2 items-center text-sm font-regular text-muted-foreground justify-between bg-gray-50 border"
+                className="h-14 px-2 py-2 text-sm font-regular content-center text-center text-muted-foreground bg-gray-50 border"
               >
-              Lista vazia
+              A lista está vazia
             </div>
           ) : (
               null
@@ -73,6 +72,5 @@ export function UserList({ title, onAdd, onDelete, list }: UserListProps) {
           })}
         </div>
       </div>
-    </>
   )
 }

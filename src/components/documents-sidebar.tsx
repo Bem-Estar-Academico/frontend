@@ -21,64 +21,15 @@ type Document = {
 }
 
 export interface DocumentsSidebarProps {
-  activeDocumentId?: string
-  data: Array<{
+   activeDocumentId?: string
+   data: Array<{
     title: string;
     items: Document[]
   }>
-  onDocumentSelect?: (id: string) => void
+   onDocumentSelect?: (id: string) => void
 }
 
-function renderDocuments(
-  documents: Document[],
-  activeDocumentId?: string,
-  onDocumentSelect?: (id: string) => void,
-  level = 0
-) {
-  const handleDocumentClick = (id: string) => {
-    if (onDocumentSelect) {
-      onDocumentSelect(id);
-    }
-  }
-
-  return documents.map((doc) => {
-    if (doc.items && doc.items.length > 0) {
-      return (
-        <Collapsible key={doc.title}>
-          <SidebarMenuItem>
-            <CollapsibleTrigger className="group" asChild>
-              <SidebarMenuButton style={{ paddingLeft: `${level * 1.5 + 1}rem` }}>
-                {doc.title}
-                <ChevronDown className="ml-auto group-data-[state=open]:hidden" />
-                <ChevronUp className="ml-auto group-data-[state=closed]:hidden" />
-              </SidebarMenuButton>
-            </CollapsibleTrigger>
-            <CollapsibleContent>
-              <SidebarMenuSub>
-                {renderDocuments(doc.items, activeDocumentId, onDocumentSelect, level + 1)}
-              </SidebarMenuSub>
-            </CollapsibleContent>
-          </SidebarMenuItem>
-        </Collapsible>
-      );
-    }
-    return (
-      <SidebarMenuSubItem key={doc.id}>
-        <SidebarMenuSubButton
-          asChild
-          isActive={activeDocumentId === doc.id}
-          onClick={() => handleDocumentClick(doc.id)}
-          style={{ paddingLeft: `${level * 1.5 + 1}rem` }}
-          className={level > 0 ? "text-xs" : ""}
-        >
-          <p>{doc.title}</p>
-        </SidebarMenuSubButton>
-      </SidebarMenuSubItem>
-    );
-  });
-}
-
-export function DocumentsSidebar({data, activeDocumentId, onDocumentSelect}: DocumentsSidebarProps) {
+export function DocumentsSidebar({data, activeDocumentId, onDocumentSelect}: Readonly<DocumentsSidebarProps>) {
   return (
     <Sidebar>
         <SidebarHeader>
@@ -131,4 +82,53 @@ export function DocumentsSidebar({data, activeDocumentId, onDocumentSelect}: Doc
       </SidebarContent>
     </Sidebar>
   )
+}
+
+function renderDocuments(
+  documents: Document[],
+  activeDocumentId?: string,
+  onDocumentSelect?: (id: string) => void,
+  level = 0
+) {
+  const handleDocumentClick = (id: string) => {
+    if (onDocumentSelect) {
+      onDocumentSelect(id);
+    }
+  }
+
+  return documents.map((doc) => {
+    if (doc.items && doc.items.length > 0) {
+      return (
+        <Collapsible key={doc.title}>
+          <SidebarMenuItem>
+            <CollapsibleTrigger className="group" asChild>
+              <SidebarMenuButton style={{ paddingLeft: `${level * 1.5 + 1}rem` }}>
+                {doc.title}
+                <ChevronDown className="ml-auto group-data-[state=open]:hidden" />
+                <ChevronUp className="ml-auto group-data-[state=closed]:hidden" />
+              </SidebarMenuButton>
+            </CollapsibleTrigger>
+            <CollapsibleContent>
+              <SidebarMenuSub>
+                {renderDocuments(doc.items, activeDocumentId, onDocumentSelect, level + 1)}
+              </SidebarMenuSub>
+            </CollapsibleContent>
+          </SidebarMenuItem>
+        </Collapsible>
+      );
+    }
+    return (
+      <SidebarMenuSubItem key={doc.id}>
+        <SidebarMenuSubButton
+          asChild
+          isActive={activeDocumentId === doc.id}
+          onClick={() => handleDocumentClick(doc.id)}
+          style={{ paddingLeft: `${level * 1.5 + 1}rem` }}
+          className={level > 0 ? "text-xs" : ""}
+        >
+          <p>{doc.title}</p>
+        </SidebarMenuSubButton>
+      </SidebarMenuSubItem>
+    );
+  });
 }

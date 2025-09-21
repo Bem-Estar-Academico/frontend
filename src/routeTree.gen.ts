@@ -10,33 +10,44 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AnalisarInscricaoSubscriptionIdRouteImport } from './routes/analisar.inscricao.$subscriptionId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AnalisarInscricaoSubscriptionIdRoute =
+  AnalisarInscricaoSubscriptionIdRouteImport.update({
+    id: '/analisar/inscricao/$subscriptionId',
+    path: '/analisar/inscricao/$subscriptionId',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/analisar/inscricao/$subscriptionId': typeof AnalisarInscricaoSubscriptionIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/analisar/inscricao/$subscriptionId': typeof AnalisarInscricaoSubscriptionIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/analisar/inscricao/$subscriptionId': typeof AnalisarInscricaoSubscriptionIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths: '/' | '/analisar/inscricao/$subscriptionId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/analisar/inscricao/$subscriptionId'
+  id: '__root__' | '/' | '/analisar/inscricao/$subscriptionId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AnalisarInscricaoSubscriptionIdRoute: typeof AnalisarInscricaoSubscriptionIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +59,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/analisar/inscricao/$subscriptionId': {
+      id: '/analisar/inscricao/$subscriptionId'
+      path: '/analisar/inscricao/$subscriptionId'
+      fullPath: '/analisar/inscricao/$subscriptionId'
+      preLoaderRoute: typeof AnalisarInscricaoSubscriptionIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AnalisarInscricaoSubscriptionIdRoute: AnalisarInscricaoSubscriptionIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

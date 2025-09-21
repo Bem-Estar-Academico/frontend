@@ -10,11 +10,17 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as EditaisCriarRouteImport } from './routes/editais/criar'
 import { Route as AnalisarInscricaoSubscriptionIdRouteImport } from './routes/analisar.inscricao.$subscriptionId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EditaisCriarRoute = EditaisCriarRouteImport.update({
+  id: '/editais/criar',
+  path: '/editais/criar',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AnalisarInscricaoSubscriptionIdRoute =
@@ -26,27 +32,35 @@ const AnalisarInscricaoSubscriptionIdRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/editais/criar': typeof EditaisCriarRoute
   '/analisar/inscricao/$subscriptionId': typeof AnalisarInscricaoSubscriptionIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/editais/criar': typeof EditaisCriarRoute
   '/analisar/inscricao/$subscriptionId': typeof AnalisarInscricaoSubscriptionIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/editais/criar': typeof EditaisCriarRoute
   '/analisar/inscricao/$subscriptionId': typeof AnalisarInscricaoSubscriptionIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/analisar/inscricao/$subscriptionId'
+  fullPaths: '/' | '/editais/criar' | '/analisar/inscricao/$subscriptionId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/analisar/inscricao/$subscriptionId'
-  id: '__root__' | '/' | '/analisar/inscricao/$subscriptionId'
+  to: '/' | '/editais/criar' | '/analisar/inscricao/$subscriptionId'
+  id:
+    | '__root__'
+    | '/'
+    | '/editais/criar'
+    | '/analisar/inscricao/$subscriptionId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  EditaisCriarRoute: typeof EditaisCriarRoute
   AnalisarInscricaoSubscriptionIdRoute: typeof AnalisarInscricaoSubscriptionIdRoute
 }
 
@@ -57,6 +71,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/editais/criar': {
+      id: '/editais/criar'
+      path: '/editais/criar'
+      fullPath: '/editais/criar'
+      preLoaderRoute: typeof EditaisCriarRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/analisar/inscricao/$subscriptionId': {
@@ -71,6 +92,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  EditaisCriarRoute: EditaisCriarRoute,
   AnalisarInscricaoSubscriptionIdRoute: AnalisarInscricaoSubscriptionIdRoute,
 }
 export const routeTree = rootRouteImport

@@ -1,23 +1,37 @@
 import { Link } from "@tanstack/react-router";
+import NotificationsIcon from "@mui/icons-material/Notifications";
 
-type props = {
-  name: string;
-};
-
-export function HeaderAssistenteSocial({ name }: props) {
+export function HeaderAssistenteSocial({ name }: { name: string }) {
   return (
-    <header className="p-2 flex gap-2 bg-white text-black justify-between">
-      <nav className="flex flex-row">
-        <img src="../../../public/logo-ufal.png" />
-        <div className="px-2 font-bold">
-          <Link to="/assistente-social/editais">Editais</Link>
-          <Link to="/assistente-social/consultar-ivs">Consultar IVS</Link>
+    <header className="w-full h-16 bg-gray-100 shadow flex items-center justify-between px-14">
+      <div className="flex items-center gap-6">
+        <img src="/logo-ufal.png" alt="Logo UFAL" className="h-10 w-auto" />
+        <nav className="flex items-center gap-6 font-semibold text-gray-800 px-6">
+            <Link
+              to="/assistente-social/editais"
+              className="hover:text-red-600 transition"
+            >
+              Editais
+            </Link>
+            <Link
+              to="/assistente-social/consultar-ivs"
+              className="hover:text-red-600 transition"
+            >
+              Consultar IVS
+            </Link>
+          </nav>
+      </div>
+
+
+      <div className="flex items-center gap-4">
+        <button className="relative">
+          <NotificationsIcon />
+        </button>
+        <div className="flex items-center gap-2">
+          <img src="/avatar-image.png" />
+          <span className="font-medium">{name}</span>
         </div>
-        <div className="flex flex-row">
-          <img src="../../../public/bell.png" />
-          <span>{name}</span>
-        </div>
-      </nav>
+      </div>
     </header>
   );
 }

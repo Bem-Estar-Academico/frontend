@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
-import NotificationsIcon from "@mui/icons-material/Notifications";
+import { IconBellFilled } from "@tabler/icons-react";
+import { Avatar, AvatarImage, AvatarFallback } from "@radix-ui/react-avatar";
 
 export function HeaderAssistenteSocial({ name }: { name: string }) {
   return (
@@ -7,28 +8,30 @@ export function HeaderAssistenteSocial({ name }: { name: string }) {
       <div className="flex items-center gap-6">
         <img src="/logo-ufal.png" alt="Logo UFAL" className="h-10 w-auto" />
         <nav className="flex items-center gap-6 font-semibold text-gray-800 px-6">
-            <Link
-              to="/assistente-social/editais"
-              className="hover:text-red-600 transition"
-            >
-              Editais
-            </Link>
-            <Link
-              to="/assistente-social/consultar-ivs"
-              className="hover:text-red-600 transition"
-            >
-              Consultar IVS
-            </Link>
-          </nav>
+          <Link
+            to="/assistente-social/editais"
+            className="hover:text-red-600 transition"
+          >
+            Editais
+          </Link>
+          <Link
+            to="/assistente-social/consultar-ivs"
+            className="hover:text-red-600 transition"
+          >
+            Consultar IVS
+          </Link>
+        </nav>
       </div>
-
 
       <div className="flex items-center gap-4">
         <button className="relative">
-          <NotificationsIcon />
+          <IconBellFilled />
         </button>
         <div className="flex items-center gap-2">
-          <img src="/avatar-image.png" />
+          <Avatar>
+            <AvatarImage src="/avatar-image.png" alt={name} />
+            <AvatarFallback>{name[0]}</AvatarFallback>
+          </Avatar>
           <span className="font-medium">{name}</span>
         </div>
       </div>

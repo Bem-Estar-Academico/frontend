@@ -1,6 +1,9 @@
 import { Link } from "@tanstack/react-router";
 import { IconBellFilled } from "@tabler/icons-react";
 import { Avatar, AvatarImage, AvatarFallback } from "@radix-ui/react-avatar";
+import { Editais } from "@/components/assistente-social/editais"
+
+const mockIds = [0, 1, 2, 3, 4];
 
 export function HeaderAssistenteSocial({ name }: { name: string }) {
   return (
@@ -8,12 +11,7 @@ export function HeaderAssistenteSocial({ name }: { name: string }) {
       <div className="flex items-center gap-6">
         <img src="/logo-ufal.png" alt="Logo UFAL" className="h-10 w-auto" />
         <nav className="flex items-center gap-6 font-semibold text-gray-800 px-6">
-          <Link
-            to="/assistente-social/editais"
-            className="hover:text-red-600 transition"
-          >
-            Editais
-          </Link>
+          <Editais />
           <Link
             to="/assistente-social/consultar-ivs"
             className="hover:text-red-600 transition"

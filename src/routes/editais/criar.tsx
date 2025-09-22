@@ -5,6 +5,9 @@ import { useState } from "react"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { Button } from "@/components/ui/button"
+import { Calendar } from "@/components/ui/calendar"
+import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover"
 import {
   Tabs,
   TabsContent,
@@ -12,6 +15,8 @@ import {
   TabsTrigger,
 } from "@/components/ui/tabs"
 import { YearSelect } from "@/components/ui/year-select"
+import { ChevronDownIcon } from "lucide-react"
+import { DatePicker } from "@/components/ui/date-picker"
 
 export const Route = createFileRoute("/editais/criar")({
   component: CreateEdital,
@@ -61,15 +66,16 @@ function CreateEdital() {
   const [assistentes, setAssistentes] = useState<User[]>([])
 
   return (
-    <div className="flex w-full max-w-lg flex-col gap-6 px-4 py-4">
+    <div className="flex w-full max-w-fit flex-col gap-6 px-4 py-4">
       <Tabs defaultValue="1">
         <TabsList>
           <TabsTrigger value="1">1</TabsTrigger>
           <TabsTrigger value="2">2</TabsTrigger>
           <TabsTrigger value="3">3</TabsTrigger>
+          <TabsTrigger value="4">4</TabsTrigger>
         </TabsList>
         <TabsContent value="1">
-          <div className="text-lg font-medium py-2">Identificação do Edital</div>
+          <div className="w-sm text-lg font-medium py-2">Identificação do Edital</div>
           <div className="grid gap-6 py-2">
             <div className="grid gap-3">
               <Label htmlFor="tab-name">Título do Edital</Label>
@@ -90,7 +96,7 @@ function CreateEdital() {
           </div>
         </TabsContent>
         <TabsContent value="2">
-          <div className="text-lg font-medium py-2">Equipe responsável</div>
+          <div className="w-sm text-lg font-medium py-2">Equipe responsável</div>
           <div className="flex flex-col gap-6">
             <UsersList
               title="Coordenadores"
@@ -129,6 +135,17 @@ function CreateEdital() {
               <Checkbox id="terms" />
               <Label htmlFor="terms">Bolsa Pró-Graduando</Label>
             </div>
+          </div>
+        </TabsContent>
+        <TabsContent value="4">
+          <div className="text-lg font-medium py-2">Período e Prazos</div>
+          <div className="grid grid-cols-3 gap-4">
+            <DatePicker title="Início das Inscrições"/>
+            <DatePicker title="Término das Inscrições"/>
+            <DatePicker title="Resultado Preliminar"/>
+            <DatePicker title="Início da Fase de Recursos"/>
+            <DatePicker title="Término da Fase de Recursos"/>
+            <DatePicker title="Resultado Final"/>
           </div>
         </TabsContent>
       </Tabs>

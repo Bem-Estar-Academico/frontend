@@ -40,7 +40,7 @@ type InputFieldProps = {
   label: string
   placeholder?: string
 }
-function InputField({ control, name, label, placeholder }: InputFieldProps) {
+function InputField({ control, name, label, placeholder }: Readonly<InputFieldProps>) {
   return (
     <FormField
       control={control}
@@ -58,7 +58,7 @@ function InputField({ control, name, label, placeholder }: InputFieldProps) {
   )
 }
 
-function YearSelectField({ control, name }: { control: any; name: string }) {
+function YearSelectField({ control, name }: Readonly<{ control: any; name: string }>) {
   return (
     <FormField
       control={control}
@@ -83,7 +83,7 @@ type UserListFieldProps = {
   allUsers: { id: number; name: string; img: string }[]
 }
 
-function UserListField({ control, name, title, allUsers }: UserListFieldProps) {
+function UserListField({ control, name, title, allUsers }: Readonly<UserListFieldProps>) {
   return (
     <FormField
       control={control}
@@ -110,7 +110,7 @@ function UserListField({ control, name, title, allUsers }: UserListFieldProps) {
   )
 }
 
-function DatePickerField({ control, name, title }: { control: any; name: string; title: string }) {
+function DatePickerField({ control, name, title }: Readonly<{ control: any; name: string; title: string }>) {
   return (
     <FormField
       control={control}
@@ -127,7 +127,7 @@ function DatePickerField({ control, name, title }: { control: any; name: string;
   )
 }
 
-function CheckboxItem({ item, field }: { item: { id: string, label: string }, field: ControllerRenderProps<FieldValues, "benefit">}) {
+function CheckboxItem({ item, field }: Readonly<{ item: { id: string, label: string }, field: ControllerRenderProps<FieldValues, "benefit">}>) {
   return (
     <FormItem key={item.id} className="flex flex-row items-start space-x-3 space-y-0">
       <FormControl>
@@ -163,10 +163,10 @@ function BenefitsList({ control, availableBenefits }: { control: Control, availa
 function BenefitField({
   control,
   availableBenefits,
-}: {
+}: Readonly<{
   control: any
   availableBenefits: { id: string; label: string }[]
-}) {
+}>) {
   return (
     <FormField
       control={control}

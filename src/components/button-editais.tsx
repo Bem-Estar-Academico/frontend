@@ -22,7 +22,7 @@ export function Editais() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <button className="flex items-center gap-1 font-semibold text-gray-800 hover:text-gray-600 transition">
+        <button className="flex items-center gap-1 text-gray-800 hover:text-gray-600 transition">
           Editais <ChevronDown className="w-4 h-4" />
         </button>
       </DropdownMenuTrigger>

@@ -19,7 +19,7 @@ export function UserMenu({ name }: props) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <button className="flex items-center gap-4 font-semibold text-gray-800 hover:text-gray-600 transition">
+        <button className="flex items-center gap-4 text-gray-800 hover:text-gray-600 transition">
           <Avatar>
             <AvatarImage src="/avatar-image.png" alt={name} />
             <AvatarFallback>{name[0]}</AvatarFallback>
@@ -35,7 +35,6 @@ export function UserMenu({ name }: props) {
         <DropdownMenuSeparator />
         <DropdownMenuItem>
           Log out
-          <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

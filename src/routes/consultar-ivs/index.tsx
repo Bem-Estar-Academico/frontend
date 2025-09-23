@@ -17,7 +17,7 @@ export function IVS() {
         <ul>
           {ids.map((id) => (
             <li key={id}>
-              <Link to={`/consultar-ivs/${id}`}>Aluno {id}</Link>
+              <Link to={`/consultar-ivs/$id`} params={{ id: String(id) }}>Aluno {id}</Link>
             </li>
           ))}
         </ul>

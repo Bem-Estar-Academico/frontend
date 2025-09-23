@@ -30,7 +30,8 @@ export function Editais() {
         {mockIds.map((id) => (
           <DropdownMenuItem key={id} asChild>
             <Link
-              to={`/editais/${id}`}
+              to={`/editais/$id`}
+              params={{ id: String(id) }}
               className={
                 currentId == String(id) ? "w-full font-bold text-black-600" : ""
               }

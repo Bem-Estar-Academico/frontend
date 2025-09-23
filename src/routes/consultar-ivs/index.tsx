@@ -1,0 +1,27 @@
+import { HeaderAssistenteSocial } from "@/components/header-assistente-social";
+import { createFileRoute } from "@tanstack/react-router";
+import { Link } from "@tanstack/react-router";
+
+const ids = [1, 2, 3, 4];
+
+export const Route = createFileRoute("/consultar-ivs/")({
+  component: IVS,
+});
+
+export function IVS() {
+  return (
+    <>
+      <HeaderAssistenteSocial name={"Maria da silva"} />
+      <div>
+        <h2>Lista de IVS</h2>
+        <ul>
+          {ids.map((id) => (
+            <li key={id}>
+              <Link to={`/consultar-ivs/${id}`}>Aluno {id}</Link>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </>
+  );
+}

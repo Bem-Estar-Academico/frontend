@@ -13,7 +13,7 @@ export function Editais() {
   let params: { id?: string } = {};
 
   try {
-    params = useParams({ from: "/assistente-social/editais/$id" });
+    params = useParams({ from: "/editais/$id" });
   } catch (e) {
     //alert(e);
   }
@@ -22,7 +22,7 @@ export function Editais() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <button className="flex items-center gap-1 font-semibold text-gray-800 hover:text-red-600 transition">
+        <button className="flex items-center gap-1 font-semibold text-gray-800 hover:text-gray-600 transition">
           Editais <ChevronDown className="w-4 h-4" />
         </button>
       </DropdownMenuTrigger>
@@ -30,7 +30,7 @@ export function Editais() {
         {mockIds.map((id) => (
           <DropdownMenuItem key={id} asChild>
             <Link
-              to={`/assistente-social/editais/${id}`}
+              to={`/editais/${id}`}
               className={
                 currentId == String(id) ? "w-full font-bold text-black-600" : ""
               }
@@ -43,33 +43,3 @@ export function Editais() {
     </DropdownMenu>
   );
 }
-
-/*
-export function Editais() {
-  const [getEditais, setEditais] = useState(false);
-
-  const handleClick = () => {
-    setEditais(!getEditais);
-  };
-
-  return (
-    <div>
-      <button onClick={handleClick}>
-        {getEditais ? "Editais" : "Editais"}
-      </button>
-
-      {getEditais && (
-        <ul>
-          {mockIds.map((id) => (
-            <li key={id}>
-              <Link to={`/assistente-social/editais/${id}`}>
-                Aluno {id}
-              </Link>
-            </li>
-          ))}
-        </ul>
-      )}
-    </div>
-  );
-}
-*/

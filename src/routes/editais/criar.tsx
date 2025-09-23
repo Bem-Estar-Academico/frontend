@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm, type Control, type ControllerRenderProps, type FieldValues } from "react-hook-form"
+import { useForm, type Control, type ControllerRenderProps } from "react-hook-form"
 import { z } from "zod"
 import { createFileRoute } from "@tanstack/react-router"
 
@@ -34,152 +34,7 @@ import { DatePicker } from "@/components/ui/date-picker"
 import { Separator } from "@/components/ui/separator"
 import { Sidebar } from "@/components/coordinator/sidebar"
 
-type InputFieldProps = {
-  control: any
-  name: string
-  label: string
-  placeholder?: string
-}
-function InputField({ control, name, label, placeholder }: Readonly<InputFieldProps>) {
-  return (
-    <FormField
-      control={control}
-      name={name}
-      render={({ field }) => (
-        <FormItem>
-          <FormLabel>{label}</FormLabel>
-          <FormControl>
-            <Input placeholder={placeholder} {...field} />
-          </FormControl>
-          <FormMessage />
-        </FormItem>
-      )}
-    />
-  )
-}
 
-function YearSelectField({ control, name }: Readonly<{ control: any; name: string }>) {
-  return (
-    <FormField
-      control={control}
-      name={name}
-      render={({ field }) => (
-        <FormItem>
-          <FormLabel>Ano de vigência</FormLabel>
-          <FormControl>
-            <YearSelect value={field.value} onChange={field.onChange} />
-          </FormControl>
-          <FormMessage />
-        </FormItem>
-      )}
-    />
-  )
-}
-
-type UserListFieldProps = {
-  control: any
-  name: string
-  title: string
-  allUsers: { id: number; name: string; img: string }[]
-}
-
-function UserListField({ control, name, title, allUsers }: Readonly<UserListFieldProps>) {
-  return (
-    <FormField
-      control={control}
-      name={name}
-      render={({ field }) => {
-        const selectedUsers = allUsers.filter(u => field.value.includes(u.id))
-        return (
-          <FormItem>
-            <FormControl>
-              <UsersList
-                title={title}
-                list={selectedUsers}
-                allUsers={allUsers}
-                allowEdit={true}
-                onSelect={(user) => field.onChange([...field.value, user.id])}
-                onDelete={(id) => field.onChange(field.value.filter((uid: number) => uid !== id))}
-              />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )
-      }}
-    />
-  )
-}
-
-function DatePickerField({ control, name, title }: Readonly<{ control: any; name: string; title: string }>) {
-  return (
-    <FormField
-      control={control}
-      name={name}
-      render={({ field }) => (
-        <FormItem>
-          <FormControl>
-            <DatePicker title={title} value={field.value} onChange={field.onChange} />
-          </FormControl>
-          <FormMessage />
-        </FormItem>
-      )}
-    />
-  )
-}
-
-function CheckboxItem({ item, field }: Readonly<{ item: { id: string, label: string }, field: ControllerRenderProps<FieldValues, "benefit">}>) {
-  return (
-    <FormItem key={item.id} className="flex flex-row items-start space-x-3 space-y-0">
-      <FormControl>
-        <Checkbox
-          checked={field.value?.includes(item.id)}
-          onCheckedChange={(checked) =>
-            checked
-              ? field.onChange([...field.value, item.id])
-              : field.onChange(field.value?.filter((v: string) => v !== item.id))
-          }
-        />
-      </FormControl>
-      <FormLabel className="font-normal">{item.label}</FormLabel>
-    </FormItem>
-  )
-}
-
-function BenefitsList({ control, availableBenefits }: { control: Control, availableBenefits: { id: string, label: string }[] }) {
-  return (
-    availableBenefits.map((item) => (
-      <FormField
-        key={item.id}
-        control={control}
-        name="benefit"
-        render={({ field }) => (
-          <CheckboxItem item={item} field={field}/>
-        )}
-      />
-    ))
-  )
-}
-
-function BenefitField({
-  control,
-  availableBenefits,
-}: Readonly<{
-  control: any
-  availableBenefits: { id: string; label: string }[]
-}>) {
-  return (
-    <FormField
-      control={control}
-      name="benefit"
-      render={() => (
-        <FormItem className="flex flex-col gap-4 py-2">
-          <BenefitsList control={control} availableBenefits={availableBenefits}/>
-          <FormMessage />
-        </FormItem>
-      )}
-    />
-  )
-}
 
 const allUsers = [
   { id: 1, img: "https://static.vecteezy.com/system/resources/previews/009/292/244/non_2x/default-avatar-icon-of-social-media-user-vector.jpg", name: "User 1" },
@@ -282,10 +137,8 @@ function CreateEdital() {
 
   return (
     <div className="flex">
-      {/* Sidebar */}
       <Sidebar />
-
-      {/* Content */}
+      
       <div className="flex flex-col w-full max-w-full bg-gray-100">
         <div className="px-4 mt-4">
           <Breadcrumb>
@@ -321,7 +174,19 @@ function CreateEdital() {
                   <div className="grid gap-6 py-2">
                     <InputField control={form.control} name="title" label="Título do Edital" placeholder="ex.: Cadastramento Socioeconômico 2025" />
                     <InputField control={form.control} name="number" label="Número do Edital" placeholder="ex.: Edital nº 05/2025" />
-                    <YearSelectField control={form.control} name="year" />
+                    <FormField
+                      control={form.control}
+                      name="year"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Ano de vigência</FormLabel>
+                          <FormControl>
+                            <YearSelect value={field.value} onChange={field.onChange} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
                   </div>
                 </TabsContent>
 
@@ -334,7 +199,7 @@ function CreateEdital() {
                 {/* Aba 3: Benefícios */}
                 <TabsContent value="3" className="px-2">
                   <div className="text-lg font-medium py-2">Benefícios Ofertados</div>
-                  <BenefitField control={form.control} availableBenefits={availableBenefits} />
+                  <BenefitsList control={form.control} availableBenefits={availableBenefits} />
                 </TabsContent>
 
                 {/* Aba 4: Prazos */}
@@ -358,5 +223,121 @@ function CreateEdital() {
         </div>
       </div>
     </div>
+  )
+}
+
+type InputFieldProps = {
+  control: Control<EditalFormData>
+  name: keyof Pick<EditalFormData, 'title' | 'number'>
+  label: string
+  placeholder?: string
+}
+
+function InputField({ control, name, label, placeholder }: Readonly<InputFieldProps>) {
+  return (
+    <FormField
+      control={control}
+      name={name}
+      render={({ field }) => (
+        <FormItem>
+          <FormLabel>{label}</FormLabel>
+          <FormControl>
+            <Input placeholder={placeholder} {...field} />
+          </FormControl>
+          <FormMessage />
+        </FormItem>
+      )}
+    />
+  )
+}
+
+type UserListFieldProps = {
+  control: Control<EditalFormData>
+  name: 'coordinators' | 'social_workers'
+  title: string
+  allUsers: { id: number; name: string; img: string }[]
+}
+
+function UserListField({ control, name, title, allUsers }: Readonly<UserListFieldProps>) {
+  return (
+    <FormField
+      control={control}
+      name={name}
+      render={({ field }) => {
+        const selectedUsers = allUsers.filter(u => field.value.includes(u.id))
+        return (
+          <FormItem>
+            <FormControl>
+              <UsersList
+                title={title}
+                list={selectedUsers}
+                allUsers={allUsers}
+                allowEdit={true}
+                onSelect={(user) => field.onChange([...field.value, user.id])}
+                onDelete={(id) => field.onChange(field.value.filter((uid: number) => uid !== id))}
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )
+      }}
+    />
+  )
+}
+
+function DatePickerField({ control, name, title }: Readonly<{ control: Control<EditalFormData>; name: 
+  | "dates.applicationStart"
+  | "dates.applicationEnd"
+  | "dates.preliminaryResult"
+  | "dates.appealStart"
+  | "dates.appealEnd"
+  | "dates.finalResult"
+  ; title: string }>) {
+  return (
+    <FormField
+      control={control}
+      name={name}
+      render={({ field }) => (
+        <FormItem>
+          <FormControl>
+            <DatePicker title={title} value={field.value} onChange={field.onChange} />
+          </FormControl>
+          <FormMessage />
+        </FormItem>
+      )}
+    />
+  )
+}
+
+function CheckboxItem({ item, field }: Readonly<{ item: { id: string, label: string }, field: ControllerRenderProps<EditalFormData, "benefit">}>) {
+  return (
+    <FormItem key={item.id} className="flex flex-row items-start space-x-3 space-y-0">
+      <FormControl>
+        <Checkbox
+          checked={field.value?.includes(item.id)}
+          onCheckedChange={(checked) =>
+            checked
+              ? field.onChange([...field.value, item.id])
+              : field.onChange(field.value?.filter((v: string) => v !== item.id))
+          }
+        />
+      </FormControl>
+      <FormLabel className="font-normal">{item.label}</FormLabel>
+    </FormItem>
+  )
+}
+
+function BenefitsList({ control, availableBenefits }: { control: Control<EditalFormData>; availableBenefits: { id: string; label: string }[] }) {
+  return (
+    availableBenefits.map((item) => (
+      <FormField
+        key={item.id}
+        control={control}
+        name="benefit"
+        render={({ field }) => (
+          <CheckboxItem item={item} field={field}/>
+        )}
+      />
+    ))
   )
 }

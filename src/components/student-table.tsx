@@ -16,18 +16,14 @@ import {
 import {
   ArrowUpDown,
   MoreHorizontal,
-  EyeOff,
-  CirclePlus,
   ChevronLeft,
   ChevronRight,
   Files,
-  Search,
 } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
-  DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
@@ -51,6 +47,14 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { StatusBadge } from "./ui/status-badge"
+import { DataTableFacetedFilter } from "./ui/data-table-faceted-filter"
+import { 
+  IconCircleCheckFilled, 
+  IconCircleXFilled, 
+  IconCircle, 
+  IconHelpCircleFilled, 
+  IconProgress 
+} from "@tabler/icons-react"
 
 const data: Student[] = [
   {
@@ -145,6 +149,33 @@ const data: Student[] = [
   },
 ];
 
+const statusOptions = [
+  {
+    value: "Pendente",
+    label: "Pendente",
+    icon: <IconCircle className="text-muted-foreground" />,
+  },
+  {
+    value: "Em Análise",
+    label: "Em Análise",
+    icon: <IconProgress className="text-blue-500" />,
+  },
+  {
+    value: "Recurso",
+    label: "Recurso",
+    icon: <IconHelpCircleFilled className="text-purple-600" />,
+  },
+  {
+    value: "Deferido",
+    label: "Deferido",
+    icon: <IconCircleCheckFilled className="text-green-500" />,
+  },
+  {
+    value: "Indeferido",
+    label: "Indeferido",
+    icon: <IconCircleXFilled className="text-red-600" />,
+  },
+]
 
 export type Student = {
   cpf: string
@@ -339,18 +370,6 @@ export function StudentDataTable() {
     },
   })
 
-  const statusOptions: {
-    text: string;
-    variant: "pending" | "review" | "appeal" | "approved" | "denied";
-    count: number;
-  }[] = [
-      { text: "Pendente", variant: "pending", count: 30 },
-      { text: "Em Análise", variant: "review", count: 5 },
-      { text: "Recurso", variant: "appeal", count: 10 },
-      { text: "Deferido", variant: "approved", count: 50 },
-      { text: "Indeferido", variant: "denied", count: 10 },
-    ];
-
   return (
     <div className="w-full p-4">
       <div className="flex items-center justify-between py-4">
@@ -363,49 +382,11 @@ export function StudentDataTable() {
               table.getColumn("nome")?.setFilterValue(event.target.value)
             }
           />
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline" className="cursor-pointer border-dashed focus-visible:none focus-visible:none focus-visible:none">
-                <CirclePlus className="mr-2 h-4 w-4" /> Status
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent>
-              <DropdownMenuLabel className="flex intems-center text-muted-foreground font-normal">
-                <Search className="size-4 mr-2" />Status
-              </DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              {statusOptions.map((status) => {
-                const currentFilter = table.getColumn('status')?.getFilterValue() as string[] | undefined;
-                const isSelected = currentFilter?.includes(status.text) ?? false;
-                return (
-                  <DropdownMenuCheckboxItem
-                    key={status.text}
-                    className="cursor-pointer"
-                    checked={isSelected}
-                    onCheckedChange={() => {
-                      const newFilter = isSelected
-                        ? currentFilter?.filter(s => s !== status.text)
-                        : [...(currentFilter || []), status.text];
-                      table.getColumn('status')?.setFilterValue(newFilter?.length ? newFilter : undefined);
-                    }}
-                  >
-                    <div className="flex items-center gap-2">
-                      <StatusBadge className="cursor-pointer border-none bg-transparent" variant={status.variant} />
-                    </div>
-                  </DropdownMenuCheckboxItem>
-                )
-              })}
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
-        <div className="flex items-center gap-2">
-          <Button variant={"secondary"} className="cursor-pointer">
-            <EyeOff className="mr-2 h-4 w-4" />
-            Visualizar
-          </Button>
-          <Button variant={"secondary"} className="cursor-pointer">
-            Exportar
-          </Button>
+          <DataTableFacetedFilter
+            column={table.getColumn("status")}
+            title="Status"
+            options={statusOptions}
+          />
         </div>
       </div>
       <div className="border">

@@ -61,56 +61,54 @@ const editalSchema = z.object({
   social_workers: z.array(z.number()),
 
   benefit: z.array(z.string()).min(1, "Selecione ao menos um benefício."),
-    dates: z.object({
-    applicationStart: z.date({
-      required_error: "Selecione uma data de início para o edital.",
-    }),
-    applicationEnd: z.date().optional(),
-    preliminaryResult: z.date().optional(),
-    appealStart: z.date().optional(),
-    appealEnd: z.date().optional(),
-    finalResult: z.date().optional(),
-  })
-  .refine(
-    (data) => !data.applicationEnd || data.applicationStart < data.applicationEnd,
-    {
-      path: ["applicationEnd"],
-      message: "A data de término deve ser posterior à data de início.",
-    }
-  )
-  .refine(
-    (data) =>
-      !data.preliminaryResult || !data.applicationEnd || data.preliminaryResult > data.applicationEnd,
-    {
-      path: ["preliminaryResult"],
-      message: "O resultado preliminar deve ocorrer após o fim das inscrições.",
-    }
-  )
-  .refine(
-    (data) =>
-      !data.appealStart || !data.preliminaryResult || data.appealStart > data.preliminaryResult,
-    {
-      path: ["appealStart"],
-      message: "O início dos recursos deve ser após o resultado preliminar.",
-    }
-  )
-  .refine(
-    (data) =>
-      !data.appealEnd || !data.appealStart || data.appealEnd > data.appealStart,
-    {
-      path: ["appealEnd"],
-      message: "O fim dos recursos deve ser após o início dos recursos.",
-    }
-  )
-  .refine(
-    (data) =>
-      !data.finalResult || !data.appealEnd || data.finalResult > data.appealEnd,
-    {
-      path: ["finalResult"],
-      message: "O resultado final deve ocorrer após o término dos recursos.",
-    }
-  )
+  applicationStart: z.date({
+    required_error: "Selecione uma data de início para o edital.",
+  }),
+  applicationEnd: z.date().optional(),
+  preliminaryResult: z.date().optional(),
+  appealStart: z.date().optional(),
+  appealEnd: z.date().optional(),
+  finalResult: z.date().optional(),
 })
+.refine(
+  (data) => !data.applicationEnd || data.applicationStart < data.applicationEnd,
+  {
+    path: ["applicationEnd"],
+    message: "A data de término deve ser posterior à data de início.",
+  }
+)
+.refine(
+  (data) =>
+    !data.preliminaryResult || !data.applicationEnd || data.preliminaryResult > data.applicationEnd,
+  {
+    path: ["preliminaryResult"],
+    message: "O resultado preliminar deve ocorrer após o fim das inscrições.",
+  }
+)
+.refine(
+  (data) =>
+    !data.appealStart || !data.preliminaryResult || data.appealStart > data.preliminaryResult,
+  {
+    path: ["appealStart"],
+    message: "O início dos recursos deve ser após o resultado preliminar.",
+  }
+)
+.refine(
+  (data) =>
+    !data.appealEnd || !data.appealStart || data.appealEnd > data.appealStart,
+  {
+    path: ["appealEnd"],
+    message: "O fim dos recursos deve ser após o início dos recursos.",
+  }
+)
+.refine(
+  (data) =>
+    !data.finalResult || !data.appealEnd || data.finalResult > data.appealEnd,
+  {
+    path: ["finalResult"],
+    message: "O resultado final deve ocorrer após o término dos recursos.",
+  }
+)
 
 type EditalFormData = z.infer<typeof editalSchema>
 
@@ -206,12 +204,12 @@ function CreateEdital() {
                 <TabsContent value="4" className="px-2">
                   <div className="text-lg font-medium py-2">Período e Prazos</div>
                   <div className="grid grid-cols-3 gap-6 py-2">
-                    <DatePickerField control={form.control} name="dates.applicationStart" title="Início das Inscrições" />
-                    <DatePickerField control={form.control} name="dates.applicationEnd" title="Término das Inscrições" />
-                    <DatePickerField control={form.control} name="dates.preliminaryResult" title="Resultado Preliminar" />
-                    <DatePickerField control={form.control} name="dates.appealStart" title="Início da Fase de Recursos" />
-                    <DatePickerField control={form.control} name="dates.appealEnd" title="Término da Fase de Recursos" />
-                    <DatePickerField control={form.control} name="dates.finalResult" title="Resultado Final" />
+                    <DatePickerField control={form.control} name="applicationStart" title="Início das Inscrições" />
+                    <DatePickerField control={form.control} name="applicationEnd" title="Término das Inscrições" />
+                    <DatePickerField control={form.control} name="preliminaryResult" title="Resultado Preliminar" />
+                    <DatePickerField control={form.control} name="appealStart" title="Início da Fase de Recursos" />
+                    <DatePickerField control={form.control} name="appealEnd" title="Término da Fase de Recursos" />
+                    <DatePickerField control={form.control} name="finalResult" title="Resultado Final" />
                   </div>
                   <div className="mt-6">
                     <Button type="submit" className="cursor-pointer">Salvar</Button>
@@ -286,12 +284,12 @@ function UserListField({ control, name, title, allUsers }: Readonly<UserListFiel
 }
 
 function DatePickerField({ control, name, title }: Readonly<{ control: Control<EditalFormData>; name: 
-  | "dates.applicationStart"
-  | "dates.applicationEnd"
-  | "dates.preliminaryResult"
-  | "dates.appealStart"
-  | "dates.appealEnd"
-  | "dates.finalResult"
+  | "applicationStart"
+  | "applicationEnd"
+  | "preliminaryResult"
+  | "appealStart"
+  | "appealEnd"
+  | "finalResult"
   ; title: string }>) {
   return (
     <FormField

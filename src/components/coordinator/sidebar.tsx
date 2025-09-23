@@ -1,5 +1,4 @@
 import { Link } from "@tanstack/react-router"
-import { Separator } from "@/components/ui/separator"
 import { Users, NotepadText, ListTodo } from "lucide-react"
 
 export function Sidebar() {
@@ -32,10 +31,6 @@ export function Sidebar() {
           </Link>
         </nav>
       </aside>
-
-      <main className="flex-1">
-        <Separator orientation="horizontal" />
-      </main>
     </div>
   )
 }

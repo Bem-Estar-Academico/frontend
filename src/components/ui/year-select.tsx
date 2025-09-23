@@ -22,7 +22,7 @@ export function YearSelect({
   startYear = new Date().getFullYear() - 10,
   endYear = new Date().getFullYear() + 10,
   className,
-}: YearSelectProps) {
+}: Readonly<YearSelectProps>) {
   const years = React.useMemo(() => {
     const list: string[] = []
     for (let y = endYear; y >= startYear; y--) {

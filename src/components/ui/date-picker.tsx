@@ -18,7 +18,7 @@ interface DatePickerProps {
   onChange?: (date: Date | undefined) => void
 }
 
-export function DatePicker({ title, value, onChange }: DatePickerProps) {
+export function DatePicker({ title, value, onChange }: Readonly<DatePickerProps>) {
   const [open, setOpen] = React.useState(false)
 
   return (

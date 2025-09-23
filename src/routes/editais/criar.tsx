@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
+import { useForm, type Control } from "react-hook-form"
 import { z } from "zod"
 import { createFileRoute } from "@tanstack/react-router"
 
@@ -127,6 +127,33 @@ function DatePickerField({ control, name, title }: { control: any; name: string;
   )
 }
 
+function BenefitsList({ control, availableBenefits }: { control: Control, availableBenefits: { id:string, label:string }[] }) {
+  return (
+    availableBenefits.map((item) => (
+      <FormField
+        key={item.id}
+        control={control}
+        name="benefit"
+        render={({ field }) => (
+          <FormItem key={item.id} className="flex flex-row items-start space-x-3 space-y-0">
+            <FormControl>
+              <Checkbox
+                checked={field.value?.includes(item.id)}
+                onCheckedChange={(checked) =>
+                  checked
+                    ? field.onChange([...field.value, item.id])
+                    : field.onChange(field.value?.filter((v: string) => v !== item.id))
+                }
+              />
+            </FormControl>
+            <FormLabel className="font-normal">{item.label}</FormLabel>
+          </FormItem>
+        )}
+      />
+    ))
+  )
+}
+
 function BenefitField({
   control,
   availableBenefits,
@@ -140,28 +167,7 @@ function BenefitField({
       name="benefit"
       render={() => (
         <FormItem className="flex flex-col gap-4 py-2">
-          {availableBenefits.map((item) => (
-            <FormField
-              key={item.id}
-              control={control}
-              name="benefit"
-              render={({ field }) => (
-                <FormItem key={item.id} className="flex flex-row items-start space-x-3 space-y-0">
-                  <FormControl>
-                    <Checkbox
-                      checked={field.value?.includes(item.id)}
-                      onCheckedChange={(checked) =>
-                        checked
-                          ? field.onChange([...field.value, item.id])
-                          : field.onChange(field.value?.filter((v: string) => v !== item.id))
-                      }
-                    />
-                  </FormControl>
-                  <FormLabel className="font-normal">{item.label}</FormLabel>
-                </FormItem>
-              )}
-            />
-          ))}
+          <BenefitsList control={control} availableBenefits={availableBenefits}/>
           <FormMessage />
         </FormItem>
       )}

@@ -33,6 +33,8 @@ import { YearSelect } from "@/components/ui/year-select"
 import { DatePicker } from "@/components/ui/date-picker"
 import { Separator } from "@/components/ui/separator"
 import { Sidebar } from "@/components/coordinator/sidebar"
+import { useState } from "react"
+import { Value } from "@radix-ui/react-select"
 
 
 
@@ -127,18 +129,29 @@ function CreateEdital() {
       benefit: [],
     },
   })
+  
+  const [currentTab, setTab] = useState("1")
+  
+  function handleNextTab() {
+    setTab((parseInt(currentTab, 10)+1).toString())
+  }
+
+  function handlePrevTab() {
+    setTab((parseInt(currentTab, 10)-1).toString())
+  }
 
   function onSubmit(data: EditalFormData) {
     console.log("Dados do formulário válidos:")
     console.log(data)
   }
 
+
   return (
     <div className="flex">
       <Sidebar />
       
       <div className="flex flex-col w-full max-w-full bg-gray-100">
-        <div className="px-4 mt-4">
+        <div className="px-4 my-4">
           <Breadcrumb>
             <BreadcrumbList>
               <BreadcrumbItem>
@@ -152,23 +165,24 @@ function CreateEdital() {
           </Breadcrumb>
         </div>
 
-        <Separator className="my-4" />
+        <Separator />
 
-        <div className="w-full max-w-full gap-6 px-5 py-4">
-          <h2 className="text-2xl font-medium px-1 mb-6">Criar Edital</h2>
+        <div className="flex flex-col w-full h-full max-w-full gap-5 px-5 py-4">
+          <h2 className="text-2xl font-medium px-1">Criar Edital</h2>
 
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="bg-white px-4 py-4 w-full border rounded-xl">
-              <Tabs defaultValue="1">
+            <form onSubmit={form.handleSubmit(onSubmit)} className="bg-white px-4 py-4 w-full flex-1 border rounded-xl">
+              <Tabs defaultValue="1" value={currentTab} className="h-full">
                 <TabsList className="gap-2 px-1">
-                  <TabsTrigger value="1">Identificação</TabsTrigger>
-                  <TabsTrigger value="2">Equipe</TabsTrigger>
-                  <TabsTrigger value="3">Benefícios</TabsTrigger>
-                  <TabsTrigger value="4">Prazos</TabsTrigger>
+                  <TabsTrigger value="1" onClick={() => setTab("1")}>Identificação</TabsTrigger>
+                  <TabsTrigger value="2" onClick={() => setTab("2")}>Equipe</TabsTrigger>
+                  <TabsTrigger value="3" onClick={() => setTab("3")}>Benefícios</TabsTrigger>
+                  <TabsTrigger value="4" onClick={() => setTab("4")}>Prazos</TabsTrigger>
                 </TabsList>
 
                 {/* Aba 1: Identificação */}
-                <TabsContent value="1" className="px-2">
+                <TabsContent value="1" className="flex flex-col px-2">
+                  <div className="text-lg font-medium py-2">Informações do Edital</div>
                   <div className="grid gap-6 py-2">
                     <InputField control={form.control} name="title" label="Título do Edital" placeholder="ex.: Cadastramento Socioeconômico 2025" />
                     <InputField control={form.control} name="number" label="Número do Edital" placeholder="ex.: Edital nº 05/2025" />
@@ -189,19 +203,24 @@ function CreateEdital() {
                 </TabsContent>
 
                 {/* Aba 2: Equipe */}
-                <TabsContent value="2" className="px-2 flex flex-col gap-6">
-                  <UserListField control={form.control} name="coordinators" title="Coordenadores" allUsers={allUsers} />
-                  <UserListField control={form.control} name="social_workers" title="Assistentes Sociais" allUsers={allUsers} />
+                <TabsContent value="2" className="flex flex-col px-2">
+                  <div className="text-lg font-medium py-2">Rquipe Responsável</div>
+                  <div className="grid gap-6 py-2">
+                    <UserListField control={form.control} name="coordinators" title="Coordenadores" allUsers={allUsers} />
+                    <UserListField control={form.control} name="social_workers" title="Assistentes Sociais" allUsers={allUsers} />
+                  </div>
                 </TabsContent>
 
                 {/* Aba 3: Benefícios */}
-                <TabsContent value="3" className="px-2">
+                <TabsContent value="3" className="flex flex-col px-2">
                   <div className="text-lg font-medium py-2">Benefícios Ofertados</div>
-                  <BenefitsList control={form.control} availableBenefits={availableBenefits} />
+                  <div className="flex flex-col gap-6 py-2">
+                    <BenefitsList control={form.control} availableBenefits={availableBenefits} />
+                  </div>
                 </TabsContent>
 
                 {/* Aba 4: Prazos */}
-                <TabsContent value="4" className="px-2">
+                <TabsContent value="4" className="flex flex-col px-2">
                   <div className="text-lg font-medium py-2">Período e Prazos</div>
                   <div className="grid grid-cols-3 gap-6 py-2">
                     <DatePickerField control={form.control} name="applicationStart" title="Início das Inscrições" />
@@ -211,10 +230,13 @@ function CreateEdital() {
                     <DatePickerField control={form.control} name="appealEnd" title="Término da Fase de Recursos" />
                     <DatePickerField control={form.control} name="finalResult" title="Resultado Final" />
                   </div>
-                  <div className="mt-6">
-                    <Button type="submit" className="cursor-pointer">Salvar</Button>
-                  </div>
                 </TabsContent>
+
+                <div className="flex justify-between">
+                  {currentTab !== '1' && <Button onClick={handlePrevTab} variant={'ghost'}>Voltar</Button>}
+                  {currentTab !== '4' && <Button onClick={handleNextTab}>Próximo</Button>}
+                  {currentTab === '4' && <Button type="submit">Salvar</Button>}
+                </div>
               </Tabs>
             </form>
           </Form>
@@ -327,15 +349,20 @@ function CheckboxItem({ item, field }: Readonly<{ item: { id: string, label: str
 
 function BenefitsList({ control, availableBenefits }: { control: Control<EditalFormData>; availableBenefits: { id: string; label: string }[] }) {
   return (
-    availableBenefits.map((item) => (
-      <FormField
-        key={item.id}
-        control={control}
-        name="benefit"
-        render={({ field }) => (
-          <CheckboxItem item={item} field={field}/>
-        )}
-      />
-    ))
-  )
+    <FormField
+      control={control}
+      name="benefit"
+      render={({ field }) => (
+        <FormItem>
+          <div className="flex flex-col gap-4 pb-2">
+            {availableBenefits.map((item) => (
+              <CheckboxItem key={item.id} item={item} field={field} />
+            ))}
+          </div>
+
+          <FormMessage />
+        </FormItem>
+      )}
+    />
+  );
 }

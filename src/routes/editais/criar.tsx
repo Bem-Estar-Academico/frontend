@@ -194,14 +194,55 @@ const editalSchema = z.object({
   social_workers: z.array(z.number()),
 
   benefit: z.array(z.string()).min(1, "Selecione ao menos um benefício."),
-  dates: z.object({
-    applicationStart: z.date({ required_error: "Selecione uma data de início para o edital." }),
+    dates: z.object({
+    applicationStart: z.date({
+      required_error: "Selecione uma data de início para o edital.",
+    }),
     applicationEnd: z.date().optional(),
     preliminaryResult: z.date().optional(),
     appealStart: z.date().optional(),
     appealEnd: z.date().optional(),
     finalResult: z.date().optional(),
-  }),
+  })
+  .refine(
+    (data) => !data.applicationEnd || data.applicationStart < data.applicationEnd,
+    {
+      path: ["applicationEnd"],
+      message: "A data de término deve ser posterior à data de início.",
+    }
+  )
+  .refine(
+    (data) =>
+      !data.preliminaryResult || !data.applicationEnd || data.preliminaryResult > data.applicationEnd,
+    {
+      path: ["preliminaryResult"],
+      message: "O resultado preliminar deve ocorrer após o fim das inscrições.",
+    }
+  )
+  .refine(
+    (data) =>
+      !data.appealStart || !data.preliminaryResult || data.appealStart > data.preliminaryResult,
+    {
+      path: ["appealStart"],
+      message: "O início dos recursos deve ser após o resultado preliminar.",
+    }
+  )
+  .refine(
+    (data) =>
+      !data.appealEnd || !data.appealStart || data.appealEnd > data.appealStart,
+    {
+      path: ["appealEnd"],
+      message: "O fim dos recursos deve ser após o início dos recursos.",
+    }
+  )
+  .refine(
+    (data) =>
+      !data.finalResult || !data.appealEnd || data.finalResult > data.appealEnd,
+    {
+      path: ["finalResult"],
+      message: "O resultado final deve ocorrer após o término dos recursos.",
+    }
+  )
 })
 
 type EditalFormData = z.infer<typeof editalSchema>

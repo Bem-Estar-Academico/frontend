@@ -1,26 +1,25 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import { ChevronDownIcon } from "lucide-react"
+import * as React from "react";
+import { ChevronDownIcon } from "lucide-react";
 
-import { Button } from "@/components/ui/button"
-import { Calendar } from "@/components/ui/calendar"
-import { Label } from "@/components/ui/label"
+import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
+import { Label } from "@/components/ui/label";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover"
+} from "@/components/ui/popover";
 
 interface DatePickerProps {
-    title?: string
+  title?: string
+  value?: Date
+  onChange?: (date: Date | undefined) => void
 }
 
-export function DatePicker({
-    title
-}: DatePickerProps) {
+export function DatePicker({ title, value, onChange }: DatePickerProps) {
   const [open, setOpen] = React.useState(false)
-  const [date, setDate] = React.useState<Date | undefined>(undefined)
 
   return (
     <div className="flex flex-col gap-3">
@@ -34,17 +33,17 @@ export function DatePicker({
             id="date"
             className="w-48 justify-between font-normal text-muted-foreground"
           >
-            {date ? date.toLocaleDateString() : "Escolha a data"}
+            {value ? value.toLocaleDateString() : "Escolha a data"}
             <ChevronDownIcon />
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-auto overflow-hidden p-0" align="start">
           <Calendar
             mode="single"
-            selected={date}
+            selected={value}
             captionLayout="dropdown"
             onSelect={(date) => {
-              setDate(date)
+              onChange?.(date)
               setOpen(false)
             }}
           />
@@ -53,3 +52,4 @@ export function DatePicker({
     </div>
   )
 }
+

@@ -42,9 +42,13 @@ export function DataTableFacetedFilter<TData, TValue>({
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button variant="outline" size="sm" className="h-8 border-dashed">
+        <Button
+          variant="outline"
+          size="sm"
+          className="h-8 border-dashed cursor-pointer [&_*]:cursor-pointer"
+        >
           <PlusCircle className="mr-2 h-4 w-4" />
-          {title}
+          <span>{title}</span>
           {selectedValues?.size > 0 && (
             <>
               <Separator orientation="vertical" className="mx-2 h-4" />
@@ -102,25 +106,26 @@ export function DataTableFacetedFilter<TData, TValue>({
                         filterValues.length ? filterValues : undefined
                       )
                     }}
+                    className="cursor-pointer [&_*]:cursor-pointer"
                   >
                     <div
                       className={cn(
-                        "mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-zinc-300", 
+                        "mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-zinc-300 cursor-pointer",
                         isSelected
-                          ? "bg-black border-black'" 
+                          ? "bg-black border-black"
                           : "opacity-50 [&_svg]:invisible"
                       )}
                     >
-                      <Check className="size-[13px] text-white" />
+                      <Check className="h-[13px] w-[13px] text-white" />
                     </div>
                     {option.icon && (
                       <span className="mr-2 flex h-4 w-4 items-center justify-center">
                         {option.icon}
                       </span>
                     )}
-                    
+
                     <span>{option.label}</span>
-                    
+
                     {facets?.get(option.value) && (
                       <span className="ml-auto flex h-4 w-4 items-center justify-center font-mono text-xs">
                         {facets.get(option.value)}
@@ -136,7 +141,7 @@ export function DataTableFacetedFilter<TData, TValue>({
                 <CommandGroup>
                   <CommandItem
                     onSelect={() => column?.setFilterValue(undefined)}
-                    className="justify-center text-center"
+                    className="justify-center text-center cursor-pointer"
                   >
                     Limpar filtros
                   </CommandItem>

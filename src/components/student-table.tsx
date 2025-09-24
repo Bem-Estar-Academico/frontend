@@ -19,6 +19,7 @@ import {
   ChevronLeft,
   ChevronRight,
   Files,
+  EyeOff,
 } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -48,12 +49,12 @@ import {
 } from "@/components/ui/select"
 import { StatusBadge } from "./ui/status-badge"
 import { DataTableFacetedFilter } from "./ui/data-table-faceted-filter"
-import { 
-  IconCircleCheckFilled, 
-  IconCircleXFilled, 
-  IconCircle, 
-  IconHelpCircleFilled, 
-  IconProgress 
+import {
+  IconCircleCheckFilled,
+  IconCircleXFilled,
+  IconCircle,
+  IconHelpCircleFilled,
+  IconProgress
 } from "@tabler/icons-react"
 
 const data: Student[] = [
@@ -187,166 +188,180 @@ export type Student = {
   dataInscricao: string
 }
 
-export const columns: ColumnDef<Student>[] = [
-  {
-    accessorKey: "cpf",
-    header: () => <div className="text-center">CPF</div>,
-    cell: ({ row }) => <div className="text-center">{row.getValue("cpf")}</div>,
-  },
-  {
-    accessorKey: "nome",
-    header: ({ column }) => {
-      return (
-        <div className="flex justify-center">
-          <Button
-            variant="ghost"
-            className="cursor-pointer"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            Nome
-            <ArrowUpDown className="ml-2 h-4 w-4" />
-          </Button>
-        </div>
-      )
-    },
-    cell: ({ row }) => <div className="text-center">{row.getValue("nome")}</div>,
-  },
-  {
-    accessorKey: "matricula",
-    header: () => <div className="text-center">Matrícula</div>,
-    cell: ({ row }) => (
-      <div className="text-center">{row.getValue("matricula")}</div>
-    ),
-  },
-  {
-    accessorKey: "status",
-    header: () => <div className="text-center">Status</div>,
-    filterFn: (row, id, value) => {
-      return value.includes(row.getValue(id));
-    },
-    cell: ({ row }) => {
-      const value = row.getValue("status") as string
-      const map: Record<
-        string,
-        "approved" | "denied" | "pending" | "appeal" | "review"
-      > = {
-        "Deferido": "approved",
-        "Indeferido": "denied",
-        "Pendente": "pending",
-        "Recurso": "appeal",
-        "Em Análise": "review",
-      }
-      return (
-        <div className="flex justify-center">
-          <StatusBadge variant={map[value]} />
-        </div>
-      )
-    },
-  },
-  {
-    accessorKey: "progresso",
-    header: () => <div className="text-center">Progresso</div>,
-    cell: ({ row }) => {
-      const progress = row.getValue("progresso") as number
-      let progressColor = "bg-gray-400"
-      if (progress > 0 && progress < 100) progressColor = "bg-yellow-400"
-      if (progress === 100) {
-        const status = row.getValue("status") as string
-        progressColor = status === "Deferido" ? "bg-green-500" : "bg-red-500"
-      }
-
-      return (
-        <div className="flex items-center justify-center gap-2 min-w-[120px]">
-          <div className="h-1 w-[50%] rounded-full bg-gray-200 dark:bg-gray-700">
-            <div
-              style={{ width: `${progress}%` }}
-              className={`h-1 rounded-full ${progressColor}`}
-            />
+const MASK = "******"
+export function getColumns(masked: boolean): ColumnDef<Student>[] {
+  return [
+    {
+      accessorKey: "cpf",
+      header: () => <div className="text-center">CPF</div>,
+      cell: ({ row }) => {
+        const value = row.getValue("cpf") as string
+        return (
+          <div className="text-center">
+            {masked ? MASK : value}
           </div>
-          <span className="text-xs text-gray-500">{`${progress}%`}</span>
+        )
+      },
+    },
+    {
+      accessorKey: "nome",
+      header: ({ column }) => {
+        return (
+          <div className="flex justify-center">
+            <Button
+              variant="ghost"
+              className="cursor-pointer"
+              onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            >
+              Nome
+              <ArrowUpDown className="ml-2 h-4 w-4" />
+            </Button>
+          </div>
+        )
+      },
+      cell: ({ row }) => {
+        const value = row.getValue("nome") as string
+        return <div className="text-center">{masked ? MASK : value}</div>
+      },
+    },
+    {
+      accessorKey: "matricula",
+      header: () => <div className="text-center">Matrícula</div>,
+      cell: ({ row }) => {
+        const value = row.getValue("matricula") as string
+        return <div className="text-center">{masked ? MASK : value}</div>
+      },
+    },
+    {
+      accessorKey: "status",
+      header: () => <div className="text-center">Status</div>,
+      filterFn: (row, id, value) => {
+        return value.includes(row.getValue(id));
+      },
+      cell: ({ row }) => {
+        const value = row.getValue("status") as string
+        const map: Record<string, "approved" | "denied" | "pending" | "appeal" | "review"> = {
+          "Deferido": "approved",
+          "Indeferido": "denied",
+          "Pendente": "pending",
+          "Recurso": "appeal",
+          "Em Análise": "review",
+        }
+        return (
+          <div className="flex justify-center">
+            <StatusBadge variant={map[value]} />
+          </div>
+        )
+      },
+    },
+    {
+      accessorKey: "progresso",
+      header: () => <div className="text-center">Progresso</div>,
+      cell: ({ row }) => {
+        const progress = row.getValue("progresso") as number
+        let progressColor = "bg-gray-400"
+        if (progress > 0 && progress < 100) progressColor = "bg-yellow-400"
+        if (progress === 100) {
+          const status = row.getValue("status") as string
+          progressColor = status === "Deferido" ? "bg-green-500" : "bg-red-500"
+        }
+
+        return (
+          <div className="flex items-center justify-center gap-2 min-w-[120px]">
+            <div className="h-1 w-[50%] rounded-full bg-gray-200 dark:bg-gray-700">
+              <div
+                style={{ width: `${progress}%` }}
+                className={`h-1 rounded-full ${progressColor}`}
+              />
+            </div>
+            <span className="text-xs text-gray-500">{`${progress}%`}</span>
+          </div>
+        )
+      },
+    },
+    {
+      accessorKey: "documentos",
+      header: () => <div className="text-center">Documentos</div>,
+      cell: ({ row }) => (
+        <div className="flex items-center justify-center text-gray-600">
+          <Files className="mr-2 h-4 w-4 text-gray-400" />
+          {row.getValue("documentos")}
         </div>
-      )
+      ),
     },
-  },
-  {
-    accessorKey: "documentos",
-    header: () => <div className="text-center">Documentos</div>,
-    cell: ({ row }) => (
-      <div className="flex items-center justify-center text-gray-600">
-        <Files className="mr-2 h-4 w-4 text-gray-400" />
-        {row.getValue("documentos")}
-      </div>
-    ),
-  },
-  {
-    accessorKey: "dataInscricao",
-    header: ({ column }) => {
-      return (
-        <div className="flex justify-center">
-          <Button
-            variant="ghost"
-            className="cursor-pointer"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            Data de Inscrição
-            <ArrowUpDown className="ml-2 h-4 w-4" />
-          </Button>
-        </div>
-      )
+    {
+      accessorKey: "dataInscricao",
+      header: ({ column }) => {
+        return (
+          <div className="flex justify-center">
+            <Button
+              variant="ghost"
+              className="cursor-pointer"
+              onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            >
+              Data de Inscrição
+              <ArrowUpDown className="ml-2 h-4 w-4" />
+            </Button>
+          </div>
+        )
+      },
+      cell: ({ row }) => {
+        const date = new Date(row.getValue("dataInscricao"))
+        const formattedDate = new Intl.DateTimeFormat("pt-BR", {
+          day: "2-digit",
+          month: "2-digit",
+          year: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+        }).format(date)
+        return (
+          <div className="text-center">{formattedDate.replace(",", " às")}</div>
+        )
+      },
     },
-    cell: ({ row }) => {
-      const date = new Date(row.getValue("dataInscricao"))
-      const formattedDate = new Intl.DateTimeFormat("pt-BR", {
-        day: "2-digit",
-        month: "2-digit",
-        year: "numeric",
-        hour: "2-digit",
-        minute: "2-digit",
-      }).format(date)
-      return (
-        <div className="text-center">{formattedDate.replace(",", " às")}</div>
-      )
+    {
+      id: "actions",
+      cell: ({ row }) => {
+        const student = row.original
+        return (
+          <div className="flex justify-center">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="h-8 w-8 p-0 cursor-pointer">
+                  <span className="sr-only">Abrir menu</span>
+                  <MoreHorizontal className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuLabel>Ações</DropdownMenuLabel>
+                <DropdownMenuItem
+                  className="cursor-pointer"
+                  onClick={() => navigator.clipboard.writeText(student.cpf)}
+                >
+                  Copiar CPF
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem className="cursor-pointer">
+                  Ver detalhes do estudante
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+        )
+      },
+      enableHiding: false,
     },
-  },
-  {
-    id: "actions",
-    cell: ({ row }) => {
-      const student = row.original
-      return (
-        <div className="flex justify-center">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="h-8 w-8 p-0 cursor-pointer">
-                <span className="sr-only">Abrir menu</span>
-                <MoreHorizontal className="h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuLabel>Ações</DropdownMenuLabel>
-              <DropdownMenuItem
-                className="cursor-pointer"
-                onClick={() => navigator.clipboard.writeText(student.cpf)}
-              >
-                Copiar CPF
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem className="cursor-pointer">
-                Ver detalhes do estudante
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
-      )
-    },
-    enableHiding: false,
-  },
-]
+  ]
+}
 
 
 export function StudentDataTable() {
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({})
+  const [maskPersonal, setMaskPersonal] = React.useState(false)
+
+  const columns = React.useMemo(() => getColumns(maskPersonal), [maskPersonal])
 
   const table = useReactTable({
     data,
@@ -378,62 +393,45 @@ export function StudentDataTable() {
             className="min-w-[380px] focus-visible:ring-1 focus-visible:ring-black focus-visible:border-black"
             placeholder="Buscar estudante..."
             value={(table.getColumn("nome")?.getFilterValue() as string) ?? ""}
-            onChange={(event) =>
-              table.getColumn("nome")?.setFilterValue(event.target.value)
-            }
+            onChange={(event) => table.getColumn("nome")?.setFilterValue(event.target.value)}
           />
-          <DataTableFacetedFilter
-            column={table.getColumn("status")}
-            title="Status"
-            options={statusOptions}
-          />
+          <DataTableFacetedFilter column={table.getColumn("status")} title="Status" options={statusOptions} />
+        </div>
+
+        <div className="flex items-center gap-2">
+          <Button variant="secondary" className="cursor-pointer" onClick={() => setMaskPersonal((v) => !v)}>
+            <EyeOff className="size-[16px]" />
+          </Button>
+          <Button variant="secondary" className="cursor-pointer">Exportar</Button>
         </div>
       </div>
+
       <div className="border">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow
-                key={headerGroup.id}
-                className="bg-muted">
-                {headerGroup.headers.map((header) => {
-                  return (
-                    <TableHead key={header.id}>
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
-                    </TableHead>
-                  )
-                })}
+              <TableRow key={headerGroup.id} className="bg-muted">
+                {headerGroup.headers.map((header) => (
+                  <TableHead key={header.id}>
+                    {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
+                  </TableHead>
+                ))}
               </TableRow>
             ))}
           </TableHeader>
+
           <TableBody>
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() && "selected"}
-                >
+                <TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </TableCell>
+                    <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
                   ))}
                 </TableRow>
               ))
             ) : (
               <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className="h-14 text-center"
-                >
+                <TableCell colSpan={table.getVisibleFlatColumns().length} className="h-14 text-center">
                   Nenhum resultado encontrado.
                 </TableCell>
               </TableRow>
@@ -444,36 +442,22 @@ export function StudentDataTable() {
       <div className="flex items-center justify-between space-x-2 py-4">
         <div className="flex items-center gap-2 text-sm text-black ml-auto">
           <span>Itens por página</span>
-          <Select
-            value={`${table.getState().pagination.pageSize}`}
-            onValueChange={(value: any) => {
-              table.setPageSize(Number(value))
-            }}
-          >
+          <Select value={`${table.getState().pagination.pageSize}`} onValueChange={(value: any) => table.setPageSize(Number(value))}>
             <SelectTrigger className="h-8 w-[70px] cursor-pointer text-black">
               <SelectValue placeholder={table.getState().pagination.pageSize} />
             </SelectTrigger>
             <SelectContent side="top">
               {[8, 16, 24, 32, 40].map((pageSize) => (
-                <SelectItem
-                  key={pageSize}
-                  value={`${pageSize}`}
-                  className="cursor-pointer"
-                >
+                <SelectItem key={pageSize} value={`${pageSize}`} className="cursor-pointer">
                   {pageSize}
                 </SelectItem>
               ))}
             </SelectContent>
           </Select>
         </div>
+
         <div className="flex items-center gap-1">
-          <Button
-            variant="ghost"
-            size="sm"
-            className="cursor-pointer text-gray-700 hover:text-black"
-            onClick={() => table.previousPage()}
-            disabled={!table.getCanPreviousPage()}
-          >
+          <Button variant="ghost" size="sm" className="cursor-pointer text-gray-700 hover:text-black" onClick={() => table.previousPage()} disabled={!table.getCanPreviousPage()}>
             <ChevronLeft className="mr-1 h-4 w-4" />
             Anterior
           </Button>
@@ -489,13 +473,8 @@ export function StudentDataTable() {
               {page}
             </Button>
           ))}
-          <Button
-            variant="ghost"
-            size="sm"
-            className="cursor-pointer text-gray-700 hover:text-black"
-            onClick={() => table.nextPage()}
-            disabled={!table.getCanNextPage()}
-          >
+
+          <Button variant="ghost" size="sm" className="cursor-pointer text-gray-700 hover:text-black" onClick={() => table.nextPage()} disabled={!table.getCanNextPage()}>
             Próximo
             <ChevronRight className="ml-1 h-4 w-4" />
           </Button>

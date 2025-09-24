@@ -36,7 +36,7 @@ export function YearSelect({
       <SelectTrigger className={className}>
         <SelectValue placeholder="Ano" />
       </SelectTrigger>
-      <SelectContent>
+      <SelectContent className="max-h-60">
         <SelectGroup>
           {years.map((year) => (
             <SelectItem key={year} value={year}>

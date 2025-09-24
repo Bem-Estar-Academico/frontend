@@ -15,15 +15,16 @@ import {
 interface DatePickerProps {
   title?: string
   value?: Date
+  isRequired?: boolean
   onChange?: (date: Date | undefined) => void
 }
 
-export function DatePicker({ title, value, onChange }: Readonly<DatePickerProps>) {
+export function DatePicker({ title, value, isRequired, onChange }: Readonly<DatePickerProps>) {
   const [open, setOpen] = React.useState(false)
 
   return (
     <div className="flex flex-col gap-3">
-      <Label htmlFor="date" className="px-1">
+      <Label htmlFor="date" className="px-1" isRequired={isRequired}> 
         {title}
       </Label>
       <Popover open={open} onOpenChange={setOpen}>

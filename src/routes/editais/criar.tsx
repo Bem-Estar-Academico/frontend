@@ -27,6 +27,7 @@ import { YearSelect } from "@/components/ui/year-select"
 import { DatePicker } from "@/components/ui/date-picker"
 import { Separator } from "@/components/ui/separator"
 import { Sidebar } from "@/components/coordinator/sidebar"
+import { Label } from "@/components/ui/label"
 
 const allUsers = [
   { id: 1, img: "https://static.vecteezy.com/system/resources/previews/009/292/244/non_2x/default-avatar-icon-of-social-media-user-vector.jpg", name: "User 1" },
@@ -184,14 +185,14 @@ function CreateEdital() {
                   </div>
 
                   <div>
-                    <h4 className="font-medium py-2">Benefícios Ofertados</h4>
+                    <Label className="font-medium py-2" isRequired>Benefícios Ofertados</Label>
                     <div className="flex flex-col gap-6 py-2">
                       <BenefitsList control={form.control} availableBenefits={availableBenefits} />
                     </div>
                   </div>
   
                   <div className="col-span-2 grid grid-cols-3 gap-6 py-2">
-                    <DatePickerField control={form.control} name="applicationStart" title="Início das Inscrições" />
+                    <DatePickerField isRequired control={form.control} name="applicationStart" title="Início das Inscrições" />
                     <DatePickerField control={form.control} name="applicationEnd" title="Término das Inscrições" />
                     <DatePickerField control={form.control} name="preliminaryResult" title="Resultado Preliminar" />
                     <DatePickerField control={form.control} name="appealStart" title="Início da Fase de Recursos" />
@@ -210,8 +211,6 @@ function CreateEdital() {
                   <UserListField control={form.control} name="social_workers" title="Assistentes Sociais" allUsers={allUsers} />
                 </div>
               </div>
-        
-              {/* Aba 4: Prazos */}
             
               <div className="flex justify-end">
                 <Button type="submit">Salvar</Button>
@@ -222,13 +221,6 @@ function CreateEdital() {
       </div>
     </div>
   )
-}
-
-type InputFieldProps = {
-  control: Control<EditalFormData>
-  name: keyof Pick<EditalFormData, 'title'>
-  label: string
-  placeholder?: string
 }
 
 type UserListFieldProps = {
@@ -265,14 +257,14 @@ function UserListField({ control, name, title, allUsers }: Readonly<UserListFiel
   )
 }
 
-function DatePickerField({ control, name, title }: Readonly<{ control: Control<EditalFormData>; name: 
+function DatePickerField({ control, name, title, isRequired }: Readonly<{ control: Control<EditalFormData>; name: 
   | "applicationStart"
   | "applicationEnd"
   | "preliminaryResult"
   | "appealStart"
   | "appealEnd"
   | "finalResult"
-  ; title: string }>) {
+  ; title: string; isRequired?: boolean}>) {
   return (
     <FormField
       control={control}
@@ -280,7 +272,7 @@ function DatePickerField({ control, name, title }: Readonly<{ control: Control<E
       render={({ field }) => (
         <FormItem>
           <FormControl>
-            <DatePicker title={title} value={field.value} onChange={field.onChange} />
+            <DatePicker isRequired={isRequired} title={title} value={field.value} onChange={field.onChange}/>
           </FormControl>
           <FormMessage />
         </FormItem>

@@ -6,6 +6,7 @@ export const Route = createFileRoute("/_social-workers/consultar-ivs/$id")({
 
 function PageIVS() {
   const { id } = Route.useParams()
+  console.log(id)
 
   return (
       <div>Puxar o IVS do aluno com id: {id}</div>

@@ -13,6 +13,7 @@ export function EditaisMenu() {
 
   const params = useParams({
     from: "/_social-workers/editais/$id",
+    shouldThrow: false,
   });
 
   const currentId = params?.id;

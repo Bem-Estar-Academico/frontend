@@ -3,11 +3,11 @@ import { IconBellFilled } from "@tabler/icons-react";
 import { EditaisMenu } from "./editais-menu";
 import { UserMenu } from "@/components/user-menu";
 
-interface HeaderProps {
+interface HeaderSocialWorkers {
   name: string;
 }
 
-export function HeaderSocialWorkers({ name }: Readonly<HeaderProps>) {
+export function HeaderSocialWorkers({ name }: Readonly<HeaderSocialWorkers>) {
   return (
     <header className="text-sm font-medium w-full h-16 bg-gray-100 shadow flex items-center justify-between px-6">
       <div className="flex items-center gap-6">

@@ -154,13 +154,26 @@ function CreateEdital() {
                 <h3 className="text-lg font-medium py-2">Informações do Edital</h3>
                 <div className="grid grid-cols-4 gap-8 mt-4">
                   <div className="flex flex-col gap-8 h-fit">
-                    <InputField control={form.control} name="title" label="Título do Edital" placeholder="ex.: Cadastramento Socioeconômico 2025" />
+                    <FormField
+                      control={form.control}
+                      name={'title'}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel isRequired>Título do Edital</FormLabel>
+                          <FormControl>
+                            <Input placeholder="ex.: Cadastramento Socioeconômico 2025" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                   
                     <FormField
                       control={form.control}
                       name="year"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Ano de vigência</FormLabel>
+                          <FormLabel isRequired>Ano de vigência</FormLabel>
                           <FormControl>
                             <YearSelect value={field.value} onChange={field.onChange} />
                           </FormControl>
@@ -216,24 +229,6 @@ type InputFieldProps = {
   name: keyof Pick<EditalFormData, 'title'>
   label: string
   placeholder?: string
-}
-
-function InputField({ control, name, label, placeholder }: Readonly<InputFieldProps>) {
-  return (
-    <FormField
-      control={control}
-      name={name}
-      render={({ field }) => (
-        <FormItem>
-          <FormLabel>{label}</FormLabel>
-          <FormControl>
-            <Input placeholder={placeholder} {...field} />
-          </FormControl>
-          <FormMessage />
-        </FormItem>
-      )}
-    />
-  )
 }
 
 type UserListFieldProps = {

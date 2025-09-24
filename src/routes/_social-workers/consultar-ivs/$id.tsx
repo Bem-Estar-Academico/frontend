@@ -8,8 +8,6 @@ function PageIVS() {
   const { id } = Route.useParams()
 
   return (
-    <>
       <div>Puxar o IVS do aluno com id: {id}</div>
-    </>
-  );
+  )
 }

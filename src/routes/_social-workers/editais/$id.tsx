@@ -8,8 +8,6 @@ export function PageEdital() {
   const { id } = Route.useParams();
 
   return (
-    <>
-      <div>Puxar o edital com id: {id}</div>
-    </>
+    <div>Puxar o edital com id: {id}</div>
   );
 }

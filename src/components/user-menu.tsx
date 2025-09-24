@@ -10,12 +10,12 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { ChevronDown } from "lucide-react"
 import { Button } from "@/components/ui/button";
 
-type props = {
+interface UserMenuProps {
   id: string;
   name: string;
 };
 
-export function UserMenu({ name }: props) {
+export function UserMenu({ name }: Readonly<UserMenuProps>) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>

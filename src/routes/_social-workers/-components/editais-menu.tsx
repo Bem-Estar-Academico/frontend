@@ -32,7 +32,7 @@ export function EditaisMenu() {
               to={`/editais/$id`}
               params={{ id: String(id) }}
               className={
-                currentId === String(id) ? "w-full font-bold text-black-600" : ""
+                currentId === String(id) ? "w-full font-bold" : ""
               }
             >
               Edital {id}

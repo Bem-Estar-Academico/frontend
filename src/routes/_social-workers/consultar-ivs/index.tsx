@@ -18,6 +18,5 @@ export function IVS() {
         ))}
       </ul>
     </div>
-
   );
 }

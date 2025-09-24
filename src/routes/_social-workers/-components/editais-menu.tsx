@@ -9,14 +9,12 @@ import { ChevronDown } from "lucide-react";
 
 const mockIds = [1, 2, 3, 4];
 
-export function Editais() {
-  let params: { id?: string } = {};
+export function EditaisMenu() {
 
-  try {
-    params = useParams({ from: "/editais/$id" });
-  } catch (e) {
-    //alert(e);
-  }
+  const params = useParams({
+    from: "/_social-workers/editais/$id",
+  });
+
   const currentId = params?.id;
 
   return (

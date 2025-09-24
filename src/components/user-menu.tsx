@@ -4,11 +4,11 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { ChevronDown } from "lucide-react"
+import { Button } from "@/components/ui/button";
 
 type props = {
   id: string;
@@ -19,16 +19,16 @@ export function UserMenu({ name }: props) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <button className="flex items-center gap-4 text-gray-800 hover:text-gray-600 transition">
+        <Button variant="ghost" className="relative flex items-center h-fit gap-4 text-gray-800 hover:text-gray-600 transition">
           <Avatar>
-            <AvatarImage src="/avatar-image.png" alt={name} />
-            <AvatarFallback>{name[0]}</AvatarFallback>
-          </Avatar>
+            <AvatarImage src={'/avatar-image.png'} alt={name} />
+            <AvatarFallback className="bg-gray-300">{name[0]}</AvatarFallback>
+          </Avatar> 
           <div className="flex gap-2 items-center">
-          Maria da Silva
-          <ChevronDown className="w-4 h-4" />
+            {name}
+            <ChevronDown className="w-4 h-4" />
           </div>
-        </button>
+        </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56" align="start">
         <DropdownMenuLabel>Minha Conta</DropdownMenuLabel>

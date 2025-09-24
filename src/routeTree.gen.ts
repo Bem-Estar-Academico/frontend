@@ -9,69 +9,78 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SocialWorkersRouteImport } from './routes/_social-workers'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as ConsultarIvsIndexRouteImport } from './routes/consultar-ivs/index'
-import { Route as EditaisCriarRouteImport } from './routes/editais/criar'
-import { Route as EditaisIdRouteImport } from './routes/editais/$id'
-import { Route as ConsultarIvsIdRouteImport } from './routes/consultar-ivs/$id'
+import { Route as SocialWorkersConsultarIvsIndexRouteImport } from './routes/_social-workers/consultar-ivs/index'
 import { Route as AnalisarInscricaoSubscriptionIdRouteImport } from './routes/analisar.inscricao.$subscriptionId'
+import { Route as SocialWorkersEditaisCriarRouteImport } from './routes/_social-workers/editais/criar'
+import { Route as SocialWorkersEditaisIdRouteImport } from './routes/_social-workers/editais/$id'
+import { Route as SocialWorkersConsultarIvsIdRouteImport } from './routes/_social-workers/consultar-ivs/$id'
 
+const SocialWorkersRoute = SocialWorkersRouteImport.update({
+  id: '/_social-workers',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ConsultarIvsIndexRoute = ConsultarIvsIndexRouteImport.update({
-  id: '/consultar-ivs/',
-  path: '/consultar-ivs/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const EditaisCriarRoute = EditaisCriarRouteImport.update({
-  id: '/editais/criar',
-  path: '/editais/criar',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const EditaisIdRoute = EditaisIdRouteImport.update({
-  id: '/editais/$id',
-  path: '/editais/$id',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ConsultarIvsIdRoute = ConsultarIvsIdRouteImport.update({
-  id: '/consultar-ivs/$id',
-  path: '/consultar-ivs/$id',
-  getParentRoute: () => rootRouteImport,
-} as any)
+const SocialWorkersConsultarIvsIndexRoute =
+  SocialWorkersConsultarIvsIndexRouteImport.update({
+    id: '/consultar-ivs/',
+    path: '/consultar-ivs/',
+    getParentRoute: () => SocialWorkersRoute,
+  } as any)
 const AnalisarInscricaoSubscriptionIdRoute =
   AnalisarInscricaoSubscriptionIdRouteImport.update({
     id: '/analisar/inscricao/$subscriptionId',
     path: '/analisar/inscricao/$subscriptionId',
     getParentRoute: () => rootRouteImport,
   } as any)
+const SocialWorkersEditaisCriarRoute =
+  SocialWorkersEditaisCriarRouteImport.update({
+    id: '/editais/criar',
+    path: '/editais/criar',
+    getParentRoute: () => SocialWorkersRoute,
+  } as any)
+const SocialWorkersEditaisIdRoute = SocialWorkersEditaisIdRouteImport.update({
+  id: '/editais/$id',
+  path: '/editais/$id',
+  getParentRoute: () => SocialWorkersRoute,
+} as any)
+const SocialWorkersConsultarIvsIdRoute =
+  SocialWorkersConsultarIvsIdRouteImport.update({
+    id: '/consultar-ivs/$id',
+    path: '/consultar-ivs/$id',
+    getParentRoute: () => SocialWorkersRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/consultar-ivs/$id': typeof ConsultarIvsIdRoute
-  '/editais/$id': typeof EditaisIdRoute
-  '/editais/criar': typeof EditaisCriarRoute
-  '/consultar-ivs': typeof ConsultarIvsIndexRoute
+  '/consultar-ivs/$id': typeof SocialWorkersConsultarIvsIdRoute
+  '/editais/$id': typeof SocialWorkersEditaisIdRoute
+  '/editais/criar': typeof SocialWorkersEditaisCriarRoute
   '/analisar/inscricao/$subscriptionId': typeof AnalisarInscricaoSubscriptionIdRoute
+  '/consultar-ivs': typeof SocialWorkersConsultarIvsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/consultar-ivs/$id': typeof ConsultarIvsIdRoute
-  '/editais/$id': typeof EditaisIdRoute
-  '/editais/criar': typeof EditaisCriarRoute
-  '/consultar-ivs': typeof ConsultarIvsIndexRoute
+  '/consultar-ivs/$id': typeof SocialWorkersConsultarIvsIdRoute
+  '/editais/$id': typeof SocialWorkersEditaisIdRoute
+  '/editais/criar': typeof SocialWorkersEditaisCriarRoute
   '/analisar/inscricao/$subscriptionId': typeof AnalisarInscricaoSubscriptionIdRoute
+  '/consultar-ivs': typeof SocialWorkersConsultarIvsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/consultar-ivs/$id': typeof ConsultarIvsIdRoute
-  '/editais/$id': typeof EditaisIdRoute
-  '/editais/criar': typeof EditaisCriarRoute
-  '/consultar-ivs/': typeof ConsultarIvsIndexRoute
+  '/_social-workers': typeof SocialWorkersRouteWithChildren
+  '/_social-workers/consultar-ivs/$id': typeof SocialWorkersConsultarIvsIdRoute
+  '/_social-workers/editais/$id': typeof SocialWorkersEditaisIdRoute
+  '/_social-workers/editais/criar': typeof SocialWorkersEditaisCriarRoute
   '/analisar/inscricao/$subscriptionId': typeof AnalisarInscricaoSubscriptionIdRoute
+  '/_social-workers/consultar-ivs/': typeof SocialWorkersConsultarIvsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -80,37 +89,42 @@ export interface FileRouteTypes {
     | '/consultar-ivs/$id'
     | '/editais/$id'
     | '/editais/criar'
-    | '/consultar-ivs'
     | '/analisar/inscricao/$subscriptionId'
+    | '/consultar-ivs'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/consultar-ivs/$id'
     | '/editais/$id'
     | '/editais/criar'
-    | '/consultar-ivs'
     | '/analisar/inscricao/$subscriptionId'
+    | '/consultar-ivs'
   id:
     | '__root__'
     | '/'
-    | '/consultar-ivs/$id'
-    | '/editais/$id'
-    | '/editais/criar'
-    | '/consultar-ivs/'
+    | '/_social-workers'
+    | '/_social-workers/consultar-ivs/$id'
+    | '/_social-workers/editais/$id'
+    | '/_social-workers/editais/criar'
     | '/analisar/inscricao/$subscriptionId'
+    | '/_social-workers/consultar-ivs/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  ConsultarIvsIdRoute: typeof ConsultarIvsIdRoute
-  EditaisIdRoute: typeof EditaisIdRoute
-  EditaisCriarRoute: typeof EditaisCriarRoute
-  ConsultarIvsIndexRoute: typeof ConsultarIvsIndexRoute
+  SocialWorkersRoute: typeof SocialWorkersRouteWithChildren
   AnalisarInscricaoSubscriptionIdRoute: typeof AnalisarInscricaoSubscriptionIdRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/_social-workers': {
+      id: '/_social-workers'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof SocialWorkersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -118,33 +132,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/consultar-ivs/': {
-      id: '/consultar-ivs/'
+    '/_social-workers/consultar-ivs/': {
+      id: '/_social-workers/consultar-ivs/'
       path: '/consultar-ivs'
       fullPath: '/consultar-ivs'
-      preLoaderRoute: typeof ConsultarIvsIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/editais/criar': {
-      id: '/editais/criar'
-      path: '/editais/criar'
-      fullPath: '/editais/criar'
-      preLoaderRoute: typeof EditaisCriarRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/editais/$id': {
-      id: '/editais/$id'
-      path: '/editais/$id'
-      fullPath: '/editais/$id'
-      preLoaderRoute: typeof EditaisIdRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/consultar-ivs/$id': {
-      id: '/consultar-ivs/$id'
-      path: '/consultar-ivs/$id'
-      fullPath: '/consultar-ivs/$id'
-      preLoaderRoute: typeof ConsultarIvsIdRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof SocialWorkersConsultarIvsIndexRouteImport
+      parentRoute: typeof SocialWorkersRoute
     }
     '/analisar/inscricao/$subscriptionId': {
       id: '/analisar/inscricao/$subscriptionId'
@@ -153,15 +146,51 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AnalisarInscricaoSubscriptionIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_social-workers/editais/criar': {
+      id: '/_social-workers/editais/criar'
+      path: '/editais/criar'
+      fullPath: '/editais/criar'
+      preLoaderRoute: typeof SocialWorkersEditaisCriarRouteImport
+      parentRoute: typeof SocialWorkersRoute
+    }
+    '/_social-workers/editais/$id': {
+      id: '/_social-workers/editais/$id'
+      path: '/editais/$id'
+      fullPath: '/editais/$id'
+      preLoaderRoute: typeof SocialWorkersEditaisIdRouteImport
+      parentRoute: typeof SocialWorkersRoute
+    }
+    '/_social-workers/consultar-ivs/$id': {
+      id: '/_social-workers/consultar-ivs/$id'
+      path: '/consultar-ivs/$id'
+      fullPath: '/consultar-ivs/$id'
+      preLoaderRoute: typeof SocialWorkersConsultarIvsIdRouteImport
+      parentRoute: typeof SocialWorkersRoute
+    }
   }
 }
 
+interface SocialWorkersRouteChildren {
+  SocialWorkersConsultarIvsIdRoute: typeof SocialWorkersConsultarIvsIdRoute
+  SocialWorkersEditaisIdRoute: typeof SocialWorkersEditaisIdRoute
+  SocialWorkersEditaisCriarRoute: typeof SocialWorkersEditaisCriarRoute
+  SocialWorkersConsultarIvsIndexRoute: typeof SocialWorkersConsultarIvsIndexRoute
+}
+
+const SocialWorkersRouteChildren: SocialWorkersRouteChildren = {
+  SocialWorkersConsultarIvsIdRoute: SocialWorkersConsultarIvsIdRoute,
+  SocialWorkersEditaisIdRoute: SocialWorkersEditaisIdRoute,
+  SocialWorkersEditaisCriarRoute: SocialWorkersEditaisCriarRoute,
+  SocialWorkersConsultarIvsIndexRoute: SocialWorkersConsultarIvsIndexRoute,
+}
+
+const SocialWorkersRouteWithChildren = SocialWorkersRoute._addFileChildren(
+  SocialWorkersRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  ConsultarIvsIdRoute: ConsultarIvsIdRoute,
-  EditaisIdRoute: EditaisIdRoute,
-  EditaisCriarRoute: EditaisCriarRoute,
-  ConsultarIvsIndexRoute: ConsultarIvsIndexRoute,
+  SocialWorkersRoute: SocialWorkersRouteWithChildren,
   AnalisarInscricaoSubscriptionIdRoute: AnalisarInscricaoSubscriptionIdRoute,
 }
 export const routeTree = rootRouteImport

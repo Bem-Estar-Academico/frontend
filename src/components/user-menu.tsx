@@ -11,7 +11,7 @@ import { ChevronDown } from "lucide-react"
 import { Button } from "@/components/ui/button";
 
 interface UserMenuProps {
-  id: string;
+  id: number;
   name: string;
 };
 

@@ -4,7 +4,7 @@ import { EditaisMenu } from "./editais-menu";
 import { UserMenu } from "@/components/user-menu";
 
 interface HeaderSocialWorkers {
-  id: string;
+  id: number;
   name: string;
 }
 

@@ -8,7 +8,7 @@ export const Route = createFileRoute('/_social-workers')({
 function LayoutComponent() {
   return (
     <>
-      <HeaderSocialWorkers name='Social Worker' />
+      <HeaderSocialWorkers name='Social Worker' id={1} />
       <Outlet />
     </>
   )

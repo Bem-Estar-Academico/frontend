@@ -4,10 +4,11 @@ import { EditaisMenu } from "./editais-menu";
 import { UserMenu } from "@/components/user-menu";
 
 interface HeaderSocialWorkers {
+  id: string;
   name: string;
 }
 
-export function HeaderSocialWorkers({ name }: Readonly<HeaderSocialWorkers>) {
+export function HeaderSocialWorkers({ id, name }: Readonly<HeaderSocialWorkers>) {
   return (
     <header className="text-sm font-medium w-full h-16 bg-gray-100 shadow flex items-center justify-between px-6">
       <div className="flex items-center gap-6">
@@ -24,7 +25,7 @@ export function HeaderSocialWorkers({ name }: Readonly<HeaderSocialWorkers>) {
         <button className="relative">
           <IconBellFilled />
         </button>
-        <UserMenu name={name} id={"1"} />
+        <UserMenu name={name} id={id} />
       </div>
     </header>
   );

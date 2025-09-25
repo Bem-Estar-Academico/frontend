@@ -299,7 +299,7 @@ function CheckboxItem({ item, field }: Readonly<{ item: { id: string, label: str
   )
 }
 
-function BenefitsList({ control, availableBenefits }: { control: Control<EditalFormData>; availableBenefits: { id: string; label: string }[] }) {
+function BenefitsList({ control, availableBenefits }: Readonly<{ control: Control<EditalFormData>; availableBenefits: { id: string; label: string }[] }>) {
   return (
     <FormField
       control={control}

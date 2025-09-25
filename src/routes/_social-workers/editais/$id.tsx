@@ -1,3 +1,4 @@
+import RegistrationStatusGraphic from "@/components/registration-status-graphic";
 import { createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/_social-workers/editais/$id")({
@@ -69,38 +70,50 @@ export function PageEdital() {
 
   return (
     <>
-      <section>
-        <h2>{edital.name}</h2>
-        <div className="flex items-center justify-between px-6">
-          <div className="flex flex-wrap">
-            <div>
-              <div className="flex-col px-6">
-                <div>Data de Início das Inscrições:</div>
-                <div>{edital.beginDateRegistration.toDateString()}</div>
+      <section className="text-sm font-medium px-15" dir="ltr">
+        <h2 className="text-xl pb-10 pt-6">{edital.name}</h2>
+        <div className="text-sm font-medium flex items-center justify-between">
+          <div className="grid grid-cols-3 gap-12">
+            <div className="flex-col">
+              <div>Data de Início das Inscrições</div>
+              <div className="text-xs font-light">
+                {edital.beginDateRegistration.toLocaleDateString("pt-BR")}
               </div>
             </div>
-            <div className="flex-col px-6">
-              <div>Data de Término das Inscrições:</div>
-              <div>{edital.endDateRegistration.toDateString()}</div>
+            <div className="flex-col">
+              <div>Data de Término das Inscrições</div>
+              <div className="text-xs font-light">
+                {edital.endDateRegistration.toLocaleDateString("pt-BR")}
+              </div>
             </div>
-            <div className="flex-col px-6">
-              <div>Data de Divulgação do Resultado Preliminar:</div>
-              <div>{edital.preliminaryResultsDate.toDateString()}</div>
+            <div className="flex-col">
+              <div>Data de Divulgação do Resultado Preliminar</div>
+              <div className="text-xs font-light">
+                {edital.preliminaryResultsDate.toLocaleDateString("pt-BR")}
+              </div>
             </div>
-            <div className="flex-col px-6">
-              <div>Data de Início da Fase de Recursos:</div>
-              <div>{edital.beginAppealsPhaseDate.toDateString()}</div>
+            <div className="flex-col">
+              <div>Data de Início da Fase de Recursos</div>
+              <div className="text-xs font-light">
+                {edital.beginAppealsPhaseDate.toLocaleDateString("pt-BR")}
+              </div>
             </div>
-            <div className="flex-col px-6">
-              <div>Data de Término da Fase de Recursos:</div>
-              <div>{edital.endAppealsPhaseDate.toDateString()}</div>
+            <div className="flex-col">
+              <div>Data de Término da Fase de Recursos</div>
+              <div className="text-xs font-light">
+                {edital.endAppealsPhaseDate.toLocaleDateString("pt-BR")}
+              </div>
             </div>
-            <div className="flex-col px-6">
-              <div>Data de Divulgação do Resultado Final:</div>
-              <div>{edital.finalResultsDate.toDateString()}</div>
+            <div className="flex-col">
+              <div>Data de Divulgação do Resultado Final</div>
+              <div className="text-xs font-light">
+                {edital.finalResultsDate.toLocaleDateString("pt-BR")}
+              </div>
             </div>
           </div>
-          <div>Grafico</div>
+          <div>
+            <RegistrationStatusGraphic />
+          </div>
         </div>
       </section>
     </>

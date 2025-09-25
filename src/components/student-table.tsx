@@ -14,7 +14,6 @@ import {
   type VisibilityState,
 } from "@tanstack/react-table"
 import {
-  ArrowUpDown,
   MoreHorizontal,
   ChevronLeft,
   ChevronRight,
@@ -27,8 +26,6 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Input } from "@/components/ui/input"
@@ -54,11 +51,15 @@ import {
   IconCircleXFilled,
   IconCircle,
   IconHelpCircleFilled,
-  IconProgress
+  IconProgress,
+  IconArrowUp,
+  IconArrowsUpDown
 } from "@tabler/icons-react"
+import { Link } from "@tanstack/react-router"
 
 const data: Student[] = [
   {
+    id: 1,
     cpf: "123.456.789-01",
     nome: "Ana Souza",
     matricula: "20250101",
@@ -68,6 +69,7 @@ const data: Student[] = [
     dataInscricao: "2025-02-06T13:19:00",
   },
   {
+    id: 1,
     cpf: "123.456.789-07",
     nome: "Lucas Martins",
     matricula: "20250106",
@@ -77,6 +79,7 @@ const data: Student[] = [
     dataInscricao: "2025-02-05T16:00:00",
   },
   {
+    id: 1,
     cpf: "772.910.068-13",
     nome: "Marli Clarice Silveira",
     matricula: "20240102",
@@ -86,6 +89,7 @@ const data: Student[] = [
     dataInscricao: "2025-02-05T14:41:00",
   },
   {
+    id: 1,
     cpf: "573.850.954-45",
     nome: "Severino Yuri Araújo",
     matricula: "22111481",
@@ -95,6 +99,7 @@ const data: Student[] = [
     dataInscricao: "2025-02-05T14:21:00",
   },
   {
+    id: 1,
     cpf: "123.456.789-05",
     nome: "Fernanda Costa",
     matricula: "20250105",
@@ -104,6 +109,7 @@ const data: Student[] = [
     dataInscricao: "2025-02-04T09:45:00",
   },
   {
+    id: 1,
     cpf: "123.456.789-03",
     nome: "Beatriz Lima",
     matricula: "20250103",
@@ -113,6 +119,7 @@ const data: Student[] = [
     dataInscricao: "2025-02-04T13:38:00",
   },
   {
+    id: 1,
     cpf: "123.456.789-02",
     nome: "João Pereira",
     matricula: "20250102",
@@ -122,6 +129,7 @@ const data: Student[] = [
     dataInscricao: "2025-02-03T13:21:00",
   },
   {
+    id: 1,
     cpf: "123.456.789-04",
     nome: "Carlos Almeida",
     matricula: "20250104",
@@ -131,6 +139,7 @@ const data: Student[] = [
     dataInscricao: "2025-02-03T13:19:00",
   },
   {
+    id: 1,
     cpf: "111.222.333-01",
     nome: "Mariana Ferreira",
     matricula: "20250107",
@@ -140,6 +149,7 @@ const data: Student[] = [
     dataInscricao: "2025-02-02T11:00:00",
   },
   {
+    id: 1,
     cpf: "222.333.444-02",
     nome: "Rafael Gonçalves",
     matricula: "20250108",
@@ -179,6 +189,7 @@ const statusOptions = [
 ]
 
 export type Student = {
+  id: number
   cpf: string
   nome: string
   matricula: string
@@ -206,6 +217,8 @@ export function getColumns(masked: boolean): ColumnDef<Student>[] {
     {
       accessorKey: "nome",
       header: ({ column }) => {
+        const isSorted = column.getIsSorted();
+        const isDesc = isSorted === "desc";
         return (
           <div className="flex justify-center">
             <Button
@@ -214,10 +227,12 @@ export function getColumns(masked: boolean): ColumnDef<Student>[] {
               onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
             >
               Nome
-              <ArrowUpDown className="ml-2 h-4 w-4" />
+              <span className={`ml-2 transform transition-transform duration-300 ${isDesc ? "rotate-0" : "-rotate-180"}`}>
+                {isSorted ? <IconArrowUp className="h-4 w-4" /> : <IconArrowsUpDown className="h-4 w-4" />}
+              </span>
             </Button>
           </div>
-        )
+        );
       },
       cell: ({ row }) => {
         const value = row.getValue("nome") as string
@@ -256,7 +271,24 @@ export function getColumns(masked: boolean): ColumnDef<Student>[] {
     },
     {
       accessorKey: "progresso",
-      header: () => <div className="text-center">Progresso</div>,
+      header: ({ column }) => {
+        const isSorted = column.getIsSorted();
+        const isDesc = isSorted === "desc";
+        return (
+          <div className="flex justify-center">
+            <Button
+              variant="ghost"
+              className="cursor-pointer"
+              onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            >
+              Progresso
+              <span className={`ml-2 transform transition-transform duration-300 ${isDesc ? "rotate-0" : "-rotate-180"}`}>
+                {isSorted ? <IconArrowUp className="h-4 w-4" /> : <IconArrowsUpDown className="h-4 w-4" />}
+              </span>
+            </Button>
+          </div>
+        );
+      },
       cell: ({ row }) => {
         const progress = row.getValue("progresso") as number
         let progressColor = "bg-gray-400"
@@ -292,6 +324,9 @@ export function getColumns(masked: boolean): ColumnDef<Student>[] {
     {
       accessorKey: "dataInscricao",
       header: ({ column }) => {
+        const isSorted = column.getIsSorted();
+        const isDesc = isSorted === "desc";
+
         return (
           <div className="flex justify-center">
             <Button
@@ -300,10 +335,12 @@ export function getColumns(masked: boolean): ColumnDef<Student>[] {
               onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
             >
               Data de Inscrição
-              <ArrowUpDown className="ml-2 h-4 w-4" />
+              <span className={`ml-2 transform transition-transform duration-300 ${isDesc ? "rotate-0" : "-rotate-180"}`}>
+                {isSorted ? <IconArrowUp className="h-4 w-4" /> : <IconArrowsUpDown className="h-4 w-4" />}
+              </span>
             </Button>
           </div>
-        )
+        );
       },
       cell: ({ row }) => {
         const date = new Date(row.getValue("dataInscricao"))
@@ -333,16 +370,16 @@ export function getColumns(masked: boolean): ColumnDef<Student>[] {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <DropdownMenuLabel>Ações</DropdownMenuLabel>
+                <DropdownMenuItem className="cursor-pointer">
+                  <Link to={`/analisar/inscricao/$subscriptionId`} params={{ subscriptionId: String(student.id) }}>
+                    Analisar
+                  </Link>
+                </DropdownMenuItem>
                 <DropdownMenuItem
                   className="cursor-pointer"
-                  onClick={() => navigator.clipboard.writeText(student.cpf)}
+                  disabled
                 >
-                  Copiar CPF
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem className="cursor-pointer">
-                  Ver detalhes do estudante
+                  Ver informações
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -384,7 +421,7 @@ export function StudentDataTable() {
       },
     },
   })
-
+  
   return (
     <div className="w-full p-4">
       <div className="flex items-center justify-between py-4">
@@ -442,7 +479,7 @@ export function StudentDataTable() {
       <div className="flex items-center justify-between space-x-2 py-4">
         <div className="flex items-center gap-2 text-sm text-black ml-auto">
           <span>Itens por página</span>
-          <Select value={`${table.getState().pagination.pageSize}`} onValueChange={(value: any) => table.setPageSize(Number(value))}>
+          <Select value={`${table.getState().pagination.pageSize}`} onValueChange={(value: string) => table.setPageSize(Number(value))}>
             <SelectTrigger className="h-8 w-[70px] cursor-pointer text-black">
               <SelectValue placeholder={table.getState().pagination.pageSize} />
             </SelectTrigger>

@@ -104,7 +104,7 @@ const editalSchema = z.object({
 
 type EditalFormData = z.infer<typeof editalSchema>
 
-export const Route = createFileRoute("/editais/criar")({
+export const Route = createFileRoute("/_social-workers/editais/criar")({
   component: CreateEdital,
 })
 

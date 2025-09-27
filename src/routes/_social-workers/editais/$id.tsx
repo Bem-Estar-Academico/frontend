@@ -28,12 +28,12 @@ const mockData: EditalData[] = [
     endAppealsPhaseDate: new Date("2025-05-22"),
     finalResultsDate: new Date("2025-04-21"),
     dataGraphic: [
-                  { name: "Deferido", value: 400, color: "#0088FE" },
-                  { name: "Indeferido", value: 300, color: "#00C49F" },
-                  { name: "Recurso", value: 300, color: "#FFBB28" },
-                  { name: "Pendente", value: 200, color: "#FF8042" },
-                  { name: "Em Análise", value: 100, color: "#636363ff" },
-                ],
+      { name: "Deferido", value: 400, color: "#0088FE" },
+      { name: "Indeferido", value: 300, color: "#00C49F" },
+      { name: "Recurso", value: 300, color: "#FFBB28" },
+      { name: "Pendente", value: 200, color: "#FF8042" },
+      { name: "Em Análise", value: 100, color: "#636363ff" },
+    ],
   },
   {
     id: 2,
@@ -45,29 +45,29 @@ const mockData: EditalData[] = [
     endAppealsPhaseDate: new Date("2025-09-25"),
     finalResultsDate: new Date("2025-09-25"),
     dataGraphic: [
-                  { name: "Deferido", value: 200, color: "#0088FE" },
-                  { name: "Indeferido", value: 400, color: "#00C49F" },
-                  { name: "Recurso", value: 100, color: "#FFBB28" },
-                  { name: "Pendente", value: 50, color: "#FF8042" },
-                  { name: "Em Análise", value: 100, color: "#636363ff" },
-                ],
+      { name: "Deferido", value: 200, color: "#0088FE" },
+      { name: "Indeferido", value: 400, color: "#00C49F" },
+      { name: "Recurso", value: 100, color: "#FFBB28" },
+      { name: "Pendente", value: 50, color: "#FF8042" },
+      { name: "Em Análise", value: 100, color: "#636363ff" },
+    ],
   },
   {
     id: 3,
     name: "Edital 2024.1",
     beginDateRegistration: new Date("2025-09-25"),
-    endDateRegistration: new Date("2025-09-25"),
+    endDateRegistration: null,
     preliminaryResultsDate: new Date("2025-09-25"),
     beginAppealsPhaseDate: new Date("2025-09-25"),
     endAppealsPhaseDate: new Date("2025-09-25"),
     finalResultsDate: new Date("2025-09-25"),
     dataGraphic: [
-                  { name: "Deferido", value:800, color: "#0088FE" },
-                  { name: "Indeferido", value: 100, color: "#00C49F" },
-                  { name: "Recurso", value: 30, color: "#FFBB28" },
-                  { name: "Pendente", value: 100, color: "#FF8042" },
-                  { name: "Em Análise", value: 500, color: "#636363ff" },
-                ],
+      { name: "Deferido", value: 800, color: "#0088FE" },
+      { name: "Indeferido", value: 100, color: "#00C49F" },
+      { name: "Recurso", value: 30, color: "#FFBB28" },
+      { name: "Pendente", value: 100, color: "#FF8042" },
+      { name: "Em Análise", value: 500, color: "#636363ff" },
+    ],
   },
   {
     id: 4,
@@ -77,14 +77,14 @@ const mockData: EditalData[] = [
     preliminaryResultsDate: new Date("2025-09-25"),
     beginAppealsPhaseDate: new Date("2025-09-25"),
     endAppealsPhaseDate: new Date("2025-09-25"),
-    finalResultsDate: new Date("2025-09-25"),
+    finalResultsDate: null,
     dataGraphic: [
-                  { name: "Deferido", value: 450, color: "#0088FE" },
-                  { name: "Indeferido", value: 310, color: "#00C49F" },
-                  { name: "Recurso", value: 110, color: "#FFBB28" },
-                  { name: "Pendente", value: 200, color: "#FF8042" },
-                  { name: "Em Análise", value: 80, color: "#636363ff" },
-                ],
+      { name: "Deferido", value: 450, color: "#0088FE" },
+      { name: "Indeferido", value: 310, color: "#00C49F" },
+      { name: "Recurso", value: 110, color: "#FFBB28" },
+      { name: "Pendente", value: 200, color: "#FF8042" },
+      { name: "Em Análise", value: 80, color: "#636363ff" },
+    ],
   },
 ];
 
@@ -99,44 +99,56 @@ export function PageEdital() {
 
   return (
     <>
-      <section className="text-sm font-medium px-15" dir="ltr">
+      <section className="text-sm font-medium px-10" dir="ltr">
         <h2 className="text-xl pt-6">{edital.name}</h2>
         <div className="text-sm font-medium flex items-center justify-between">
-          <div className="grid grid-cols-3 gap-1">
+          <div className="grid grid-cols-3 gap-10">
             <div className="flex-col">
-              <div>Data de Início das Inscrições</div>
+              <div>Início das Inscrições</div>
               <div className="text-xs font-light">
-                {edital.beginDateRegistration.toLocaleDateString("pt-BR")}
+                {(edital.beginDateRegistration !== null)
+                  ? edital.beginDateRegistration.toLocaleDateString("pt-BR")
+                  : "--/--/----"}
               </div>
             </div>
             <div className="flex-col">
-              <div>Data de Término das Inscrições</div>
+              <div>Término das Inscrições</div>
               <div className="text-xs font-light">
-                {edital.endDateRegistration.toLocaleDateString("pt-BR")}
+                {(edital.endDateRegistration !== null)
+                  ? edital.endDateRegistration.toLocaleDateString("pt-BR")
+                  : "--/--/----"}
               </div>
             </div>
             <div className="flex-col">
-              <div>Data de Divulgação do Resultado Preliminar</div>
+              <div>Divulgação do Resultado Preliminar</div>
               <div className="text-xs font-light">
-                {edital.preliminaryResultsDate.toLocaleDateString("pt-BR")}
+                {(edital.preliminaryResultsDate !== null)
+                  ? edital.preliminaryResultsDate.toLocaleDateString("pt-BR")
+                  : "--/--/----"}
               </div>
             </div>
             <div className="flex-col">
-              <div>Data de Início da Fase de Recursos</div>
+              <div>Início da Fase de Recursos</div>
               <div className="text-xs font-light">
-                {edital.beginAppealsPhaseDate.toLocaleDateString("pt-BR")}
+                {(edital.beginAppealsPhaseDate !== null)
+                  ? edital.beginAppealsPhaseDate.toLocaleDateString("pt-BR")
+                  : "--/--/----"}
               </div>
             </div>
             <div className="flex-col">
-              <div>Data de Término da Fase de Recursos</div>
+              <div>Término da Fase de Recursos</div>
               <div className="text-xs font-light">
-                {edital.endAppealsPhaseDate.toLocaleDateString("pt-BR")}
+                {(edital.endAppealsPhaseDate !== null)
+                  ? edital.endAppealsPhaseDate.toLocaleDateString("pt-BR")
+                  : "--/--/----"}
               </div>
             </div>
             <div className="flex-col">
-              <div>Data de Divulgação do Resultado Final</div>
+              <div>Divulgação do Resultado Final</div>
               <div className="text-xs font-light">
-                {edital.finalResultsDate.toLocaleDateString("pt-BR")}
+                {(edital.finalResultsDate !== null)
+                  ? edital.finalResultsDate.toLocaleDateString("pt-BR")
+                  : "--/--/----"}
               </div>
             </div>
           </div>

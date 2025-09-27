@@ -6,6 +6,7 @@ export const Route = createFileRoute("/_social-workers/editais/$id")({
 });
 
 interface EditalData {
+  dataGraphic: object[];
   id: number;
   name: string;
   beginDateRegistration: Date;
@@ -26,6 +27,13 @@ const mockData: EditalData[] = [
     beginAppealsPhaseDate: new Date("2025-06-29"),
     endAppealsPhaseDate: new Date("2025-05-22"),
     finalResultsDate: new Date("2025-04-21"),
+    dataGraphic: [
+                  { name: "Deferido", value: 400, color: "#0088FE" },
+                  { name: "Indeferido", value: 300, color: "#00C49F" },
+                  { name: "Recurso", value: 300, color: "#FFBB28" },
+                  { name: "Pendente", value: 200, color: "#FF8042" },
+                  { name: "Em Análise", value: 100, color: "#636363ff" },
+                ],
   },
   {
     id: 2,
@@ -36,6 +44,13 @@ const mockData: EditalData[] = [
     beginAppealsPhaseDate: new Date("2025-09-25"),
     endAppealsPhaseDate: new Date("2025-09-25"),
     finalResultsDate: new Date("2025-09-25"),
+    dataGraphic: [
+                  { name: "Deferido", value: 200, color: "#0088FE" },
+                  { name: "Indeferido", value: 400, color: "#00C49F" },
+                  { name: "Recurso", value: 100, color: "#FFBB28" },
+                  { name: "Pendente", value: 50, color: "#FF8042" },
+                  { name: "Em Análise", value: 100, color: "#636363ff" },
+                ],
   },
   {
     id: 3,
@@ -46,6 +61,13 @@ const mockData: EditalData[] = [
     beginAppealsPhaseDate: new Date("2025-09-25"),
     endAppealsPhaseDate: new Date("2025-09-25"),
     finalResultsDate: new Date("2025-09-25"),
+    dataGraphic: [
+                  { name: "Deferido", value:800, color: "#0088FE" },
+                  { name: "Indeferido", value: 100, color: "#00C49F" },
+                  { name: "Recurso", value: 30, color: "#FFBB28" },
+                  { name: "Pendente", value: 100, color: "#FF8042" },
+                  { name: "Em Análise", value: 500, color: "#636363ff" },
+                ],
   },
   {
     id: 4,
@@ -56,6 +78,13 @@ const mockData: EditalData[] = [
     beginAppealsPhaseDate: new Date("2025-09-25"),
     endAppealsPhaseDate: new Date("2025-09-25"),
     finalResultsDate: new Date("2025-09-25"),
+    dataGraphic: [
+                  { name: "Deferido", value: 450, color: "#0088FE" },
+                  { name: "Indeferido", value: 310, color: "#00C49F" },
+                  { name: "Recurso", value: 110, color: "#FFBB28" },
+                  { name: "Pendente", value: 200, color: "#FF8042" },
+                  { name: "Em Análise", value: 80, color: "#636363ff" },
+                ],
   },
 ];
 
@@ -71,9 +100,9 @@ export function PageEdital() {
   return (
     <>
       <section className="text-sm font-medium px-15" dir="ltr">
-        <h2 className="text-xl pb-10 pt-6">{edital.name}</h2>
+        <h2 className="text-xl pt-6">{edital.name}</h2>
         <div className="text-sm font-medium flex items-center justify-between">
-          <div className="grid grid-cols-3 gap-12">
+          <div className="grid grid-cols-3 gap-1">
             <div className="flex-col">
               <div>Data de Início das Inscrições</div>
               <div className="text-xs font-light">
@@ -111,8 +140,8 @@ export function PageEdital() {
               </div>
             </div>
           </div>
-          <div>
-            <RegistrationStatusGraphic />
+          <div className="flex items-center content-center justify-center">
+            <RegistrationStatusGraphic dataRegistration={edital.dataGraphic} />
           </div>
         </div>
       </section>

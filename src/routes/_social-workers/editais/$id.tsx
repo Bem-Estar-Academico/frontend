@@ -98,7 +98,6 @@ export function PageEdital() {
   }
 
   return (
-    <>
       <section className="text-sm font-medium px-10" dir="ltr">
         <h2 className="text-xl pt-6">{edital.name}</h2>
         <div className="text-sm font-medium flex items-center justify-between">
@@ -106,49 +105,49 @@ export function PageEdital() {
             <div className="flex-col">
               <div>Início das Inscrições</div>
               <div className="text-xs font-light">
-                {(edital.beginDateRegistration !== null)
-                  ? edital.beginDateRegistration.toLocaleDateString("pt-BR")
-                  : "--/--/----"}
+                {(edital.beginDateRegistration === null)
+                  ? "--/--/----"
+                  : edital.beginDateRegistration.toLocaleDateString("pt-BR")}
               </div>
             </div>
             <div className="flex-col">
               <div>Término das Inscrições</div>
               <div className="text-xs font-light">
-                {(edital.endDateRegistration !== null)
-                  ? edital.endDateRegistration.toLocaleDateString("pt-BR")
-                  : "--/--/----"}
+                {(edital.endDateRegistration === null)
+                  ? "--/--/----"
+                  : edital.endDateRegistration.toLocaleDateString("pt-BR")}
               </div>
             </div>
             <div className="flex-col">
               <div>Divulgação do Resultado Preliminar</div>
               <div className="text-xs font-light">
-                {(edital.preliminaryResultsDate !== null)
-                  ? edital.preliminaryResultsDate.toLocaleDateString("pt-BR")
-                  : "--/--/----"}
+                {(edital.preliminaryResultsDate === null)
+                  ? "--/--/----"
+                  : edital.preliminaryResultsDate.toLocaleDateString("pt-BR")}
               </div>
             </div>
             <div className="flex-col">
               <div>Início da Fase de Recursos</div>
               <div className="text-xs font-light">
-                {(edital.beginAppealsPhaseDate !== null)
-                  ? edital.beginAppealsPhaseDate.toLocaleDateString("pt-BR")
-                  : "--/--/----"}
+                {(edital.beginAppealsPhaseDate == null)
+                  ? "--/--/----"
+                  : edital.beginAppealsPhaseDate.toLocaleDateString("pt-BR")}
               </div>
             </div>
             <div className="flex-col">
               <div>Término da Fase de Recursos</div>
               <div className="text-xs font-light">
-                {(edital.endAppealsPhaseDate !== null)
-                  ? edital.endAppealsPhaseDate.toLocaleDateString("pt-BR")
-                  : "--/--/----"}
+                {(edital.endAppealsPhaseDate === null)
+                  ? "--/--/----"
+                  : edital.endAppealsPhaseDate.toLocaleDateString("pt-BR")}
               </div>
             </div>
             <div className="flex-col">
               <div>Divulgação do Resultado Final</div>
               <div className="text-xs font-light">
-                {(edital.finalResultsDate !== null)
-                  ? edital.finalResultsDate.toLocaleDateString("pt-BR")
-                  : "--/--/----"}
+                {(edital.finalResultsDate === null)
+                  ? "--/--/----"
+                  : edital.finalResultsDate.toLocaleDateString("pt-BR")}
               </div>
             </div>
           </div>
@@ -157,6 +156,5 @@ export function PageEdital() {
           </div>
         </div>
       </section>
-    </>
   );
 }

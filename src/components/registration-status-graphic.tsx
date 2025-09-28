@@ -6,7 +6,7 @@ interface RegistrationStatusGraphicProps {
 
 export default function RegistrationStatusGraphic({
   dataRegistration,
-}: RegistrationStatusGraphicProps) {
+}: Readonly<RegistrationStatusGraphicProps>) {
   const countValue = dataRegistration.reduce(
     (acc, item) => acc + item.value,
     0

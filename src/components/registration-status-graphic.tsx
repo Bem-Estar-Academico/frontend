@@ -1,4 +1,4 @@
-import { Cell, Pie, PieChart } from "recharts";
+import { Cell, Pie, PieChart, Tooltip } from "recharts";
 
 interface RegistrationStatusGraphicProps {
   dataRegistration: object[];
@@ -7,6 +7,11 @@ interface RegistrationStatusGraphicProps {
 export default function RegistrationStatusGraphic({
   dataRegistration,
 }: RegistrationStatusGraphicProps) {
+  const countValue = dataRegistration.reduce(
+    (acc, item) => acc + item.value,
+    0
+  );
+
   return (
     <>
       <div className="flex flex-col justify-center items-center">
@@ -24,20 +29,33 @@ export default function RegistrationStatusGraphic({
               <Cell key={`cell-${entry.name}`} fill={entry.color} />
             ))}
           </Pie>
+          <Tooltip
+            formatter={(value: number, name: string) => {
+              const percent = ((value / countValue) * 100).toFixed(1) + "%";
+              return [`${value} (${percent})`];
+            }}
+            contentStyle={{
+              fontSize: "12px",
+              padding: "4px 8px",
+              borderRadius: "6px",
+            }}
+          />
         </PieChart>
       </div>
-      <div className="grid grid-cols-2 gap-y-3 gap-x-8 place-items-center">
+      <div className="grid grid-cols-2 place-items-center">
         {dataRegistration.map((item, index) => (
           <div
             key={item.name}
-            className={`flex items-center gap-2 ${
+            className={`flex items-center gap-2 w-25 h-7 ${
               index + 2 > dataRegistration.length ? "col-span-2" : ""
             }`}
           >
-            <span
+            <div
               className="inline-block w-3 h-3 rounded-full"
               style={{ backgroundColor: item.color }}
-            />
+            >
+              {" "}
+            </div>
             <span className="text-sm text-gray-800">{item.name}</span>
           </div>
         ))}

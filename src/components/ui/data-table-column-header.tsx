@@ -13,7 +13,7 @@ export function DataTableColumnHeader<TData, TValue>({
   column,
   title,
   className,
-}: DataTableColumnHeaderProps<TData, TValue>) {
+}: Readonly<DataTableColumnHeaderProps<TData, TValue>>) {
     if (!column.getCanSort()) {
         return <div className={cn("text-center", className)}>{title}</div>;
     }
@@ -27,13 +27,9 @@ export function DataTableColumnHeader<TData, TValue>({
         >
             {title}
             <span className={`ml-2 transform transition-transform duration-300`}>
-             {column.getIsSorted() === "desc" ? (
-                <IconArrowDown />
-              ) : column.getIsSorted() === "asc" ? (
-                <IconArrowUp />
-              ) : (
-                <IconArrowsUpDown />
-              )}
+             {column.getIsSorted() === "desc" && <IconArrowDown />}
+             {column.getIsSorted() === "asc" && <IconArrowUp />}
+             {!column.getIsSorted() && <IconArrowsUpDown />}
             </span>
         </Button>
     </div>

@@ -86,7 +86,7 @@ export interface StudentDataTableProps {
 
 const DEFAULT_PAGE_SIZE_OPTIONS = [8, 16, 24, 32, 40]
 
-export function StudentDataTable({ data, initialState, pageSizeOptions = DEFAULT_PAGE_SIZE_OPTIONS, isLoading = false }: StudentDataTableProps) {
+export function StudentDataTable({ data, initialState, pageSizeOptions = DEFAULT_PAGE_SIZE_OPTIONS, isLoading = false }: Readonly<StudentDataTableProps>) {
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({})
@@ -95,7 +95,7 @@ export function StudentDataTable({ data, initialState, pageSizeOptions = DEFAULT
   const columns = React.useMemo(() => getColumns(maskPersonal), [maskPersonal])
   
   const tableData = React.useMemo(
-    () => (isLoading ? Array(30).fill({}) : data),
+    () => (isLoading ? new Array(30).fill({}) : data),
     [isLoading, data]
   );
 

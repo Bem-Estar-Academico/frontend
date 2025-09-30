@@ -2,7 +2,7 @@ import { UsersList } from "@/components/users-list"
 import { createFileRoute } from "@tanstack/react-router"
 import { useState } from "react"
 
-export const Route = createFileRoute("/editais/criar")({
+export const Route = createFileRoute("/_social-workers/editais/criar")({
   component: CreateEdital,
 })
 

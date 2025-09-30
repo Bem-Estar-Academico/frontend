@@ -27,6 +27,7 @@ interface DataTableFacetedFilterProps<TData, TValue> {
   options: {
     label: string
     value: string
+    count?: number
     icon?: React.ReactNode
   }[]
 }
@@ -55,7 +56,7 @@ export function DataTableFacetedFilter<TData, TValue>({
               <Badge
                 variant="secondary"
                 className="rounded-sm px-1 font-normal lg:hidden"
-              >
+              > 
                 {selectedValues.size}
               </Badge>
               <div className="hidden space-x-1 lg:flex">
@@ -75,6 +76,7 @@ export function DataTableFacetedFilter<TData, TValue>({
                         key={option.value}
                         className="rounded-sm px-1 font-normal"
                       >
+                        {option.icon}
                         {option.label}
                       </Badge>
                     ))
@@ -125,9 +127,9 @@ export function DataTableFacetedFilter<TData, TValue>({
                     )}
 
                     <span>{option.label}</span>
-
                     {facets?.get(option.value) && (
                       <span className="ml-auto flex h-4 w-4 items-center justify-center font-mono text-xs">
+                        
                         {facets.get(option.value)}
                       </span>
                     )}

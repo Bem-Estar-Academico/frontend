@@ -1,4 +1,4 @@
-import RegistrationStatusGraphic from "@/components/registration-status-graphic";
+import RegistrationStatusGraphic, { type RegistrationData } from "@/components/registration-status-graphic";
 import { createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/_social-workers/editais/$id")({
@@ -6,27 +6,27 @@ export const Route = createFileRoute("/_social-workers/editais/$id")({
 });
 
 interface EditalData {
-  dataGraphic: object[];
+  dataGraphic: Array<RegistrationData>;
   id: number;
   name: string;
   beginDateRegistration: Date;
-  endDateRegistration: Date;
-  preliminaryResultsDate: Date;
-  beginAppealsPhaseDate: Date;
-  endAppealsPhaseDate: Date;
-  finalResultsDate: Date;
+  endDateRegistration: Date | null;
+  preliminaryResultsDate: Date | null;
+  beginAppealsPhaseDate: Date | null;
+  endAppealsPhaseDate: Date | null;
+  finalResultsDate: Date | null;
 }
 
 const mockData: EditalData[] = [
   {
     id: 1,
     name: "Edital 2025.1",
-    beginDateRegistration: new Date("2025-09-25"),
-    endDateRegistration: new Date("2025-08-22"),
-    preliminaryResultsDate: new Date("2025-07-21"),
-    beginAppealsPhaseDate: new Date("2025-06-29"),
-    endAppealsPhaseDate: new Date("2025-05-22"),
-    finalResultsDate: new Date("2025-04-21"),
+    beginDateRegistration: new Date("2025-04-21"),
+    endDateRegistration: new Date("2025-05-22"),
+    preliminaryResultsDate: new Date("2025-06-29"),
+    beginAppealsPhaseDate: new Date("2025-07-21"),
+    endAppealsPhaseDate: new Date("2025-08-22"),
+    finalResultsDate: new Date("2025-09-25"),
     dataGraphic: [
       { name: "Deferido", value: 400, color: "#4ADE80" },
       { name: "Indeferido", value: 300, color: "#EF4444" },

@@ -1,15 +1,21 @@
 import { Cell, Pie, PieChart, Tooltip } from "recharts";
 
+export interface RegistrationData {
+  name: string;
+  value: number;
+  color: string;
+  [key: string]: string | number;
+}
+
 interface RegistrationStatusGraphicProps {
-  dataRegistration: object[];
+  dataRegistration: Array<RegistrationData>;
 }
 
 export default function RegistrationStatusGraphic({
   dataRegistration,
 }: Readonly<RegistrationStatusGraphicProps>) {
   const countValue = dataRegistration.reduce(
-    (acc, item) => acc + item.value,
-    0
+    (acc, item) => acc + item.value, 0
   );
 
   return (
@@ -30,7 +36,7 @@ export default function RegistrationStatusGraphic({
             ))}
           </Pie>
           <Tooltip
-            formatter={(value: number, name: string) => {
+            formatter={(value: number) => {
               const percent = ((value / countValue) * 100).toFixed(1) + "%";
               return [`${value} (${percent})`];
             }}

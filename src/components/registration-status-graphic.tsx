@@ -53,15 +53,14 @@ export default function RegistrationStatusGraphic({
           <div
             key={item.name}
             className={`flex items-center gap-2 w-25 h-7 ${
+              // If the number of items is odd, the last item should span both columns
               index + 2 > dataRegistration.length ? "col-span-2" : ""
             }`}
           >
             <div
-              className="inline-block w-3 h-3 rounded-full"
+              className="inline-block w-3 h-3 rounde  d-full"
               style={{ backgroundColor: item.color }}
-            >
-              {" "}
-            </div>
+            />
             <span className="text-sm text-gray-800">{item.name}</span>
           </div>
         ))}

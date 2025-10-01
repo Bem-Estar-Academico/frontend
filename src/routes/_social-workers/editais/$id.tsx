@@ -129,7 +129,7 @@ export function PageEdital() {
             <div className="flex-col">
               <div>Início da Fase de Recursos</div>
               <div className="text-xs font-light">
-                {(edital.beginAppealsPhaseDate == null)
+                {(edital.beginAppealsPhaseDate === null)
                   ? "--/--/----"
                   : edital.beginAppealsPhaseDate.toLocaleDateString("pt-BR")}
               </div>

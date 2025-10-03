@@ -100,6 +100,7 @@ export function PageEdital() {
   }
 
   return (
+    <>
       <section className="text-sm font-medium px-10" dir="ltr">
         <h2 className="text-xl pt-6">{edital.name}</h2>
         <div className="text-sm font-medium flex items-center justify-between">
@@ -158,5 +159,9 @@ export function PageEdital() {
           </div>
         </div>
       </section>
+      <section className="px-10">
+        <StudentDataTable data={students} />
+      </section>
+    </>
   );
 }

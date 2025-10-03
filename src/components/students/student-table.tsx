@@ -139,7 +139,7 @@ export function StudentDataTable({ data, initialState, pageSizeOptions = DEFAULT
   })
 
   return (
-    <div className="w-full p-4">
+    <div className="w-full">
       <div className="flex items-center justify-between py-4">
         <div className="flex items-center gap-2">
           <Input
@@ -151,10 +151,7 @@ export function StudentDataTable({ data, initialState, pageSizeOptions = DEFAULT
         </div>  
 
         <div className="flex items-center gap-2">
-          <Button variant="secondary" className="cursor-pointer" onClick={() => {
-            console.log("Toggling mask" )
-            setMaskPersonal((v) => !v)
-          }}>
+          <Button variant="secondary" className="cursor-pointer" onClick={() => setMaskPersonal((v) => !v)}>
             <EyeOff className="size-[16px]" />
           </Button>
           <Button variant="secondary" className="cursor-pointer">Exportar</Button>

@@ -10,7 +10,6 @@ import { DataTableColumnHeader } from "../ui/data-table-column-header";
 const MASK = "******"
 
 export function getColumns(masked: boolean): ColumnDef<Student>[] {
-  console.log("Masked columns:", masked);
   return [
     {
       accessorKey: "cpf",

@@ -22,8 +22,6 @@ export function Pagination({ page, totalPages, onPageChange }: Readonly<Paginati
         } else {
             pages.push(1, "...", page - 1, page, page + 1, "...", totalPages)
         }
-        
-
         return pages
     }
 

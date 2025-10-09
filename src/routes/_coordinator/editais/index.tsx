@@ -7,37 +7,11 @@ import { IconPlus } from "@tabler/icons-react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState, useMemo } from "react";
 import { Pagination } from "@/components/ui/pagination";
+import { editais, SEMESTERS } from "./-data";
 
 export const Route = createFileRoute("/_coordinator/editais/")({
   component: Editais,
 });
-
-const SEMESTERS = [
-  "2021.1",
-  "2021.2",
-  "2022.1",
-  "2022.2",
-  "2023.1",
-  "2023.2",
-  "2024.1",
-  "2024.2",
-];
-
-const editais = [
-  {
-    id: "1",
-    title: "Cadastramento Socioeconômico 2021.1",
-    description:
-      "Edital N. 09/2021 Proest - Cadastramento Socioeconômico 2021.1",
-    lastModification: new Date("2021-02-15"),
-  },
-  {
-    id: "2",
-    title: "Auxílio Permanência 2021.2",
-    description: "Edital N. 05/2021 Proest - Auxílio Permanência",
-    lastModification: new Date("2021-09-10"),
-  },
-];
 
 export function Editais() {
   const [search, setSearch] = useState("");
@@ -118,7 +92,7 @@ export function Editais() {
       <div className="flex flex-col px-5 gap-6">
         {currentData.length > 0 ? (
           currentData.map((edital) => (
-            <Link key={edital.id} to={`/editais/${edital.id}`}>
+            <Link key={edital.id} to={'/editais/$id'} params={{ id: edital.id }}>
               <EditalCard
                 title={edital.title}
                 description={edital.description}

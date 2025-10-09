@@ -8,10 +8,10 @@ import {
 } from "@/components/ui/select";
 
 interface SemesterSelectProps {
-  value?: string
-  semesters: string[]
-  onChange?: (Semester: string) => void
-  className?: string
+  value?: string;
+  semesters: string[];
+  onChange?: (semester: string | undefined) => void;
+  className?: string;
 }
 
 export function SemesterSelect({
@@ -21,7 +21,10 @@ export function SemesterSelect({
   className,
 }: Readonly<SemesterSelectProps>) {
   return (
-    <Select value={value} onValueChange={onChange}>
+    <Select
+      value={value ?? ""}
+      onValueChange={(val) => onChange?.(val || undefined)}
+    >
       <SelectTrigger className={className}>
         <SelectValue placeholder="Semestre" />
       </SelectTrigger>
@@ -35,5 +38,5 @@ export function SemesterSelect({
         </SelectGroup>
       </SelectContent>
     </Select>
-  )
+  );
 }

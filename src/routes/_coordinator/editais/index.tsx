@@ -15,14 +15,12 @@ export const Route = createFileRoute("/_coordinator/editais/")({
 
 export function Editais() {
   const [search, setSearch] = useState("");
-  const [year, setYear] = useState<string | undefined>(undefined);
   const [semester, setSemester] = useState<string | undefined>(undefined);
   const [page, setPage] = useState(1);
   const pageSize = 5;
 
   const handleClearFilters = () => {
     setSearch("");
-    setYear(undefined);
     setSemester(undefined);
     setPage(1);
   };
@@ -33,12 +31,11 @@ export function Editais() {
         edital.title.toLowerCase().includes(search.toLowerCase()) ||
         edital.description.toLowerCase().includes(search.toLowerCase());
 
-      const matchesYear = year ? edital.title.includes(year) : true;
-      const matchesSemester = semester ? edital.title.includes(semester) : true;
+        const matchesSemester = semester ? edital.title.includes(semester) : true;
 
-      return matchesSearch && matchesYear && matchesSemester;
+      return matchesSearch && matchesSemester;
     });
-  }, [search, year, semester]);
+  }, [search, semester]);
 
   const totalPages = Math.ceil(filteredEditais.length / pageSize);
   const currentData = filteredEditais.slice(
@@ -57,13 +54,6 @@ export function Editais() {
             value={search}
             onChange={(e) => {
               setSearch(e.target.value);
-              setPage(1);
-            }}
-          />
-          <YearSelect
-            value={year}
-            onChange={(val) => {
-              setYear(val);
               setPage(1);
             }}
           />

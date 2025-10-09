@@ -74,70 +74,67 @@ export function Editais() {
   );
 
   return (
-    <div className="flex">
-      <Sidebar />
-      <div className="flex flex-1 flex-col gap-7">
-        <h1 className="text-3xl font-medium px-5 py-4 border-b">Editais</h1>
+    <div className="flex flex-1 flex-col gap-7">
+      <h1 className="text-3xl font-medium px-5 py-4 border-b">Editais</h1>
 
-        <div className="max-h-fit flex flex-1 px-5">
-          <div className="flex flex-1 gap-5">
-            <Input
-              placeholder="Buscar edital"
-              value={search}
-              onChange={(e) => {
-                setSearch(e.target.value);
-                setPage(1);
-              }}
-            />
-            <YearSelect
-              value={year}
-              onChange={(val) => {
-                setYear(val);
-                setPage(1);
-              }}
-            />
-            <SemesterSelect
-              semesters={SEMESTERS}
-              value={semester}
-              onChange={(val) => {
-                setSemester(val);
-                setPage(1);
-              }}
-            />
-          </div>
-          <div className="flex flex-1 justify-end gap-5">
-            <Button variant="ghost" onClick={handleClearFilters}>
-              Limpar filtros
+      <div className="max-h-fit flex flex-1 px-5">
+        <div className="flex flex-1 gap-5">
+          <Input
+            placeholder="Buscar edital"
+            value={search}
+            onChange={(e) => {
+              setSearch(e.target.value);
+              setPage(1);
+            }}
+          />
+          <YearSelect
+            value={year}
+            onChange={(val) => {
+              setYear(val);
+              setPage(1);
+            }}
+          />
+          <SemesterSelect
+            semesters={SEMESTERS}
+            value={semester}
+            onChange={(val) => {
+              setSemester(val);
+              setPage(1);
+            }}
+          />
+        </div>
+        <div className="flex flex-1 justify-end gap-5">
+          <Button variant="ghost" onClick={handleClearFilters}>
+            Limpar filtros
+          </Button>
+          <Link to="/editais/criar">
+            <Button variant="default">
+              <IconPlus />
+              Criar Edital
             </Button>
-            <Link to="/editais/criar">
-              <Button variant="default">
-                <IconPlus />
-                Criar Edital
-              </Button>
+          </Link>
+        </div>
+      </div>
+
+      <div className="flex flex-col px-5 gap-6">
+        {currentData.length > 0 ? (
+          currentData.map((edital) => (
+            <Link key={edital.id} to={`/editais/${edital.id}`}>
+              <EditalCard
+                title={edital.title}
+                description={edital.description}
+                lastModification={edital.lastModification}
+              />
             </Link>
-          </div>
-        </div>
-
-        <div className="flex flex-col px-5 gap-6">
-          {currentData.length > 0 ? (
-            currentData.map((edital) => (
-              <Link key={edital.id} to={`/editais/${edital.id}`}>
-                <EditalCard
-                  title={edital.title}
-                  description={edital.description}
-                  lastModification={edital.lastModification}
-                />
-              </Link>
-            ))
-          ) : (
-            <p className="text-gray-500 italic">Nenhum edital encontrado</p>
-          )}
-        </div>
-
-        {totalPages > 1 && (
-          <Pagination page={page} totalPages={totalPages} onPageChange={setPage} />
+          ))
+        ) : (
+          <p className="text-gray-500 italic">Nenhum edital encontrado</p>
         )}
       </div>
+
+      {totalPages > 1 && (
+        <Pagination page={page} totalPages={totalPages} onPageChange={setPage} />
+      )}
     </div>
   );
 }

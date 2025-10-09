@@ -10,7 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SocialWorkersRouteImport } from './routes/_social-workers'
-import { Route as CoodinatorRouteImport } from './routes/_coodinator'
+import { Route as CoordinatorRouteImport } from './routes/_coordinator'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as SocialWorkersConsultarIvsIndexRouteImport } from './routes/_social-workers/consultar-ivs/index'
 import { Route as CoordinatorEditaisIndexRouteImport } from './routes/_coordinator/editais/index'
@@ -23,8 +23,8 @@ const SocialWorkersRoute = SocialWorkersRouteImport.update({
   id: '/_social-workers',
   getParentRoute: () => rootRouteImport,
 } as any)
-const CoodinatorRoute = CoodinatorRouteImport.update({
-  id: '/_coodinator',
+const CoordinatorRoute = CoordinatorRouteImport.update({
+  id: '/_coordinator',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -39,9 +39,9 @@ const SocialWorkersConsultarIvsIndexRoute =
     getParentRoute: () => SocialWorkersRoute,
   } as any)
 const CoordinatorEditaisIndexRoute = CoordinatorEditaisIndexRouteImport.update({
-  id: '/_coordinator/editais/',
+  id: '/editais/',
   path: '/editais/',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => CoordinatorRoute,
 } as any)
 const AnalisarInscricaoSubscriptionIdRoute =
   AnalisarInscricaoSubscriptionIdRouteImport.update({
@@ -61,9 +61,9 @@ const SocialWorkersConsultarIvsIdRoute =
     getParentRoute: () => SocialWorkersRoute,
   } as any)
 const CoordinatorEditaisCriarRoute = CoordinatorEditaisCriarRouteImport.update({
-  id: '/_coordinator/editais/criar',
+  id: '/editais/criar',
   path: '/editais/criar',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => CoordinatorRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
@@ -87,7 +87,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/_coodinator': typeof CoodinatorRoute
+  '/_coordinator': typeof CoordinatorRouteWithChildren
   '/_social-workers': typeof SocialWorkersRouteWithChildren
   '/_coordinator/editais/criar': typeof CoordinatorEditaisCriarRoute
   '/_social-workers/consultar-ivs/$id': typeof SocialWorkersConsultarIvsIdRoute
@@ -118,7 +118,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
-    | '/_coodinator'
+    | '/_coordinator'
     | '/_social-workers'
     | '/_coordinator/editais/criar'
     | '/_social-workers/consultar-ivs/$id'
@@ -130,11 +130,9 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  CoodinatorRoute: typeof CoodinatorRoute
+  CoordinatorRoute: typeof CoordinatorRouteWithChildren
   SocialWorkersRoute: typeof SocialWorkersRouteWithChildren
-  CoordinatorEditaisCriarRoute: typeof CoordinatorEditaisCriarRoute
   AnalisarInscricaoSubscriptionIdRoute: typeof AnalisarInscricaoSubscriptionIdRoute
-  CoordinatorEditaisIndexRoute: typeof CoordinatorEditaisIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -146,11 +144,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SocialWorkersRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_coodinator': {
-      id: '/_coodinator'
+    '/_coordinator': {
+      id: '/_coordinator'
       path: ''
       fullPath: ''
-      preLoaderRoute: typeof CoodinatorRouteImport
+      preLoaderRoute: typeof CoordinatorRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -172,7 +170,7 @@ declare module '@tanstack/react-router' {
       path: '/editais'
       fullPath: '/editais'
       preLoaderRoute: typeof CoordinatorEditaisIndexRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof CoordinatorRoute
     }
     '/analisar/inscricao/$subscriptionId': {
       id: '/analisar/inscricao/$subscriptionId'
@@ -200,10 +198,24 @@ declare module '@tanstack/react-router' {
       path: '/editais/criar'
       fullPath: '/editais/criar'
       preLoaderRoute: typeof CoordinatorEditaisCriarRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof CoordinatorRoute
     }
   }
 }
+
+interface CoordinatorRouteChildren {
+  CoordinatorEditaisCriarRoute: typeof CoordinatorEditaisCriarRoute
+  CoordinatorEditaisIndexRoute: typeof CoordinatorEditaisIndexRoute
+}
+
+const CoordinatorRouteChildren: CoordinatorRouteChildren = {
+  CoordinatorEditaisCriarRoute: CoordinatorEditaisCriarRoute,
+  CoordinatorEditaisIndexRoute: CoordinatorEditaisIndexRoute,
+}
+
+const CoordinatorRouteWithChildren = CoordinatorRoute._addFileChildren(
+  CoordinatorRouteChildren,
+)
 
 interface SocialWorkersRouteChildren {
   SocialWorkersConsultarIvsIdRoute: typeof SocialWorkersConsultarIvsIdRoute
@@ -223,11 +235,9 @@ const SocialWorkersRouteWithChildren = SocialWorkersRoute._addFileChildren(
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  CoodinatorRoute: CoodinatorRoute,
+  CoordinatorRoute: CoordinatorRouteWithChildren,
   SocialWorkersRoute: SocialWorkersRouteWithChildren,
-  CoordinatorEditaisCriarRoute: CoordinatorEditaisCriarRoute,
   AnalisarInscricaoSubscriptionIdRoute: AnalisarInscricaoSubscriptionIdRoute,
-  CoordinatorEditaisIndexRoute: CoordinatorEditaisIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

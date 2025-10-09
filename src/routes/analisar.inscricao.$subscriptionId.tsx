@@ -199,7 +199,7 @@ export function ReviewSubscription() {
           `}
           </style>
 
-          <div className="sidebar-container h-full w-full">
+          <div className="sidebar-container">
             <SidebarProvider
               style={
                 {
@@ -209,67 +209,59 @@ export function ReviewSubscription() {
             >
               <DocumentsSidebar data={mockData} />
               <SidebarTrigger />
-
-              <div className="flex h-full flex-col">
-                <header className="flex shrink-0 items-center gap-4 bg-white p-4">
-                  <nav className="flex items-center gap-2">
-                    {navItems.map((item) => {
-                      const isActive = item.id === activeStepId;
-                      return (
-                        <button
-                          key={item.id}
-                          onClick={() => handleStepClick(item.id)}
-                          className={`flex items-center gap-2 rounded-lg border px-4 py-2 text-sm font-medium ${
-                            isActive
-                              ? "border-gray-800 bg-gray-100"
-                              : "border-gray-300 bg-white"
-                          }`}
-                        >
-                          <item.icon
-                            size={16}
-                            className={
-                              isActive ? "text-gray-800" : "text-gray-400"
-                            }
-                          />
-                          <span>{item.label}</span>
-                        </button>
-                      );
-                    })}
-                  </nav>
-                </header>
-                <div className="flex-1 overflow-y-auto p-8">
-                  
-                  <div
-                    className={`grid gap-6 ${
-                      activeStepId === "resultado"
-                        ? "grid-cols-1"
-                        : "grid-cols-2"
-                    }`}
-                  >
-                    {activeStepId !== "resultado" && (
-                      <div>
-                        <p>
-                          Conteúdo principal que pode rolar independentemente.
-                        </p>
-                      </div>
-                    )}
-
-                    <div>
-                      {stepContentMap[activeStepId]}
-                      <Button
-                        type="button"
-                        size="lg"
-                        className="mt-8 w-full bg-gray-700 text-base font-semibold hover:bg-gray-800 disabled:bg-gray-400"
-                        onClick={handleNextStep}
-                        disabled={isLastStep}
-                      >
-                        {isLastStep ? "Finalizar" : "Próximo"}
-                      </Button>
-                    </div>
+            </SidebarProvider>
+          </div>
+          <div className="flex h-full flex-col">
+            <header className="flex shrink-0 items-center gap-4 bg-white p-4">
+              <nav className="flex items-center gap-2">
+                {navItems.map((item) => {
+                  const isActive = item.id === activeStepId;
+                  return (
+                    <button
+                      key={item.id}
+                      onClick={() => handleStepClick(item.id)}
+                      className={`flex items-center gap-2 rounded-lg border px-4 py-2 text-sm font-medium ${
+                        isActive
+                          ? "border-gray-800 bg-gray-100"
+                          : "border-gray-300 bg-white"
+                      }`}
+                    >
+                      <item.icon
+                        size={16}
+                        className={isActive ? "text-gray-800" : "text-gray-400"}
+                      />
+                      <span>{item.label}</span>
+                    </button>
+                  );
+                })}
+              </nav>
+            </header>
+            <div className="overflow-y-auto p-8">
+              <div
+                className={`grid gap-6 ${
+                  activeStepId === "resultado" ? "grid-cols-1" : "grid-cols-2"
+                }`}
+              >
+                {activeStepId !== "resultado" && (
+                  <div>
+                    <p>Conteúdo principal que pode rolar independentemente.</p>
                   </div>
+                )}
+
+                <div>
+                  {stepContentMap[activeStepId]}
+                  <Button
+                    type="button"
+                    size="lg"
+                    className="mt-8 w-full bg-gray-700 text-base font-semibold hover:bg-gray-800 disabled:bg-gray-400"
+                    onClick={handleNextStep}
+                    disabled={isLastStep}
+                  >
+                    {isLastStep ? "Finalizar" : "Próximo"}
+                  </Button>
                 </div>
               </div>
-            </SidebarProvider>
+            </div>
           </div>
         </div>
       </div>

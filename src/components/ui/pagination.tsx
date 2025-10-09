@@ -8,7 +8,7 @@ interface PaginationProps {
 }
 
 export function Pagination({ page, totalPages, onPageChange }: Readonly<PaginationProps>) {
-    if (totalPages <= 1) return null
+    if (totalPages <= 0) return null
 
     const generatePages = (): (number | string)[] => {
         const pages: (number | string)[] = []

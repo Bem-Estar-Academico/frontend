@@ -2,7 +2,6 @@ import EditalCard from "@/components/edital-card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { SemesterSelect } from "@/components/ui/semester-select";
-import { YearSelect } from "@/components/ui/year-select";
 import { IconPlus } from "@tabler/icons-react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState, useMemo } from "react";
@@ -95,9 +94,7 @@ export function Editais() {
         )}
       </div>
 
-      {totalPages > 1 && (
-        <Pagination page={page} totalPages={totalPages} onPageChange={setPage} />
-      )}
+      <Pagination page={page} totalPages={totalPages} onPageChange={setPage} />
     </div>
   );
 }

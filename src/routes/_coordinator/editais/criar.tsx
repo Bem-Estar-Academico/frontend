@@ -26,7 +26,6 @@ import {
 import { YearSelect } from "@/components/ui/year-select"
 import { DatePicker } from "@/components/ui/date-picker"
 import { Separator } from "@/components/ui/separator"
-import { Sidebar } from "@/components/coordinator/sidebar"
 import { Label } from "@/components/ui/label"
 
 const allUsers = [

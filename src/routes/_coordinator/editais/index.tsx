@@ -1,4 +1,3 @@
-import { Sidebar } from "@/components/coordinator/sidebar";
 import EditalCard from "@/components/edital-card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";

@@ -38,9 +38,9 @@ export function Pagination({ page, totalPages, onPageChange }: Readonly<Paginati
             <ChevronLeft className="h-4 w-4" /> Anterior
         </Button>
 
-        {generatePages().map((p, idx) =>
+        {generatePages().map((p) =>
             p === "..." ? (
-                <span key={`ellipsis-${idx}`} className="px-2 text-gray-500">
+                <span key={p} className="px-2 text-gray-500">
                     ...
                 </span>
             ) : (

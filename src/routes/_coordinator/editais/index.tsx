@@ -9,7 +9,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState, useMemo } from "react";
 import { Pagination } from "@/components/ui/pagination";
 
-export const Route = createFileRoute("/_social-workers/editais/")({
+export const Route = createFileRoute("/_coordinator/editais/")({
   component: Editais,
 });
 

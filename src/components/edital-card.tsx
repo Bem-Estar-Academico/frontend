@@ -16,7 +16,7 @@ export default function EditalCard({
                 {lastModification.toLocaleString()}
             </div>
             <div className="text-sm font-semibold">
-                {title}  
+                {title}
             </div>
             <div className="text-sm text-muted-foreground">
                 {description}

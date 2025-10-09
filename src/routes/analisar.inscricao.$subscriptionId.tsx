@@ -2,6 +2,7 @@ import {
   DocumentsSidebar,
   type DocumentsSidebarProps,
 } from "@/components/documents-sidebar";
+import DocumentViewer from "@/components/document-viewer"; // Importado
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { createFileRoute } from "@tanstack/react-router";
 import {
@@ -15,7 +16,6 @@ import {
 } from "@tabler/icons-react";
 
 import { CriteriosContent } from "@/components/criterios-content";
-
 import { useState } from "react";
 import { DadosPessoaisContent } from "@/components/dados-pessoais";
 import { ComposicaoFamiliarContent } from "@/components/composicao-familia-content";
@@ -34,22 +34,27 @@ const mockData: DocumentsSidebarProps["data"] = [
       {
         title: "Atestado Médico",
         id: "atestado-medico-estudante",
+        url: "/docs/test.pdf",
       },
       {
         title: "Carteira de Trabalho",
         id: "carteira-de-trabalho-estudante",
+        url: "/docs/test1.pdf",
       },
       {
         title: "Certidão de Casamento",
         id: "certidao-de-casamento-estudante",
+        url: "/docs/test.pdf",
       },
       {
         title: "Comprovante de Monitoria",
         id: "comprovante-de-monitoria-estudante",
+        url: "/docs/test1.pdf",
       },
       {
         title: "Histórico Escolar",
         id: "historico-escolar-estudante",
+        url: "/docs/test.pdf",
       },
     ],
   },
@@ -59,10 +64,12 @@ const mockData: DocumentsSidebarProps["data"] = [
       {
         title: "Termo de Pensão Alimentícia",
         id: "termo-de-pensao-alimenticia-pai",
+        url: "/docs/test1.pdf",
       },
       {
         title: "Atestado Médico",
         id: "atestado-medico-pai",
+        url: "/docs/test.pdf",
       },
     ],
   },
@@ -72,6 +79,7 @@ const mockData: DocumentsSidebarProps["data"] = [
       {
         title: "Termo de Pensão Alimentícia",
         id: "termo-de-pensao-alimenticia-mae",
+        url: "/docs/test1.pdf",
       },
     ],
   },
@@ -81,6 +89,7 @@ const mockData: DocumentsSidebarProps["data"] = [
       {
         title: "Termo de Pensão Alimentícia",
         id: "termo-de-pensao-alimenticia-avo",
+        url: "/docs/test.pdf",
       },
     ],
   },
@@ -123,7 +132,10 @@ export function ReviewSubscription() {
   ]);
 
   const [activeStepId, setActiveStepId] = useState("criterios");
-
+  
+  const [activeDocumentId, setActiveDocumentId] = useState<string | undefined>();
+  const [selectedDocumentUrl, setSelectedDocumentUrl] = useState<string | null>(null);
+  
   const handleStepClick = (id: string) => {
     setActiveStepId(id);
   };
@@ -138,6 +150,18 @@ export function ReviewSubscription() {
     }
   };
 
+  const handleDocumentSelect = (id: string) => {
+    setActiveDocumentId(id);
+    for (const section of mockData) {
+      const foundItem = section.items.find((item) => item.id === id);
+      if (foundItem && foundItem.url) {
+        setSelectedDocumentUrl(foundItem.url);
+        return;
+      }
+    }
+    setSelectedDocumentUrl(null);
+  };
+  
   const stepContentMap: Record<string, React.ReactNode> = {
     criterios: <CriteriosContent />,
     dados: <DadosPessoaisContent />,
@@ -207,7 +231,11 @@ export function ReviewSubscription() {
                 } as React.CSSProperties & Record<string, string>
               }
             >
-              <DocumentsSidebar data={mockData} />
+              <DocumentsSidebar 
+                data={mockData}
+                activeDocumentId={activeDocumentId}
+                onDocumentSelect={handleDocumentSelect}
+              />
               <SidebarTrigger />
             </SidebarProvider>
           </div>
@@ -236,15 +264,15 @@ export function ReviewSubscription() {
                 })}
               </nav>
             </header>
-            <div className="overflow-y-auto p-8">
+            <main className="overflow-y-auto p-8">
               <div
-                className={`grid gap-6 ${
+                className={`grid gap-8 ${
                   activeStepId === "resultado" ? "grid-cols-1" : "grid-cols-2"
                 }`}
               >
                 {activeStepId !== "resultado" && (
-                  <div>
-                    <p>Conteúdo principal que pode rolar independentemente.</p>
+                  <div className="h-full min-h-[calc(100vh-12rem)] rounded-lg overflow-hidden border">
+                    <DocumentViewer url={selectedDocumentUrl} title="Visualizador de Documentos" />
                   </div>
                 )}
 
@@ -261,7 +289,7 @@ export function ReviewSubscription() {
                   </Button>
                 </div>
               </div>
-            </div>
+            </main>
           </div>
         </div>
       </div>

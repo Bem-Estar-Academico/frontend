@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SocialWorkersRouteImport } from './routes/_social-workers'
+import { Route as CoodinatorRouteImport } from './routes/_coodinator'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as SocialWorkersConsultarIvsIndexRouteImport } from './routes/_social-workers/consultar-ivs/index'
 import { Route as CoordinatorEditaisIndexRouteImport } from './routes/_coordinator/editais/index'
@@ -20,6 +21,10 @@ import { Route as CoordinatorEditaisCriarRouteImport } from './routes/_coordinat
 
 const SocialWorkersRoute = SocialWorkersRouteImport.update({
   id: '/_social-workers',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CoodinatorRoute = CoodinatorRouteImport.update({
+  id: '/_coodinator',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -82,6 +87,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_coodinator': typeof CoodinatorRoute
   '/_social-workers': typeof SocialWorkersRouteWithChildren
   '/_coordinator/editais/criar': typeof CoordinatorEditaisCriarRoute
   '/_social-workers/consultar-ivs/$id': typeof SocialWorkersConsultarIvsIdRoute
@@ -112,6 +118,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/_coodinator'
     | '/_social-workers'
     | '/_coordinator/editais/criar'
     | '/_social-workers/consultar-ivs/$id'
@@ -123,6 +130,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  CoodinatorRoute: typeof CoodinatorRoute
   SocialWorkersRoute: typeof SocialWorkersRouteWithChildren
   CoordinatorEditaisCriarRoute: typeof CoordinatorEditaisCriarRoute
   AnalisarInscricaoSubscriptionIdRoute: typeof AnalisarInscricaoSubscriptionIdRoute
@@ -136,6 +144,13 @@ declare module '@tanstack/react-router' {
       path: ''
       fullPath: ''
       preLoaderRoute: typeof SocialWorkersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_coodinator': {
+      id: '/_coodinator'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof CoodinatorRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -208,6 +223,7 @@ const SocialWorkersRouteWithChildren = SocialWorkersRoute._addFileChildren(
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  CoodinatorRoute: CoodinatorRoute,
   SocialWorkersRoute: SocialWorkersRouteWithChildren,
   CoordinatorEditaisCriarRoute: CoordinatorEditaisCriarRoute,
   AnalisarInscricaoSubscriptionIdRoute: AnalisarInscricaoSubscriptionIdRoute,

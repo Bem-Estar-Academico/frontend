@@ -26,7 +26,6 @@ import {
 import { YearSelect } from "@/components/ui/year-select"
 import { DatePicker } from "@/components/ui/date-picker"
 import { Separator } from "@/components/ui/separator"
-import { Sidebar } from "@/components/coordinator/sidebar"
 import { Label } from "@/components/ui/label"
 
 const allUsers = [
@@ -104,7 +103,7 @@ const editalSchema = z.object({
 
 type EditalFormData = z.infer<typeof editalSchema>
 
-export const Route = createFileRoute("/_social-workers/editais/criar")({
+export const Route = createFileRoute("/_coordinator/editais/criar")({
   component: CreateEdital,
 })
 
@@ -125,99 +124,95 @@ function CreateEdital() {
 
 
   return (
-    <div className="flex">
-      <Sidebar />
-      
-      <div className="flex flex-col w-full max-w-full bg-gray-100">
-        <div className="px-4 my-4">
-          <Breadcrumb>
-            <BreadcrumbList>
-              <BreadcrumbItem>
-                <BreadcrumbLink href="/editais/criar">Editais</BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator />
-              <BreadcrumbItem>
-                <BreadcrumbPage>Criar</BreadcrumbPage>
-              </BreadcrumbItem>
-            </BreadcrumbList>
-          </Breadcrumb>
-        </div>
+    <div className="flex flex-col w-full max-w-full bg-gray-100">
+      <div className="px-4 my-4">
+        <Breadcrumb>
+          <BreadcrumbList>
+            <BreadcrumbItem>
+              <BreadcrumbLink href="/editais/criar">Editais</BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbPage>Criar</BreadcrumbPage>
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>
+      </div>
 
-        <Separator />
+      <Separator />
 
-        <div className="flex flex-col w-full h-full max-w-full gap-5 px-5 py-4">
-          <h2 className="text-2xl font-medium px-1">Criar Edital</h2>
+      <div className="flex flex-col w-full h-full max-w-full gap-5 px-5 py-4">
+        <h2 className="text-2xl font-medium px-1">Criar Edital</h2>
 
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="px-4 py-4 w-full flex flex-col gap-6">
-              {/* Seção 1: Informações do Edital */}
-              <div className="bg-white p-6 rounded-md border">
-                <h3 className="text-lg font-medium py-2">Informações do Edital</h3>
-                <div className="grid grid-cols-4 gap-8 mt-4">
-                  <div className="flex flex-col gap-8 h-fit">
-                    <FormField
-                      control={form.control}
-                      name={'title'}
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel isRequired>Título do Edital</FormLabel>
-                          <FormControl>
-                            <Input placeholder="ex.: Cadastramento Socioeconômico 2025" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                   
-                    <FormField
-                      control={form.control}
-                      name="year"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel isRequired>Ano de vigência</FormLabel>
-                          <FormControl>
-                            <YearSelect value={field.value} onChange={field.onChange} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-
-                  <div>
-                    <Label className="font-medium py-2" isRequired>Benefícios Ofertados</Label>
-                    <div className="flex flex-col gap-6 py-2">
-                      <BenefitsList control={form.control} availableBenefits={availableBenefits} />
-                    </div>
-                  </div>
-  
-                  <div className="col-span-2 grid grid-cols-3 gap-6 py-2">
-                    <DatePickerField isRequired control={form.control} name="applicationStart" title="Início das Inscrições" />
-                    <DatePickerField control={form.control} name="applicationEnd" title="Término das Inscrições" />
-                    <DatePickerField control={form.control} name="preliminaryResult" title="Resultado Preliminar" />
-                    <DatePickerField control={form.control} name="appealStart" title="Início da Fase de Recursos" />
-                    <DatePickerField control={form.control} name="appealEnd" title="Término da Fase de Recursos" />
-                    <DatePickerField control={form.control} name="finalResult" title="Resultado Final" />
-                  </div>
-             
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="px-4 py-4 w-full flex flex-col gap-6">
+            {/* Seção 1: Informações do Edital */}
+            <div className="bg-white p-6 rounded-md border">
+              <h3 className="text-lg font-medium py-2">Informações do Edital</h3>
+              <div className="grid grid-cols-4 gap-8 mt-4">
+                <div className="flex flex-col gap-8 h-fit">
+                  <FormField
+                    control={form.control}
+                    name={'title'}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel isRequired>Título do Edital</FormLabel>
+                        <FormControl>
+                          <Input placeholder="ex.: Cadastramento Socioeconômico 2025" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  
+                  <FormField
+                    control={form.control}
+                    name="year"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel isRequired>Ano de vigência</FormLabel>
+                        <FormControl>
+                          <YearSelect value={field.value} onChange={field.onChange} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                 </div>
-              </div>
 
-              {/* Seção 2: Equipe */}
-              <div className='bg-white p-6 rounded-md border'>
-                <h3 className="text-lg font-medium py-2">Equipe Responsável</h3>
-                <div className="grid gap-6 py-2">
-                  <UserListField control={form.control} name="coordinators" title="Coordenadores" allUsers={allUsers} />
-                  <UserListField control={form.control} name="social_workers" title="Assistentes Sociais" allUsers={allUsers} />
+                <div>
+                  <Label className="font-medium py-2" isRequired>Benefícios Ofertados</Label>
+                  <div className="flex flex-col gap-6 py-2">
+                    <BenefitsList control={form.control} availableBenefits={availableBenefits} />
+                  </div>
                 </div>
-              </div>
+
+                <div className="col-span-2 grid grid-cols-3 gap-6 py-2">
+                  <DatePickerField isRequired control={form.control} name="applicationStart" title="Início das Inscrições" />
+                  <DatePickerField control={form.control} name="applicationEnd" title="Término das Inscrições" />
+                  <DatePickerField control={form.control} name="preliminaryResult" title="Resultado Preliminar" />
+                  <DatePickerField control={form.control} name="appealStart" title="Início da Fase de Recursos" />
+                  <DatePickerField control={form.control} name="appealEnd" title="Término da Fase de Recursos" />
+                  <DatePickerField control={form.control} name="finalResult" title="Resultado Final" />
+                </div>
             
-              <div className="flex justify-end">
-                <Button type="submit">Salvar</Button>
-              </div> 
-            </form>
-          </Form>
-        </div>
+              </div>
+            </div>
+
+            {/* Seção 2: Equipe */}
+            <div className='bg-white p-6 rounded-md border'>
+              <h3 className="text-lg font-medium py-2">Equipe Responsável</h3>
+              <div className="grid gap-6 py-2">
+                <UserListField control={form.control} name="coordinators" title="Coordenadores" allUsers={allUsers} />
+                <UserListField control={form.control} name="social_workers" title="Assistentes Sociais" allUsers={allUsers} />
+              </div>
+            </div>
+          
+            <div className="flex justify-end">
+              <Button type="submit">Salvar</Button>
+            </div> 
+          </form>
+        </Form>
       </div>
     </div>
   )

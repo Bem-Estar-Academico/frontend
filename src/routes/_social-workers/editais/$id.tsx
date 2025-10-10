@@ -1,7 +1,5 @@
-import { StudentDataTable } from "@/components/students/student-table";
 import RegistrationStatusGraphic, { type RegistrationData } from "@/components/registration-status-graphic";
 import { createFileRoute } from "@tanstack/react-router";
-import { students } from "./-data";
 
 export const Route = createFileRoute("/_social-workers/editais/$id")({
   component: PageEdital,

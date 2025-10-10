@@ -4,7 +4,7 @@ import {
 } from "@/components/documents-sidebar";
 import DocumentViewer from "@/components/document-viewer"; // Importado
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import {
   IconArrowLeft,
   IconClipboardCheck,
@@ -22,6 +22,7 @@ import { ComposicaoFamiliarContent } from "@/components/composicao-familia-conte
 import { ResultadoContent } from "@/components/resultado-content";
 import { AnaliseSocioeconomicoContent } from "@/components/analise-socioeconomico-content";
 import { Button } from "@/components/ui/button";
+import { students } from "@/routes/_social-workers/editais/-data";
 
 export const Route = createFileRoute("/analisar/inscricao/$subscriptionId")({
   component: ReviewSubscription,
@@ -102,7 +103,20 @@ export type NavItem = {
   status: "pending" | "active";
 };
 
-export function ReviewSubscription() {
+interface SubscriptionProps {
+  editalId: string;
+}
+
+export function ReviewSubscription({ editalId }: Readonly<SubscriptionProps>) {
+  editalId = "1"; // modificar depois
+  const { subscriptionId } = Route.useParams();
+
+  const student = students.find((s) => s.id === Number(subscriptionId));
+
+  if (!student) {
+    return <div> Erro </div>;
+  }
+
   const [navItems, setNavItems] = useState<NavItem[]>([
     {
       id: "criterios",
@@ -132,10 +146,14 @@ export function ReviewSubscription() {
   ]);
 
   const [activeStepId, setActiveStepId] = useState("criterios");
-  
-  const [activeDocumentId, setActiveDocumentId] = useState<string | undefined>();
-  const [selectedDocumentUrl, setSelectedDocumentUrl] = useState<string | null>(null);
-  
+
+  const [activeDocumentId, setActiveDocumentId] = useState<
+    string | undefined
+  >();
+  const [selectedDocumentUrl, setSelectedDocumentUrl] = useState<string | null>(
+    null
+  );
+
   const handleStepClick = (id: string) => {
     setActiveStepId(id);
   };
@@ -161,7 +179,7 @@ export function ReviewSubscription() {
     }
     setSelectedDocumentUrl(null);
   };
-  
+
   const stepContentMap: Record<string, React.ReactNode> = {
     criterios: <CriteriosContent />,
     dados: <DadosPessoaisContent />,
@@ -180,16 +198,19 @@ export function ReviewSubscription() {
       <div className="flex h-screen w-screen flex-col">
         <header className="w-full h-14 flex items-center justify-between border-b bg-white px-4">
           <div className="flex items-center gap-6">
-            <button className="flex items-center gap-1 text-sm text-gray-700 hover:text-gray-900">
-              <IconArrowLeft size={18} /> Voltar
-            </button>
-            <span className="font-semibold">Inscrição #32</span>
-            <span>Lucas Martins</span>
+            <Link to={`/editais/` + editalId}>
+              <button className="flex items-center gap-1 text-sm text-gray-700 hover:text-gray-900">
+                <IconArrowLeft size={18} /> Voltar
+              </button>
+            </Link>
+            <span className="font-semibold">Inscrição #{student.id}</span>
+            <span>{student.nome}</span>
             <span>
-              <span className="font-semibold">Matrícula:</span> 20250106
+              <span className="font-semibold">Matrícula:</span>{" "}
+              {student.matricula}
             </span>
             <span>
-              <span className="font-semibold">CPF:</span> 123.456.789-07
+              <span className="font-semibold">CPF:</span> {student.cpf}
             </span>
           </div>
 
@@ -231,7 +252,7 @@ export function ReviewSubscription() {
                 } as React.CSSProperties & Record<string, string>
               }
             >
-              <DocumentsSidebar 
+              <DocumentsSidebar
                 data={mockData}
                 activeDocumentId={activeDocumentId}
                 onDocumentSelect={handleDocumentSelect}
@@ -241,14 +262,14 @@ export function ReviewSubscription() {
           </div>
           <div className="flex h-full flex-col">
             <header className="flex shrink-0 items-center gap-4 bg-white p-4">
-              <nav className="flex items-center gap-2">
+              <nav className="grid grid-cols-5 gap-2 w-full">
                 {navItems.map((item) => {
                   const isActive = item.id === activeStepId;
                   return (
                     <button
                       key={item.id}
                       onClick={() => handleStepClick(item.id)}
-                      className={`flex items-center gap-2 rounded-lg border px-4 py-2 text-sm font-medium ${
+                      className={`flex items-center justify-center gap-2 rounded-lg border px-4 py-2 text-sm font-medium ${
                         isActive
                           ? "border-gray-800 bg-gray-100"
                           : "border-gray-300 bg-white"
@@ -272,16 +293,28 @@ export function ReviewSubscription() {
               >
                 {activeStepId !== "resultado" && (
                   <div className="h-full min-h-[calc(100vh-12rem)] rounded-lg overflow-hidden border">
-                    <DocumentViewer url={selectedDocumentUrl} title="Visualizador de Documentos" />
+                    <DocumentViewer
+                      url={selectedDocumentUrl}
+                      title="Visualizador de Documentos"
+                    />
                   </div>
                 )}
 
-                <div>
+                <div className={`${
+                        activeStepId === "resultado"
+                          ? "flex flex-col"
+                          : ""
+                      }`}>
                   {stepContentMap[activeStepId]}
                   <Button
                     type="button"
                     size="lg"
-                    className="mt-8 w-full bg-gray-700 text-base font-semibold hover:bg-gray-800 disabled:bg-gray-400"
+                    className={`mt-8 bg-gray-700 text-base font-semibold hover:bg-gray-800 disabled:bg-gray-400
+                      ${
+                        activeStepId === "resultado"
+                          ? "grid-cols-1 place-self-center"
+                          : "grid-cols-2 w-full"
+                      }`}
                     onClick={handleNextStep}
                     disabled={isLastStep}
                   >

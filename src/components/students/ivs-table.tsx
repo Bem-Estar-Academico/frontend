@@ -27,18 +27,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import {
-  IconCircleCheckFilled,
-  IconCircleXFilled,
-  IconCircle,
-  IconHelpCircleFilled,
-  IconProgress,
-} from "@tabler/icons-react"
 import { Skeleton } from "@/components/ui/skeleton"
 import { DataTablePagination } from "@/components/ui/data-table-pagination"
 import type { ColumnDef } from "@tanstack/react-table";
-import { MoreHorizontal } from "lucide-react";
-import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { Link } from "@tanstack/react-router";
 import { DataTableColumnHeader } from "@/components/ui/data-table-column-header";
 

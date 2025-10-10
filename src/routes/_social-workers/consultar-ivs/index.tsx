@@ -18,7 +18,6 @@ export function IVS() {
         <ChartEditalResults />
         <ChartTotalIVS />
       </div>
-    
      
       <IVSDataTable data={studentsIVS} />
     </div>

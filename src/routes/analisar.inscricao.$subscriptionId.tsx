@@ -6,23 +6,30 @@ import DocumentViewer from "@/components/document-viewer"; // Importado
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import {
-  IconArrowLeft,
-  IconClipboardCheck,
-  IconFileText,
-  IconSearch,
+  IconListCheck,
   IconUser,
-  IconUsers,
+  IconUsersGroup,
+  IconZoomMoney,
+  IconZoomCheck,
+  IconArrowLeft,
+  IconCircle,
+  IconCircleCheckFilled,
   type IconProps,
+  IconProgress,
 } from "@tabler/icons-react";
 
-import { CriteriosContent } from "@/components/criterios-content";
-import { useState } from "react";
+import {
+  CriteriosContent,
+  eligibilityCriteria,
+} from "@/components/criterios-content";
+import { useEffect, useMemo, useState } from "react";
 import { DadosPessoaisContent } from "@/components/dados-pessoais";
 import { ComposicaoFamiliarContent } from "@/components/composicao-familia-content";
 import { ResultadoContent } from "@/components/resultado-content";
 import { AnaliseSocioeconomicoContent } from "@/components/analise-socioeconomico-content";
 import { Button } from "@/components/ui/button";
 import { students } from "@/routes/_social-workers/editais/-data";
+import { StatusBadge } from "@/components/ui/status-badge";
 
 export const Route = createFileRoute("/analisar/inscricao/$subscriptionId")({
   component: ReviewSubscription,
@@ -105,10 +112,16 @@ export type NavItem = {
 
 interface SubscriptionProps {
   editalId: string;
+  criteriosElegibilidade: Record<string, boolean>;
 }
 
-export function ReviewSubscription({ editalId }: Readonly<SubscriptionProps>) {
+export function ReviewSubscription({
+  editalId,
+  criteriosElegibilidade,
+}: Readonly<SubscriptionProps>) {
   editalId = "1"; // modificar depois
+
+  //Buscar o estudante
   const { subscriptionId } = Route.useParams();
 
   const student = students.find((s) => s.id === Number(subscriptionId));
@@ -117,47 +130,37 @@ export function ReviewSubscription({ editalId }: Readonly<SubscriptionProps>) {
     return <div> Erro </div>;
   }
 
+  // inicio navbar
   const [navItems, setNavItems] = useState<NavItem[]>([
     {
       id: "criterios",
       label: "Critérios de Elegibilidade",
-      icon: IconClipboardCheck,
-      status: "active",
+      icon: IconListCheck,
+      status: "pending",
     },
     { id: "dados", label: "Dados Pessoais", icon: IconUser, status: "pending" },
     {
       id: "composicao",
       label: "Composição Familiar",
-      icon: IconUsers,
+      icon: IconUsersGroup,
       status: "pending",
     },
     {
       id: "analise",
       label: "Análise Socioeconômica",
-      icon: IconSearch,
+      icon: IconZoomMoney,
       status: "pending",
     },
     {
       id: "resultado",
       label: "Resultado",
-      icon: IconFileText,
+      icon: IconZoomCheck,
       status: "pending",
     },
   ]);
 
   const [activeStepId, setActiveStepId] = useState("criterios");
-
-  const [activeDocumentId, setActiveDocumentId] = useState<
-    string | undefined
-  >();
-  const [selectedDocumentUrl, setSelectedDocumentUrl] = useState<string | null>(
-    null
-  );
-
-  const handleStepClick = (id: string) => {
-    setActiveStepId(id);
-  };
-
+  
   const handleNextStep = () => {
     const currentIndex = navItems.findIndex((item) => item.id === activeStepId);
     if (currentIndex < navItems.length - 1) {
@@ -167,6 +170,31 @@ export function ReviewSubscription({ editalId }: Readonly<SubscriptionProps>) {
       console.log("Você já está no último passo!");
     }
   };
+
+  const handleStepClick = (id: string) => {
+    setActiveStepId(id);
+  };
+
+  const currentStepIndex = navItems.findIndex(
+    (item) => item.id === activeStepId
+  );
+
+  const isLastStep = currentStepIndex === navItems.length - 1;
+
+  const activeCount = useMemo(() => {
+    return navItems.filter(item => item.status === 'active').length;
+  }, [navItems]);
+
+  const progress = (activeCount/navItems.length) * 100
+  // fim navbar
+
+  // selecionar documento
+  const [activeDocumentId, setActiveDocumentId] = useState<
+    string | undefined
+  >();
+  const [selectedDocumentUrl, setSelectedDocumentUrl] = useState<string | null>(
+    null
+  );
 
   const handleDocumentSelect = (id: string) => {
     setActiveDocumentId(id);
@@ -180,18 +208,51 @@ export function ReviewSubscription({ editalId }: Readonly<SubscriptionProps>) {
     setSelectedDocumentUrl(null);
   };
 
+  const initialState = eligibilityCriteria.reduce<Record<string, boolean>>(
+    (acc, criterion) => {
+      acc[criterion.id] = false;
+      return acc;
+    },
+    {}
+  );
+
+  //inicio criterio de elegibilidade
+  const [checkedState, setCheckedState] = useState<Record<string, boolean>>(
+    (criteriosElegibilidade === undefined) ? initialState : criteriosElegibilidade
+  );
+  
+  const isAnyCriterionSelected = useMemo(() => {
+      return Object.values(checkedState).some((isChecked) => isChecked);
+    }, [checkedState]);
+
+  useEffect(() => {
+    setNavItems(prevNavItems =>
+      prevNavItems.map(item => {
+        if (item.id === 'criterios') {
+          return {
+            ...item,
+            status: isAnyCriterionSelected ? 'active' : 'pending',
+          };
+        }
+        return item;
+      })
+    );
+  }, [isAnyCriterionSelected]);
+  //fim criterio de elegibilidade
+
+  // componentes que irão ser prenchido
   const stepContentMap: Record<string, React.ReactNode> = {
-    criterios: <CriteriosContent />,
+    criterios: (
+      <CriteriosContent
+        checkedState={checkedState}
+        setCheckedState={setCheckedState}
+      />
+    ),
     dados: <DadosPessoaisContent />,
     composicao: <ComposicaoFamiliarContent />,
     analise: <AnaliseSocioeconomicoContent />,
     resultado: <ResultadoContent />,
   };
-
-  const currentStepIndex = navItems.findIndex(
-    (item) => item.id === activeStepId
-  );
-  const isLastStep = currentStepIndex === navItems.length - 1;
 
   return (
     <>
@@ -216,18 +277,16 @@ export function ReviewSubscription({ editalId }: Readonly<SubscriptionProps>) {
 
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-2">
-              <span className="text-xs text-gray-600">20%</span>
+              <span className="text-xs text-gray-600">{progress}%</span>
               <div className="w-24 h-2 bg-gray-200 rounded-full overflow-hidden">
                 <div
                   className="h-full bg-red-500"
-                  style={{ width: "20%" }}
+                  style={{ width: `${progress}%` }}
                 ></div>
               </div>
             </div>
 
-            <span className="px-2 py-1 text-xs rounded-md border border-gray-300 bg-gray-100 text-gray-700">
-              Em Análise
-            </span>
+            <StatusBadge variant={"review"} />
           </div>
         </header>
 
@@ -260,7 +319,7 @@ export function ReviewSubscription({ editalId }: Readonly<SubscriptionProps>) {
               <SidebarTrigger />
             </SidebarProvider>
           </div>
-          <div className="flex h-full flex-col">
+          <div className="flex flex-col h-full w-full">
             <header className="flex shrink-0 items-center gap-4 bg-white p-4">
               <nav className="grid grid-cols-5 gap-2 w-full">
                 {navItems.map((item) => {
@@ -280,6 +339,13 @@ export function ReviewSubscription({ editalId }: Readonly<SubscriptionProps>) {
                         className={isActive ? "text-gray-800" : "text-gray-400"}
                       />
                       <span>{item.label}</span>
+                      <span>
+                        {item.status === "pending" ? (
+                          <IconProgress size={18} />
+                        ) : (
+                          <IconCircleCheckFilled size={18}/>
+                        )}
+                      </span>
                     </button>
                   );
                 })}
@@ -300,11 +366,11 @@ export function ReviewSubscription({ editalId }: Readonly<SubscriptionProps>) {
                   </div>
                 )}
 
-                <div className={`${
-                        activeStepId === "resultado"
-                          ? "flex flex-col"
-                          : ""
-                      }`}>
+                <div
+                  className={`${
+                    activeStepId === "resultado" ? "flex flex-col" : ""
+                  }`}
+                >
                   {stepContentMap[activeStepId]}
                   <Button
                     type="button"

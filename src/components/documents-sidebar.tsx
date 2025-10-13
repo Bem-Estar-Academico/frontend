@@ -18,6 +18,7 @@ type Document = {
   id: string
   title: string
   items?: Document[]
+  url?: string;
 }
 
 export interface DocumentsSidebarProps {
@@ -25,6 +26,7 @@ export interface DocumentsSidebarProps {
    data: Array<{
     title: string;
     items: Document[]
+    
   }>
    onDocumentSelect?: (id: string) => void
 }

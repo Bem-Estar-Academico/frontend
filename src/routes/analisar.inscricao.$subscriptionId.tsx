@@ -12,7 +12,6 @@ import {
   IconZoomMoney,
   IconZoomCheck,
   IconArrowLeft,
-  IconCircle,
   IconCircleCheckFilled,
   type IconProps,
   IconProgress,
@@ -23,13 +22,20 @@ import {
   eligibilityCriteria,
 } from "@/components/criterios-content";
 import { useEffect, useMemo, useState } from "react";
-import { DadosPessoaisContent } from "@/components/dados-pessoais";
-import { ComposicaoFamiliarContent } from "@/components/composicao-familia-content";
+import {
+  DadosPessoaisContent,
+  testDadosPessoais,
+} from "@/components/dados-pessoais";
+import {
+  ComposicaoFamiliarContent,
+  testComposicaoFamilia,
+} from "@/components/composicao-familia-content";
 import { ResultadoContent } from "@/components/resultado-content";
 import { AnaliseSocioeconomicoContent } from "@/components/analise-socioeconomico-content";
 import { Button } from "@/components/ui/button";
 import { students } from "@/routes/_social-workers/editais/-data";
 import { StatusBadge } from "@/components/ui/status-badge";
+import { useForm } from "react-hook-form";
 
 export const Route = createFileRoute("/analisar/inscricao/$subscriptionId")({
   component: ReviewSubscription,
@@ -112,12 +118,20 @@ export type NavItem = {
 
 interface SubscriptionProps {
   editalId: string;
-  criteriosElegibilidade: Record<string, boolean>;
+  criteriosElegibilidadeProps: Record<string, boolean>;
+  dadosPessoaisProps: Record<string, boolean>;
+  composicaoFamiliaContentProps: Record<string, boolean>;
+  analiseSocioeconomicaContentProps: any;
+  resultadoContentProps: any;
 }
 
 export function ReviewSubscription({
   editalId,
-  criteriosElegibilidade,
+  criteriosElegibilidadeProps,
+  dadosPessoaisProps,
+  composicaoFamiliaContentProps,
+  analiseSocioeconomicaContentProps,
+  resultadoContentProps,
 }: Readonly<SubscriptionProps>) {
   editalId = "1"; // modificar depois
 
@@ -160,7 +174,7 @@ export function ReviewSubscription({
   ]);
 
   const [activeStepId, setActiveStepId] = useState("criterios");
-  
+
   const handleNextStep = () => {
     const currentIndex = navItems.findIndex((item) => item.id === activeStepId);
     if (currentIndex < navItems.length - 1) {
@@ -182,10 +196,10 @@ export function ReviewSubscription({
   const isLastStep = currentStepIndex === navItems.length - 1;
 
   const activeCount = useMemo(() => {
-    return navItems.filter(item => item.status === 'active').length;
+    return navItems.filter((item) => item.status === "active").length;
   }, [navItems]);
 
-  const progress = (activeCount/navItems.length) * 100
+  const progress = (activeCount / navItems.length) * 100;
   // fim navbar
 
   // selecionar documento
@@ -208,50 +222,101 @@ export function ReviewSubscription({
     setSelectedDocumentUrl(null);
   };
 
-  const initialState = eligibilityCriteria.reduce<Record<string, boolean>>(
-    (acc, criterion) => {
-      acc[criterion.id] = false;
-      return acc;
-    },
-    {}
-  );
+  // inicio - estados do formulario
 
-  //inicio criterio de elegibilidade
-  const [checkedState, setCheckedState] = useState<Record<string, boolean>>(
-    (criteriosElegibilidade === undefined) ? initialState : criteriosElegibilidade
-  );
-  
+  //dados pessoas default - modificar com form verdadeiro
+  const initialDadosPessoaisState = testDadosPessoais.reduce<
+    Record<string, boolean>
+  >((acc, item) => {
+    acc[item.id] = false;
+    return acc;
+  }, {});
+
+  //composição familia default - modificar com form verdadeiro
+  const initialComposicaoFamiliaState = testComposicaoFamilia.reduce<
+    Record<string, boolean>
+  >((acc, item) => {
+    acc[item.id] = false;
+    return acc;
+  }, {});
+
+  //Analise Socioeconomico default - modificar com form verdadeiro
+  const initialAnaliseSocioeconomicoState = testComposicaoFamilia.reduce<
+    Record<string, boolean>
+  >((acc, item) => {
+    acc[item.id] = false;
+    return acc;
+  }, {});
+
+  //navbar com todos os tabela para salvar cada campo de analise [criterio até  resultado]
+  const { control, watch, register } = useForm({
+    defaultValues: {
+      criterios:
+        criteriosElegibilidadeProps ??
+        eligibilityCriteria.reduce<Record<string, boolean>>((acc, item) => {
+          acc[item.id] = false;
+          return acc;
+        }, {}),
+      dadosPessoais: dadosPessoaisProps ?? initialDadosPessoaisState,
+      composicaoFamiliar:
+        composicaoFamiliaContentProps ?? initialComposicaoFamiliaState,
+      analiseSocioeconomico:
+        analiseSocioeconomicaContentProps ?? initialAnaliseSocioeconomicoState,
+      resultado: resultadoContentProps ?? {
+        statusGeral: "Em análise",
+        auxilios: {
+          "Bolsa Pró-Graduando": "",
+          "Auxílio Alimentação": "",
+          "Auxílio Moradia": "",
+          "Auxílio Creche": "",
+        },
+        observacoes: "",
+      },
+    },
+  });
+
+  const watchedCriterios = watch("criterios");
+
   const isAnyCriterionSelected = useMemo(() => {
-      return Object.values(checkedState).some((isChecked) => isChecked);
-    }, [checkedState]);
+    return Object.values(watchedCriterios).some((isChecked) => isChecked);
+  }, [watchedCriterios]);
 
   useEffect(() => {
-    setNavItems(prevNavItems =>
-      prevNavItems.map(item => {
-        if (item.id === 'criterios') {
+    setNavItems((prevNavItems) =>
+      prevNavItems.map((item) => {
+        if (item.id === "criterios") {
           return {
             ...item,
-            status: isAnyCriterionSelected ? 'active' : 'pending',
+            status: isAnyCriterionSelected ? "active" : "pending",
+          };
+        }
+        if (item.id === "dados") {
+          return {
+            ...item,
+            status: isAnyCriterionSelected ? "active" : "pending",
+          };
+        }
+        if (item.id === "dados") {
+          return {
+            ...item,
+            status: isAnyCriterionSelected ? "active" : "pending",
           };
         }
         return item;
       })
     );
   }, [isAnyCriterionSelected]);
-  //fim criterio de elegibilidade
+  // fim - estados do formulario
 
   // componentes que irão ser prenchido
   const stepContentMap: Record<string, React.ReactNode> = {
-    criterios: (
-      <CriteriosContent
-        checkedState={checkedState}
-        setCheckedState={setCheckedState}
-      />
+    criterios: <CriteriosContent control={control} name="criterios" />,
+    dados: <DadosPessoaisContent control={control} name="dadosPessoais" />,
+    composicao: (
+      <ComposicaoFamiliarContent control={control} name="composicaoFamiliar" />
     ),
-    dados: <DadosPessoaisContent />,
-    composicao: <ComposicaoFamiliarContent />,
-    analise: <AnaliseSocioeconomicoContent />,
-    resultado: <ResultadoContent />,
+    analise: <AnaliseSocioeconomicoContent control={control} name="analiseSocioeconomico" />,
+    resultado: <ResultadoContent register={register} />,
   };
 
   return (
@@ -343,7 +408,7 @@ export function ReviewSubscription({
                         {item.status === "pending" ? (
                           <IconProgress size={18} />
                         ) : (
-                          <IconCircleCheckFilled size={18}/>
+                          <IconCircleCheckFilled size={18} />
                         )}
                       </span>
                     </button>

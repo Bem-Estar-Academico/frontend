@@ -1,6 +1,6 @@
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
-import { useMemo } from "react";
+import { Controller, type Control } from "react-hook-form";
 
 export const eligibilityCriteria = [
   { id: "rede-publica", label: "Egresso da rede pública de educação básica" },
@@ -31,27 +31,14 @@ export const eligibilityCriteria = [
 ];
 
 interface CriteriosContentProps {
-  checkedState: Record<string, boolean>;
-  setCheckedState: React.Dispatch<
-    React.SetStateAction<Record<string, boolean>>
-  >;
+  control: Control<any>;
+  name: string;
 }
 
 export function CriteriosContent({
-  checkedState,
-  setCheckedState,
+  control,
+  name,
 }: Readonly<CriteriosContentProps>) {
-  const handleCheckboxChange = (id: string, isChecked: boolean) => {
-    setCheckedState((prevState) => ({
-      ...prevState,
-      [id]: isChecked,
-    }));
-  };
-
-  const isAnyCriterionSelected = useMemo(() => {
-    return Object.values(checkedState).some((isChecked) => isChecked);
-  }, [checkedState]);
-
   return (
     <>
       <h3 className="mb-8 text-2xl font-bold text-gray-800">
@@ -60,29 +47,29 @@ export function CriteriosContent({
 
       <div className="space-y-3">
         {eligibilityCriteria.map((criterion) => (
-          <Label
+          <Controller
             key={criterion.id}
-            htmlFor={criterion.id}
-            className="flex cursor-pointer items-center justify-between rounded-lg border border-gray-200 bg-white p-4 shadow-sm transition-colors hover:bg-gray-50 has-[[data-state=checked]]:border-blue-500 has-[[data-state=checked]]:bg-blue-50"
-          >
-            <span className="pr-4 text-sm font-medium text-gray-700">
-              {criterion.label}
-            </span>
-            <Checkbox
-              id={criterion.id}
-              checked={!!checkedState[criterion.id]}
-              onCheckedChange={(checked) =>
-                handleCheckboxChange(criterion.id, !!checked)
-              }
-            />
-          </Label>
+            name={`${name}.${criterion.id}`} // Ex: "criterios.rede-publica"
+            control={control}
+            render={({ field }) => (
+              <Label
+                htmlFor={criterion.id}
+                className="flex cursor-pointer items-center justify-between rounded-lg border p-4 shadow-sm transition-colors hover:bg-gray-50 has-[[data-state=checked]]:border-blue-500 has-[[data-state=checked]]:bg-blue-50"
+              >
+                <span className="pr-4 text-sm font-medium text-gray-700">
+                  {criterion.label}
+                </span>
+                <Checkbox
+                  id={criterion.id}
+                  checked={!!field.value}
+                  onCheckedChange={field.onChange}
+                />
+              </Label>
+            )}
+          />
         ))}
       </div>
-      {!isAnyCriterionSelected && (
-        <p className="mt-4 text-center text-sm font-medium text-red-600">
-          Estudante não atende a nenhum critério de elegibilidade
-        </p>
-      )}
+      
     </>
   );
 }

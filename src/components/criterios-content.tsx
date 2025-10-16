@@ -33,11 +33,13 @@ export const eligibilityCriteria = [
 interface CriteriosContentProps {
   control: Control<any>;
   name: string;
+  showEligibilityWarning: boolean;
 }
 
 export function CriteriosContent({
   control,
   name,
+  showEligibilityWarning,
 }: Readonly<CriteriosContentProps>) {
   return (
     <>
@@ -49,7 +51,7 @@ export function CriteriosContent({
         {eligibilityCriteria.map((criterion) => (
           <Controller
             key={criterion.id}
-            name={`${name}.${criterion.id}`} // Ex: "criterios.rede-publica"
+            name={`${name}.${criterion.id}`}
             control={control}
             render={({ field }) => (
               <Label
@@ -69,7 +71,12 @@ export function CriteriosContent({
           />
         ))}
       </div>
-      
+
+      {showEligibilityWarning && (
+        <p className="mt-4 text-center text-sm font-medium text-red-600">
+          Estudante não atende a nenhum critério de elegibilidade
+        </p>
+      )}
     </>
   );
 }

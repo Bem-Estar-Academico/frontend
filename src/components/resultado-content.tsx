@@ -1,6 +1,5 @@
 import { type UseFormRegister, type FieldValues, type Path } from "react-hook-form";
 
-// 1. O componente 'SelectInput' agora é genérico (<T extends FieldValues>)
 const SelectInput = <T extends FieldValues>({
   label,
   options,
@@ -10,8 +9,8 @@ const SelectInput = <T extends FieldValues>({
 }: {
   label: string;
   options: string[];
-  name: Path<T>; // 2. O nome agora é um 'Path<T>' para segurança de tipos
-  register: UseFormRegister<T>; // 3. O 'register' usa o tipo genérico 'T'
+  name: Path<T>;
+  register: UseFormRegister<T>;
   placeholder?: string;
 }) => (
   <div className="grid grid-cols-2">

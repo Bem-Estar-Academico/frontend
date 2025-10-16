@@ -181,7 +181,11 @@ export function ReviewSubscription({
       const nextStepId = navItems[currentIndex + 1].id;
       setActiveStepId(nextStepId);
     } else {
-      console.log("Você já está no último passo!");
+      console.log("Finalizando o processo!");
+      const formData = getValues();
+    
+      console.log("DADOS A SEREM ENVIADOS:", formData);
+      // Aqui você adicionaria a lógica para submeter o formulário
     }
   };
 
@@ -249,7 +253,7 @@ export function ReviewSubscription({
   }, {});
 
   //navbar com todos os tabela para salvar cada campo de analise [criterio até  resultado]
-  const { control, watch, register } = useForm({
+  const { control, watch, register, getValues } = useForm({
     defaultValues: {
       criterios:
         criteriosElegibilidadeProps ??
@@ -263,59 +267,94 @@ export function ReviewSubscription({
       analiseSocioeconomico:
         analiseSocioeconomicaContentProps ?? initialAnaliseSocioeconomicoState,
       resultado: resultadoContentProps ?? {
-        statusGeral: "Em análise",
+        statusGeral: "Indeferido",
         auxilios: {
-          "Bolsa Pró-Graduando": "",
-          "Auxílio Alimentação": "",
-          "Auxílio Moradia": "",
-          "Auxílio Creche": "",
+          "Bolsa Pró-Graduando": "Indeferido",
+          "Auxílio Alimentação": "Indeferido",
+          "Auxílio Moradia": "Indeferido",
+          "Auxílio Creche": "Indeferido",
         },
         observacoes: "",
       },
     },
   });
 
-  const watchedCriterios = watch("criterios");
+  const watchedFormSections = watch([
+    "criterios",
+    "dadosPessoais",
+    "composicaoFamiliar",
+    "analiseSocioeconomico",
+  ]);
 
-  const isAnyCriterionSelected = useMemo(() => {
-    return Object.values(watchedCriterios).some((isChecked) => isChecked);
-  }, [watchedCriterios]);
+  const stepCompletionStatus = useMemo(() => {
+    const [
+      criterios,
+      dadosPessoais,
+      composicaoFamiliar,
+      analiseSocioeconomico,
+    ] = watchedFormSections;
+
+    const isCriteriosComplete = Object.values(criterios || {}).some(Boolean);
+    const isDadosPessoaisComplete = Object.values(dadosPessoais || {}).some(
+      Boolean
+    );
+    const isComposicaoFamiliarComplete = Object.values(
+      composicaoFamiliar || {}
+    ).some(Boolean);
+
+    const isAnaliseComplete = Object.values(analiseSocioeconomico || {}).some(
+      Boolean
+    );
+
+    return {
+      criterios: isCriteriosComplete,
+      dados: isDadosPessoaisComplete,
+      composicao: isComposicaoFamiliarComplete,
+      analise: isAnaliseComplete,
+      resultado: false,
+    };
+  }, [watchedFormSections]);
+
+  const statusString = JSON.stringify(stepCompletionStatus);
 
   useEffect(() => {
     setNavItems((prevNavItems) =>
       prevNavItems.map((item) => {
-        if (item.id === "criterios") {
-          return {
-            ...item,
-            status: isAnyCriterionSelected ? "active" : "pending",
-          };
-        }
-        if (item.id === "dados") {
-          return {
-            ...item,
-            status: isAnyCriterionSelected ? "active" : "pending",
-          };
-        }
-        if (item.id === "dados") {
-          return {
-            ...item,
-            status: isAnyCriterionSelected ? "active" : "pending",
-          };
-        }
-        return item;
+        const isComplete = stepCompletionStatus[item.id] ?? false;
+
+        return {
+          ...item,
+          status: isComplete ? "active" : "pending",
+        };
       })
     );
-  }, [isAnyCriterionSelected]);
-  // fim - estados do formulario
+  }, [statusString]);
 
-  // componentes que irão ser prenchido
+  const isButtonDisabled = useMemo(() => {
+    if (isLastStep) {
+      return !stepCompletionStatus.criterios;
+    }
+    return false;
+  }, [isLastStep, stepCompletionStatus.criterios]);
+
   const stepContentMap: Record<string, React.ReactNode> = {
-    criterios: <CriteriosContent control={control} name="criterios" />,
+    criterios: (
+      <CriteriosContent
+        control={control}
+        name="criterios"
+        showEligibilityWarning={!stepCompletionStatus.criterios}
+      />
+    ),
     dados: <DadosPessoaisContent control={control} name="dadosPessoais" />,
     composicao: (
       <ComposicaoFamiliarContent control={control} name="composicaoFamiliar" />
     ),
-    analise: <AnaliseSocioeconomicoContent control={control} name="analiseSocioeconomico" />,
+    analise: (
+      <AnaliseSocioeconomicoContent
+        control={control}
+        name="analiseSocioeconomico"
+      />
+    ),
     resultado: <ResultadoContent register={register} />,
   };
 
@@ -358,14 +397,14 @@ export function ReviewSubscription({
         <div className="relative flex flex-1 overflow-hidden">
           <style>
             {`
-            .sidebar-container [data-slot="sidebar-container"] {
-              position: absolute !important;
-              height: 100% !important;
-            }
-            .sidebar-container [data-slot="sidebar-wrapper"] {
-              height: 100% !important;
-            }
-          `}
+             .sidebar-container [data-slot="sidebar-container"] {
+               position: absolute !important;
+               height: 100% !important;
+             }
+             .sidebar-container [data-slot="sidebar-wrapper"] {
+               height: 100% !important;
+             }
+            `}
           </style>
 
           <div className="sidebar-container">
@@ -403,14 +442,21 @@ export function ReviewSubscription({
                         size={16}
                         className={isActive ? "text-gray-800" : "text-gray-400"}
                       />
-                      <span>{item.label}</span>
-                      <span>
-                        {item.status === "pending" ? (
-                          <IconProgress size={18} />
-                        ) : (
-                          <IconCircleCheckFilled size={18} />
-                        )}
-                      </span>
+
+                      {item.label !== "Resultado" ? (
+                        <>
+                          <span>{item.label}</span>
+                          <span>
+                            {item.status === "pending" ? (
+                              <IconProgress size={18} />
+                            ) : (
+                              <IconCircleCheckFilled size={18} />
+                            )}
+                          </span>
+                        </>
+                      ) : (
+                        <span>{item.label}</span>
+                      )}
                     </button>
                   );
                 })}
@@ -437,17 +483,18 @@ export function ReviewSubscription({
                   }`}
                 >
                   {stepContentMap[activeStepId]}
+
                   <Button
                     type="button"
                     size="lg"
                     className={`mt-8 bg-gray-700 text-base font-semibold hover:bg-gray-800 disabled:bg-gray-400
-                      ${
-                        activeStepId === "resultado"
-                          ? "grid-cols-1 place-self-center"
-                          : "grid-cols-2 w-full"
-                      }`}
+                       ${
+                         activeStepId === "resultado"
+                           ? "grid-cols-1 place-self-center"
+                           : "grid-cols-2 w-full"
+                       }`}
                     onClick={handleNextStep}
-                    disabled={isLastStep}
+                    disabled={isButtonDisabled}
                   >
                     {isLastStep ? "Finalizar" : "Próximo"}
                   </Button>

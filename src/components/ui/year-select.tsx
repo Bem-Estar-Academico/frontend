@@ -9,11 +9,11 @@ import {
 } from "@/components/ui/select";
 
 interface YearSelectProps {
-  value?: string
-  onChange?: (year: string) => void
-  startYear?: number
-  endYear?: number
-  className?: string
+  value?: string;
+  onChange?: (year: string | undefined) => void;
+  startYear?: number;
+  endYear?: number;
+  className?: string;
 }
 
 export function YearSelect({
@@ -24,15 +24,18 @@ export function YearSelect({
   className,
 }: Readonly<YearSelectProps>) {
   const years = React.useMemo(() => {
-    const list: string[] = []
+    const list: string[] = [];
     for (let y = endYear; y >= startYear; y--) {
-      list.push(String(y))
+      list.push(String(y));
     }
-    return list
-  }, [startYear, endYear])
+    return list;
+  }, [startYear, endYear]);
 
   return (
-    <Select value={value} onValueChange={onChange}>
+    <Select
+      value={value ?? ""}
+      onValueChange={(val) => onChange?.(val || undefined)}
+    >
       <SelectTrigger className={className}>
         <SelectValue placeholder="Ano" />
       </SelectTrigger>
@@ -46,5 +49,5 @@ export function YearSelect({
         </SelectGroup>
       </SelectContent>
     </Select>
-  )
+  );
 }

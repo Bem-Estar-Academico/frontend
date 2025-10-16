@@ -203,7 +203,7 @@ export function ReviewSubscription({
     return navItems.filter((item) => item.status === "active").length;
   }, [navItems]);
 
-  const progress = (activeCount / navItems.length) * 100;
+  const progress = (activeCount / (navItems.length - 1)) * 100;
   // fim navbar
 
   // selecionar documento

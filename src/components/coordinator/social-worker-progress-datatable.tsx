@@ -190,7 +190,7 @@ export function SocialWorkerProgressDataTable({ data, initialState, pageSizeOpti
         <div className="flex items-center gap-2">
           <Input
             className="min-w-[380px] focus-visible:ring-1 focus-visible:ring-black focus-visible:border-black"
-            placeholder="Buscar estudante"
+            placeholder="Buscar assistente social"
             onChange={(event) => table.setGlobalFilter(String(event.target.value))}
           />
         </div>  

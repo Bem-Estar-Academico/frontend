@@ -1,13 +1,9 @@
-"use client"
-
-import { TrendingUp } from "lucide-react"
 import { Bar, BarChart, CartesianGrid, XAxis } from "recharts"
 
 import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
@@ -39,9 +35,7 @@ const chartConfig = {
 
 export function ChartTotalIVS() {
   return (
-
-    
-    <Card >
+    <Card className='col-span-3 lg:col-span-1'>
       <CardHeader>
         <CardTitle>Estudantes com IVS</CardTitle>
         <CardDescription>Quantidade de estudantes com IVS válido nos últimos 6 períodos</CardDescription>

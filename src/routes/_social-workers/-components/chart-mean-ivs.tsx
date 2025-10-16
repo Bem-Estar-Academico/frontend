@@ -34,7 +34,7 @@ const chartConfig = {
 
 export function ChartMeanIVS() {
   return (
-    <Card className="col-span-2" >
+    <Card className="col-span-2 lg:col-span-1" >
         <CardHeader>
             <CardTitle className="leading-none font-semibold">Média do Índice de Vulnerabilidade Social</CardTitle>
             <CardDescription className='text-muted-foreground text-sm'>

@@ -9,7 +9,9 @@ function LayoutComponent() {
   return (
     <div className="flex">
       <Sidebar />
-      <Outlet />
+      <main className="overflow-y-auto h-screen flex-1">
+        <Outlet />
+      </main>
     </div>
   )
 }

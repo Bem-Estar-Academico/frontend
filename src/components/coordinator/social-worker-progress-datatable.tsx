@@ -32,25 +32,13 @@ import { DataTablePagination } from "@/components/ui/data-table-pagination"
 import type { ColumnDef } from "@tanstack/react-table";
 import { Link } from "@tanstack/react-router";
 import { DataTableColumnHeader } from "@/components/ui/data-table-column-header";
+import type { SocialWorkerProgress } from "./card-social-worker"
 
 const MASK = "******"
 
-export function getColumns(masked: boolean): ColumnDef<StudentIVS>[] {
+export function getColumns(masked: boolean): ColumnDef<SocialWorkerProgress>[] {
   return [
-    {
-      accessorKey: "cpf",
-      header: ({ column }) => <DataTableColumnHeader column={column} title="CPF" />,
-      enableGlobalFilter: true,
-      enableSorting: !masked,
-      cell: ({ row }) => {
-        const value = row.getValue("cpf") as string
-        return (
-          <div className="text-center">
-            {masked ? MASK : value}
-          </div>
-        )
-      },
-    },
+
     {
       accessorKey: "name",
       enableGlobalFilter: true,
@@ -62,31 +50,21 @@ export function getColumns(masked: boolean): ColumnDef<StudentIVS>[] {
       },
     },
     {
-      accessorKey: "registration",
-      header: ({ column }) => <DataTableColumnHeader title="Matrícula" column={column} />,
+      accessorKey: "email",
+      header: ({ column }) => <DataTableColumnHeader title="E-mail" column={column} />,
       enableGlobalFilter: true,
       enableSorting: !masked,
       cell: ({ row }) => {
-        const value = row.getValue("registration") as string
+        const value = row.getValue("email") as string
         return <div className="text-center">{masked ? MASK : value}</div>
       },
     },
     {
-      accessorKey: "ivs",
-      header: ({ column }) => <DataTableColumnHeader title="IVS" column={column} />,
+      accessorKey: "lastAnalysisDate",
       enableGlobalFilter: false,
-      cell: ({ row }) => (
-        <div className="flex items-center justify-center text-gray-600">
-          {row.getValue("ivs")}
-        </div>
-      ),
-    },
-    {
-      accessorKey: "approved_at",
-      enableGlobalFilter: false,
-      header: ({ column }) => <DataTableColumnHeader title="Data de Cadastro" column={column} />,
+      header: ({ column }) => <DataTableColumnHeader title="Data da Última Análise" column={column} />,
       cell: ({ row }) => {
-        const date = new Date(row.getValue("approved_at"))
+        const date = new Date(row.getValue("lastAnalysisDate"))
         const formattedDate = new Intl.DateTimeFormat("pt-BR", {
           day: "2-digit",
           month: "2-digit",
@@ -100,20 +78,28 @@ export function getColumns(masked: boolean): ColumnDef<StudentIVS>[] {
       },
     },
     {
-      accessorKey: "expires_at",
+      accessorKey: "workProgress",
       enableGlobalFilter: false,
-      header: ({ column }) => <DataTableColumnHeader title="Data de Expiração" column={column} />,
+      header: ({ column }) => <DataTableColumnHeader title="Progresso" column={column} />,
       cell: ({ row }) => {
-        const date = new Date(row.getValue("expires_at"))
-        const formattedDate = new Intl.DateTimeFormat("pt-BR", {
-          day: "2-digit",
-          month: "2-digit",
-          year: "numeric",
-          hour: "2-digit",
-          minute: "2-digit",
-        }).format(date)
+        const progress = row.getValue("workProgress") as number
+        let progressColor = "bg-gray-400"
+        if (progress > 0 && progress < 50) progressColor = "bg-yellow-400"
+        if (progress >= 50 && progress < 100) progressColor = "bg-green-400"
+        if (progress === 100) {
+          progressColor = "bg-green-500"
+        }
+
         return (
-          <div className="text-center">{formattedDate.replace(",", " às")}</div>
+          <div className="flex items-center justify-center gap-2 min-w-[120px]">
+            <div className="h-1 w-[50%] rounded-full bg-gray-200 dark:bg-gray-700">
+              <div
+                style={{ width: `${progress}%` }}
+                className={`h-1 rounded-full ${progressColor}`}
+              />
+            </div>
+            <span className="text-xs text-gray-500">{`${progress}%`}</span>
+          </div>
         )
       },
     },
@@ -121,10 +107,9 @@ export function getColumns(masked: boolean): ColumnDef<StudentIVS>[] {
       id: "actions",
       enableGlobalFilter: false,
       cell: ({ row }) => {
-        const student = row.original
+        const member = row.original
         return (
-        
-          <Link to="/consultar-ivs/$id" params={{ id: String(student.id) }} >
+          <Link to="/consultar-ivs/$id" params={{ id: String(member.id) }} >
             <Button variant="ghost" className="h-8 w-8 p-0 cursor-pointer">
               <span className="sr-only">Ver perfil</span>
               <Eye className="h-4 w-4" />
@@ -137,26 +122,17 @@ export function getColumns(masked: boolean): ColumnDef<StudentIVS>[] {
   ]
 }
 
-export type StudentIVS = {
-  id: number
-  cpf: string
-  name: string
-  registration: string
-  ivs: number,
-  approved_at: string
-  expires_at: string
-}
 
 export interface StudentDataTableProps {
   initialState?: InitialTableState;
   pageSizeOptions?: number[];
-  data: StudentIVS[];
+  data: SocialWorkerProgress[];
   isLoading?: boolean;
 }
 
 const DEFAULT_PAGE_SIZE_OPTIONS = [8, 16, 24, 32, 40]
 
-export function IVSDataTable({ data, initialState, pageSizeOptions = DEFAULT_PAGE_SIZE_OPTIONS, isLoading = false }: Readonly<StudentDataTableProps>) {
+export function SocialWorkerProgressDataTable({ data, initialState, pageSizeOptions = DEFAULT_PAGE_SIZE_OPTIONS, isLoading = false }: Readonly<StudentDataTableProps>) {
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({})
@@ -182,7 +158,7 @@ export function IVSDataTable({ data, initialState, pageSizeOptions = DEFAULT_PAG
     [isLoading, columns]
   );
 
-  const table = useReactTable<StudentIVS>({
+  const table = useReactTable<SocialWorkerProgress>({
     data: tableData,
     columns: tableColumns,
     onSortingChange: setSorting,
@@ -209,7 +185,7 @@ export function IVSDataTable({ data, initialState, pageSizeOptions = DEFAULT_PAG
   })
 
   return (
-    <div className="w-full p-4">
+    <div className="w-full">
       <div className="flex items-center justify-between py-4">
         <div className="flex items-center gap-2">
           <Input

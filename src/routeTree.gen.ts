@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as SocialWorkersRouteImport } from './routes/_social-workers'
 import { Route as CoordinatorRouteImport } from './routes/_coordinator'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as CoordinatorEquipeRouteImport } from './routes/_coordinator/equipe'
 import { Route as SocialWorkersConsultarIvsIndexRouteImport } from './routes/_social-workers/consultar-ivs/index'
 import { Route as CoordinatorEditaisIndexRouteImport } from './routes/_coordinator/editais/index'
 import { Route as AnalisarInscricaoSubscriptionIdRouteImport } from './routes/analisar.inscricao.$subscriptionId'
@@ -31,6 +32,11 @@ const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const CoordinatorEquipeRoute = CoordinatorEquipeRouteImport.update({
+  id: '/equipe',
+  path: '/equipe',
+  getParentRoute: () => CoordinatorRoute,
 } as any)
 const SocialWorkersConsultarIvsIndexRoute =
   SocialWorkersConsultarIvsIndexRouteImport.update({
@@ -68,6 +74,7 @@ const CoordinatorEditaisCriarRoute = CoordinatorEditaisCriarRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/equipe': typeof CoordinatorEquipeRoute
   '/editais/criar': typeof CoordinatorEditaisCriarRoute
   '/consultar-ivs/$id': typeof SocialWorkersConsultarIvsIdRoute
   '/editais/$id': typeof SocialWorkersEditaisIdRoute
@@ -77,6 +84,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/equipe': typeof CoordinatorEquipeRoute
   '/editais/criar': typeof CoordinatorEditaisCriarRoute
   '/consultar-ivs/$id': typeof SocialWorkersConsultarIvsIdRoute
   '/editais/$id': typeof SocialWorkersEditaisIdRoute
@@ -89,6 +97,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_coordinator': typeof CoordinatorRouteWithChildren
   '/_social-workers': typeof SocialWorkersRouteWithChildren
+  '/_coordinator/equipe': typeof CoordinatorEquipeRoute
   '/_coordinator/editais/criar': typeof CoordinatorEditaisCriarRoute
   '/_social-workers/consultar-ivs/$id': typeof SocialWorkersConsultarIvsIdRoute
   '/_social-workers/editais/$id': typeof SocialWorkersEditaisIdRoute
@@ -100,6 +109,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/equipe'
     | '/editais/criar'
     | '/consultar-ivs/$id'
     | '/editais/$id'
@@ -109,6 +119,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/equipe'
     | '/editais/criar'
     | '/consultar-ivs/$id'
     | '/editais/$id'
@@ -120,6 +131,7 @@ export interface FileRouteTypes {
     | '/'
     | '/_coordinator'
     | '/_social-workers'
+    | '/_coordinator/equipe'
     | '/_coordinator/editais/criar'
     | '/_social-workers/consultar-ivs/$id'
     | '/_social-workers/editais/$id'
@@ -157,6 +169,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/_coordinator/equipe': {
+      id: '/_coordinator/equipe'
+      path: '/equipe'
+      fullPath: '/equipe'
+      preLoaderRoute: typeof CoordinatorEquipeRouteImport
+      parentRoute: typeof CoordinatorRoute
     }
     '/_social-workers/consultar-ivs/': {
       id: '/_social-workers/consultar-ivs/'
@@ -204,11 +223,13 @@ declare module '@tanstack/react-router' {
 }
 
 interface CoordinatorRouteChildren {
+  CoordinatorEquipeRoute: typeof CoordinatorEquipeRoute
   CoordinatorEditaisCriarRoute: typeof CoordinatorEditaisCriarRoute
   CoordinatorEditaisIndexRoute: typeof CoordinatorEditaisIndexRoute
 }
 
 const CoordinatorRouteChildren: CoordinatorRouteChildren = {
+  CoordinatorEquipeRoute: CoordinatorEquipeRoute,
   CoordinatorEditaisCriarRoute: CoordinatorEditaisCriarRoute,
   CoordinatorEditaisIndexRoute: CoordinatorEditaisIndexRoute,
 }

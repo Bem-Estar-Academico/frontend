@@ -1,4 +1,4 @@
-const formData = {
+const formData: FormDataStructure = {
   sections: [
     {
       id: "s1",
@@ -754,5 +754,45 @@ const formData = {
     }
   ]
 };
+
+export interface FormOption {
+  id: string;
+  label: string;
+}
+
+export interface FormAlert {
+  type: string;
+  title: string;
+  message: string;
+}
+
+export interface FormQuestion {
+  id: string;
+  question: string;
+  type: "checkbox" | "radio" | "text" | "email" | "textarea" | "file" | "checkbox-single";
+  required: boolean;
+  options?: FormOption[];
+  placeholder?: string;
+  description?: string;
+  rows?: number;
+  accept?: string;
+  maxSize?: number;
+}
+
+export interface FormSection {
+    id: string;
+    title: string;
+    description?: string;
+    alert?: FormAlert;
+    questions: FormQuestion[];
+}
+
+export interface FormDataStructure {
+    sections: FormSection[];
+}
+
+export interface FormProps {
+    formData: FormDataStructure;
+}
 
 export default formData;

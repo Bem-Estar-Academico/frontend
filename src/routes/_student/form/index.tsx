@@ -5,64 +5,94 @@ import { useState } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { InputFile } from "@/components/ui/input-file";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import formData from "./-data";
+import { Button } from "@/components/ui/button";
+import formData, { type FormQuestion, type FormOption } from "./-data";
+import { formSchema, getInitialValues, type FormValues } from "./-schema";
 
 export const Route = createFileRoute("/_student/form/")({
   component: Form,
 });
 
-function renderTextInput(question: any) {
+// --- Props para os Componentes de Renderização ---
+interface RenderProps {
+  question: FormQuestion;
+  value: any;
+  error?: string;
+}
+
+interface TextRenderProps extends RenderProps {
+  onChange: (value: string) => void;
+}
+
+interface CheckboxRenderProps extends RenderProps {
+  onCheckedChange: (optionId: string, checked: boolean) => void;
+}
+
+interface CheckboxSingleRenderProps extends RenderProps {
+  onCheckedChange: (checked: boolean) => void;
+}
+
+interface FileRenderProps extends RenderProps {
+  onFileChange: (file: File | null) => void;
+}
+
+function renderTextInput({ question, value, error, onChange }: TextRenderProps) {
   return (
     <div className="flex flex-col gap-2" key={question.id}>
       <Label htmlFor={question.id} className="text-sm" isRequired={question.required}>
-        {question.number ? `${question.number}. ` : ''}{question.question}
+        {question.question}
       </Label>
       {question.description && (
         <p className="text-xs text-gray-500">{question.description}</p>
       )}
-      <Input 
-        id={question.id} 
+      <Input
+        id={question.id}
         type={question.type === "email" ? "email" : "text"}
         placeholder={question.placeholder}
-        className="!text-xs placeholder:text-xs"
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        className="!text-xs placeholder:text-xs max-w-2xl"
       />
+      {error && <p className="text-xs text-red-600">{error}</p>}
     </div>
   );
 }
 
-function renderTextarea(question: any) {
+function renderTextarea({ question, value, error, onChange }: TextRenderProps) {
   return (
     <div className="flex flex-col gap-2" key={question.id}>
       <Label htmlFor={question.id} className="text-sm" isRequired={question.required}>
-        {question.number ? `${question.number}. ` : ''}{question.question}
+        {question.question}
       </Label>
       {question.description && (
         <p className="text-xs text-gray-500 whitespace-pre-line">{question.description}</p>
       )}
-      <Textarea 
+      <Textarea
         id={question.id}
         placeholder={question.placeholder}
         rows={question.rows}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
         className="!text-xs placeholder:text-xs"
       />
+      {error && <p className="text-xs text-red-600">{error}</p>}
     </div>
   );
 }
 
-function renderRadio(question: any) {
+function renderRadio({ question, value, error, onChange }: TextRenderProps) {
   return (
     <div className="flex flex-col gap-2" key={question.id}>
       <Label className="text-sm mb-3" isRequired={question.required}>
-        {question.number ? `${question.number}. ` : ''}{question.question}
+        {question.question}
       </Label>
       {question.description && (
         <p className="text-xs text-gray-500 mb-2">{question.description}</p>
       )}
-      <RadioGroup>
-        {question.options.map((option: any) => (
+      <RadioGroup value={value} onValueChange={onChange}>
+        {question.options && question.options.map((option: FormOption) => (
           <div className="flex items-center gap-3" key={option.id}>
             <RadioGroupItem value={option.id} id={`${question.id}_${option.id}`} />
             <Label htmlFor={`${question.id}_${option.id}`} className="text-xs font-[400]">
@@ -71,85 +101,193 @@ function renderRadio(question: any) {
           </div>
         ))}
       </RadioGroup>
+      {error && <p className="text-xs text-red-600">{error}</p>}
     </div>
   );
 }
 
-function renderCheckbox(question: any) {
+function renderCheckbox({ question, value, error, onCheckedChange }: CheckboxRenderProps) {
+  const valueSet = new Set(value || []);
   return (
     <div className="flex flex-col gap-2" key={question.id}>
       <Label className="text-sm mb-3" isRequired={question.required}>
-        {question.number ? `${question.number}. ` : ''}{question.question}
+        {question.question}
       </Label>
       {question.description && (
         <p className="text-xs text-gray-500 mb-2">{question.description}</p>
       )}
       <div className="flex flex-col gap-2">
-        {question.options.map((option: any) => (
+        {question.options && question.options.map((option: FormOption) => (
           <div className="flex items-center gap-3" key={option.id}>
-            <Checkbox id={`${question.id}_${option.id}`} />
+            <Checkbox
+              id={`${question.id}_${option.id}`}
+              checked={valueSet.has(option.id)}
+              onCheckedChange={(checked) => onCheckedChange(option.id, !!checked)}
+            />
             <Label htmlFor={`${question.id}_${option.id}`} className="text-xs font-[400]">
               {option.label}
             </Label>
           </div>
         ))}
       </div>
+      {error && <p className="text-xs text-red-600">{error}</p>}
     </div>
   );
 }
 
-function renderCheckboxSingle(question: any) {
+function renderCheckboxSingle({ question, value, error, onCheckedChange }: CheckboxSingleRenderProps) {
   return (
     <div className="flex flex-col gap-2" key={question.id}>
       <Label className="text-sm" isRequired={question.required}>
-        {question.number ? `${question.number}. ` : ''}{question.question}
+        {question.question}
       </Label>
-      <div className="flex items-center gap-3 p-4 border rounded-md">
-        <Checkbox id={`${question.id}_${question.options[0].id}`} />
-        <Label 
-          htmlFor={`${question.id}_${question.options[0].id}`} 
-          className="text-xs font-[400] text-gray-600"
-        >
-          {question.options[0].label}
-        </Label>
+      {question.options && (
+        <div className="flex items-center gap-3 p-4 border rounded-md">
+          <Checkbox
+            id={`${question.id}_${question.options[0].id}`}
+            checked={value}
+            onCheckedChange={(checked) => onCheckedChange(!!checked)}
+          />
+          <Label
+            htmlFor={`${question.id}_${question.options[0].id}`}
+            className="text-xs font-[400] text-gray-600"
+          >
+            {question.options[0].label}
+          </Label>
+        </div>
+      )}
+      {error && <p className="text-xs text-red-600">{error}</p>}
+    </div>
+  );
+}
+
+function renderFileInput({ question, error, onFileChange }: FileRenderProps) {
+  
+  const handleFileSelection = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files ? e.target.files[0] : null;
+    
+    onFileChange(file); 
+  };
+  
+  return (
+    <div className="flex flex-col gap-2" key={question.id}>
+      <Label className="text-sm" isRequired={question.required}>
+        {question.question}
+      </Label>
+      <div className="grid w-full max-w-xs items-center gap-3">
+        <Label htmlFor={question.id} className="text-xs font-medium">Selecionar Arquivo PDF</Label>
+        <Input 
+          id={question.id} 
+          type="file" 
+          className="!text-xs file:text-xs w-52" 
+          onChange={handleFileSelection}
+          accept={question.accept || "application/pdf"}
+        />
       </div>
+
+      {error && <p className="text-xs text-red-600">{error}</p>}
     </div>
   );
-}
-
-function renderFileInput(question: any) {
-  return (
-    <div className="flex flex-col gap-2" key={question.id}>
-      <Label className="text-sm" isRequired={question.required}>
-        {question.number ? `${question.number}. ` : ''}{question.question}
-      </Label>
-      <InputFile title="Selecionar Arquivo PDF" />
-    </div>
-  );
-}
-
-function renderQuestion(question: any) {
-  switch (question.type) {
-    case "text":
-    case "email":
-      return renderTextInput(question);
-    case "textarea":
-      return renderTextarea(question);
-    case "radio":
-      return renderRadio(question);
-    case "checkbox":
-      return renderCheckbox(question);
-    case "checkbox-single":
-      return renderCheckboxSingle(question);
-    case "file":
-      return renderFileInput(question);
-    default:
-      return null;
-  }
 }
 
 export function Form() {
   const [activeTab, setActiveTab] = useState(formData.sections[0].id);
+  const [formValues, setFormValues] = useState<FormValues>(getInitialValues());
+  const [formErrors, setFormErrors] = useState<Record<string, string>>({});
+
+  const handleTextChange = (id: string, value: string) => {
+    setFormValues(prev => ({ ...prev, [id]: value }));
+    if (formErrors[id]) {
+      setFormErrors(prev => ({ ...prev, [id]: "" }));
+    }
+  };
+
+  const handleCheckboxChange = (questionId: string, optionId: string, checked: boolean) => {
+    setFormValues(prev => {
+      const currentValues = prev[questionId as keyof FormValues] as string[] || [];
+      const newValues = checked
+        ? [...currentValues, optionId]
+        : currentValues.filter(val => val !== optionId);
+      return { ...prev, [questionId]: newValues };
+    });
+    if (formErrors[questionId]) {
+      setFormErrors(prev => ({ ...prev, [questionId]: "" }));
+    }
+  };
+
+  const handleCheckboxSingleChange = (id: string, checked: boolean) => {
+    setFormValues(prev => ({ ...prev, [id]: checked }));
+    if (formErrors[id]) {
+      setFormErrors(prev => ({ ...prev, [id]: "" }));
+    }
+  };
+
+  const handleFileChange = (id: string, file: File | null) => {
+    setFormValues(prev => ({ ...prev, [id]: file }));
+    if (formErrors[id]) {
+      setFormErrors(prev => ({ ...prev, [id]: "" }));
+    }
+  };
+
+
+  function renderQuestion(question: FormQuestion) {
+    const value = formValues[question.id as keyof FormValues];
+    const error = formErrors[question.id];
+
+    switch (question.type) {
+      case "text":
+      case "email":
+        return renderTextInput({ question, value, error, onChange: (val) => handleTextChange(question.id, val) });
+      case "textarea":
+        return renderTextarea({ question, value, error, onChange: (val) => handleTextChange(question.id, val) });
+      case "radio":
+        return renderRadio({ question, value, error, onChange: (val) => handleTextChange(question.id, val) });
+      case "checkbox":
+        return renderCheckbox({ question, value, error, onCheckedChange: (optId, checked) => handleCheckboxChange(question.id, optId, checked) });
+      case "checkbox-single":
+        return renderCheckboxSingle({ question, value, error, onCheckedChange: (checked) => handleCheckboxSingleChange(question.id, checked) });
+      case "file":
+        return renderFileInput({ question, value, error, onFileChange: (file) => handleFileChange(question.id, file) });
+      default:
+        return null;
+    }
+  }
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setFormErrors({});
+
+    const validationResult = formSchema.safeParse(formValues);
+
+    if (validationResult.success) {
+      alert("Formulário Válido! Enviando JSON:\n" + JSON.stringify(validationResult.data, null, 2));
+      console.log(JSON.stringify(validationResult.data, null, 2));
+    } else {
+      const errors = validationResult.error.flatten().fieldErrors;
+      const formattedErrors: Record<string, string> = {};
+      let firstErrorKey: string | null = null;
+
+      for (const key in errors) {
+        if (errors[key]) {
+          formattedErrors[key] = errors[key]![0];
+          if (!firstErrorKey) {
+            firstErrorKey = key;
+          }
+        }
+      }
+      setFormErrors(formattedErrors);
+
+      if (firstErrorKey) {
+        const errorSection = formData.sections.find(s => 
+          s.questions.some(q => q.id === firstErrorKey)
+        );
+        if (errorSection) {
+          setActiveTab(errorSection.id);
+        }
+      }
+    }
+  };
+
 
   return (
     <div className="flex h-dvh">
@@ -171,7 +309,7 @@ export function Form() {
             <button
               key={section.id}
               onClick={() => setActiveTab(section.id)}
-              className={`flex items-center gap-2 p-2 pl-3 min-h-12 border justify-between rounded-tr-md rounded-br-md shadow-sm transition 
+              className={`flex items-center gap-2 p-2 pl-3 min-h-12 border justify-between rounded-tr-md rounded-br-md transition 
                 ${
                   activeTab === section.id
                     ? "bg-blue-100"
@@ -187,44 +325,44 @@ export function Form() {
         </div>
       </div>
 
-      {/* CONTEÚDO DAS TABS */}
-      <div className="flex-1 overflow-y-auto">
+      {/* TABS */}
+      <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto">
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          {formData.sections.map((section) => (
+          {formData.sections.map((section, sectionIdx) => (
             <TabsContent value={section.id} className="mb-6" key={section.id}>
               {/* Title */}
               <div className="p-4 border-b">
                 <p className="text-md font-medium">{section.title}</p>
               </div>
-              
-              {/* Form Content */}
-              <div className="flex flex-col px-8 py-4 gap-8">
-                {/* Description */}
-                {section.description && (
-                  <div>
-                    <p className="text-xs font-[400] text-gray-500">
-                      {section.description}
-                    </p>
-                  </div>
-                )}
 
+              {/* Description */}
+              {section.description && (
+                <div className="p-4">
+                  <p className="text-xs font-[400] text-gray-500">
+                    {section.description}
+                  </p>
+                </div>
+              )}
+            
+              {/* Form Content */}
+              <div className="grid grid-cols-2 px-8 py-4 gap-8">
                 {/* Alert */}
                 {section.alert && (
-                  <div className={`${
+                  <div className={`col-span-2 ${
                     section.alert.type === 'warning' 
-                      ? 'bg-red-50 border-red-200' 
-                      : 'bg-blue-50 border-blue-200'
+                    ? 'bg-yellow-50 border-yellow-200' // Alterado para amarelo/warning
+                    : 'bg-blue-50 border-blue-200'
                   } border p-3 rounded-md`}>
                     <p className={`text-sm font-medium ${
                       section.alert.type === 'warning' 
-                        ? 'text-red-800' 
+                        ? 'text-yellow-800' 
                         : 'text-blue-800'
                     }`}>
                       {section.alert.title}
                     </p>
                     <p className={`text-xs ${
                       section.alert.type === 'warning' 
-                        ? 'text-red-700' 
+                        ? 'text-yellow-700' 
                         : 'text-blue-700'
                     }`}>
                       {section.alert.message}
@@ -234,11 +372,20 @@ export function Form() {
 
                 {/* Questions */}
                 {section.questions.map((question) => renderQuestion(question))}
+
+                {/* Botão de Envio */}
+                {sectionIdx === formData.sections.length - 1 && (
+                  <div className="col-span-2 flex justify-end pt-8">
+                    <Button type="submit">
+                      Enviar Cadastro
+                    </Button>
+                  </div>
+                )}
               </div>
             </TabsContent>
           ))}
         </Tabs>
-      </div>
+      </form>
     </div>
   );
 }

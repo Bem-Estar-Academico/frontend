@@ -8,10 +8,10 @@ import { resolve } from "node:path";
 
 export default defineConfig({
   plugins: [
+    cloudflare({ viteEnvironment: { name: "ssr" } }),
     tanstackRouter({ target: "react", autoCodeSplitting: true }),
     viteReact(),
     tailwindcss(),
-    cloudflare({ viteEnvironment: { name: "ssr" } }),
   ],
   resolve: {
     alias: {

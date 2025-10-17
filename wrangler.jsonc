@@ -3,4 +3,8 @@
   "name": "bea-frontend",
   "compatibility_date": "2025-09-02",
   "compatibility_flags": ["nodejs_compat"],
+  "assets": {
+    "directory": "./dist/assets",
+    "not_found_handling": "single-page-application"
+  }
 }

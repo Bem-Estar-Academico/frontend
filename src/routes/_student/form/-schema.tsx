@@ -40,11 +40,21 @@ const schemaShape = formData.sections
         break;
 
       case 'file':
+        const maxSize = q.maxSize || 10 * 1024 * 1024;
+        
+        const acceptedTypes = q.accept 
+          ? q.accept.split(',').map(t => t.trim()) 
+          : ['application/pdf'];
+
         const fileSchema = z
           .instanceof(File, { message: "Por favor, anexe um arquivo." })
           .refine(
-            file => file.size <= (q.maxSize || 10 * 1024 * 1024),
-            `O arquivo não pode ser maior que ${(q.maxSize || 10485760) / 1024 / 1024}MB.`
+            (file) => file.size <= maxSize,
+            `O arquivo não pode ser maior que ${maxSize / 1024 / 1024}MB.`
+          )
+          .refine(
+            (file) => acceptedTypes.includes(file.type),
+            `Tipo de arquivo inválido. Somente ${acceptedTypes.join(', ')} são aceitos.`
           );
           
         fieldSchema = q.required 

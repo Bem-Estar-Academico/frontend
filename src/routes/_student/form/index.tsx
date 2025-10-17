@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { GalleryVerticalEnd } from "lucide-react";
-import { useState } from "react";
+import { useState, type ChangeEvent } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -15,7 +15,6 @@ export const Route = createFileRoute("/_student/form/")({
   component: Form,
 });
 
-// --- Props para os Componentes de Renderização ---
 interface RenderProps {
   question: FormQuestion;
   value: any;
@@ -54,8 +53,12 @@ function renderTextInput({ question, value, error, onChange }: TextRenderProps) 
         value={value}
         onChange={(e) => onChange(e.target.value)}
         className="!text-xs placeholder:text-xs max-w-2xl"
+        
+        aria-invalid={!!error}
+        aria-describedby={error ? error : undefined}
       />
-      {error && <p className="text-xs text-red-600">{error}</p>}
+      
+      {error && <p id={error} className="text-xs text-red-600">{error}</p>}
     </div>
   );
 }
@@ -163,7 +166,7 @@ function renderCheckboxSingle({ question, value, error, onCheckedChange }: Check
 
 function renderFileInput({ question, error, onFileChange }: FileRenderProps) {
   
-  const handleFileSelection = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileSelection = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files ? e.target.files[0] : null;
     
     onFileChange(file); 

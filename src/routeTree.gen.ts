@@ -9,9 +9,11 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as StudentRouteImport } from './routes/_student'
 import { Route as SocialWorkersRouteImport } from './routes/_social-workers'
 import { Route as CoordinatorRouteImport } from './routes/_coordinator'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as StudentFormIndexRouteImport } from './routes/_student/form/index'
 import { Route as SocialWorkersConsultarIvsIndexRouteImport } from './routes/_social-workers/consultar-ivs/index'
 import { Route as CoordinatorEditaisIndexRouteImport } from './routes/_coordinator/editais/index'
 import { Route as AnalisarInscricaoSubscriptionIdRouteImport } from './routes/analisar.inscricao.$subscriptionId'
@@ -19,6 +21,10 @@ import { Route as SocialWorkersEditaisIdRouteImport } from './routes/_social-wor
 import { Route as SocialWorkersConsultarIvsIdRouteImport } from './routes/_social-workers/consultar-ivs/$id'
 import { Route as CoordinatorEditaisCriarRouteImport } from './routes/_coordinator/editais/criar'
 
+const StudentRoute = StudentRouteImport.update({
+  id: '/_student',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SocialWorkersRoute = SocialWorkersRouteImport.update({
   id: '/_social-workers',
   getParentRoute: () => rootRouteImport,
@@ -31,6 +37,11 @@ const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const StudentFormIndexRoute = StudentFormIndexRouteImport.update({
+  id: '/form/',
+  path: '/form/',
+  getParentRoute: () => StudentRoute,
 } as any)
 const SocialWorkersConsultarIvsIndexRoute =
   SocialWorkersConsultarIvsIndexRouteImport.update({
@@ -74,6 +85,7 @@ export interface FileRoutesByFullPath {
   '/analisar/inscricao/$subscriptionId': typeof AnalisarInscricaoSubscriptionIdRoute
   '/editais': typeof CoordinatorEditaisIndexRoute
   '/consultar-ivs': typeof SocialWorkersConsultarIvsIndexRoute
+  '/form': typeof StudentFormIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -83,18 +95,21 @@ export interface FileRoutesByTo {
   '/analisar/inscricao/$subscriptionId': typeof AnalisarInscricaoSubscriptionIdRoute
   '/editais': typeof CoordinatorEditaisIndexRoute
   '/consultar-ivs': typeof SocialWorkersConsultarIvsIndexRoute
+  '/form': typeof StudentFormIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_coordinator': typeof CoordinatorRouteWithChildren
   '/_social-workers': typeof SocialWorkersRouteWithChildren
+  '/_student': typeof StudentRouteWithChildren
   '/_coordinator/editais/criar': typeof CoordinatorEditaisCriarRoute
   '/_social-workers/consultar-ivs/$id': typeof SocialWorkersConsultarIvsIdRoute
   '/_social-workers/editais/$id': typeof SocialWorkersEditaisIdRoute
   '/analisar/inscricao/$subscriptionId': typeof AnalisarInscricaoSubscriptionIdRoute
   '/_coordinator/editais/': typeof CoordinatorEditaisIndexRoute
   '/_social-workers/consultar-ivs/': typeof SocialWorkersConsultarIvsIndexRoute
+  '/_student/form/': typeof StudentFormIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -106,6 +121,7 @@ export interface FileRouteTypes {
     | '/analisar/inscricao/$subscriptionId'
     | '/editais'
     | '/consultar-ivs'
+    | '/form'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -115,28 +131,39 @@ export interface FileRouteTypes {
     | '/analisar/inscricao/$subscriptionId'
     | '/editais'
     | '/consultar-ivs'
+    | '/form'
   id:
     | '__root__'
     | '/'
     | '/_coordinator'
     | '/_social-workers'
+    | '/_student'
     | '/_coordinator/editais/criar'
     | '/_social-workers/consultar-ivs/$id'
     | '/_social-workers/editais/$id'
     | '/analisar/inscricao/$subscriptionId'
     | '/_coordinator/editais/'
     | '/_social-workers/consultar-ivs/'
+    | '/_student/form/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   CoordinatorRoute: typeof CoordinatorRouteWithChildren
   SocialWorkersRoute: typeof SocialWorkersRouteWithChildren
+  StudentRoute: typeof StudentRouteWithChildren
   AnalisarInscricaoSubscriptionIdRoute: typeof AnalisarInscricaoSubscriptionIdRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/_student': {
+      id: '/_student'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof StudentRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_social-workers': {
       id: '/_social-workers'
       path: ''
@@ -157,6 +184,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/_student/form/': {
+      id: '/_student/form/'
+      path: '/form'
+      fullPath: '/form'
+      preLoaderRoute: typeof StudentFormIndexRouteImport
+      parentRoute: typeof StudentRoute
     }
     '/_social-workers/consultar-ivs/': {
       id: '/_social-workers/consultar-ivs/'
@@ -233,10 +267,22 @@ const SocialWorkersRouteWithChildren = SocialWorkersRoute._addFileChildren(
   SocialWorkersRouteChildren,
 )
 
+interface StudentRouteChildren {
+  StudentFormIndexRoute: typeof StudentFormIndexRoute
+}
+
+const StudentRouteChildren: StudentRouteChildren = {
+  StudentFormIndexRoute: StudentFormIndexRoute,
+}
+
+const StudentRouteWithChildren =
+  StudentRoute._addFileChildren(StudentRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   CoordinatorRoute: CoordinatorRouteWithChildren,
   SocialWorkersRoute: SocialWorkersRouteWithChildren,
+  StudentRoute: StudentRouteWithChildren,
   AnalisarInscricaoSubscriptionIdRoute: AnalisarInscricaoSubscriptionIdRoute,
 }
 export const routeTree = rootRouteImport

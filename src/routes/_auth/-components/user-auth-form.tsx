@@ -4,6 +4,7 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Link } from "@tanstack/react-router";
 
 interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
@@ -22,8 +23,8 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
   return (
     <div className={cn("grid gap-6", className)} {...props}>
       <form onSubmit={onSubmit}>
-        <div className="grid gap-2">
-          <div className="grid gap-1">
+        <div className="grid gap-4">
+          <div className="grid gap-3">
             <Label className="sr-only" htmlFor="email">
               Email
             </Label>
@@ -36,6 +37,9 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
               autoCorrect="off"
               disabled={isLoading}
             />
+            <Label className="sr-only" htmlFor="password">
+              password
+            </Label>
             <Input
               id="password"
               placeholder="*********"
@@ -47,6 +51,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
             />
           </div>
           <Button disabled={isLoading}>Entrar</Button>
+          <Link to="/create-user">Crie uma conta</Link>
         </div>
       </form>
     </div>

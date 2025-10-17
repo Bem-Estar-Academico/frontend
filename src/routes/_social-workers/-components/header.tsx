@@ -12,7 +12,7 @@ interface HeaderSocialWorkers {
 
 export function HeaderSocialWorkers({ id, name }: Readonly<HeaderSocialWorkers>) {
   const { data } =  useSuspenseQuery(editaisQueryOptions)
-    
+
   return (
     <header className="text-sm font-medium w-full h-16 bg-gray-100 shadow flex items-center justify-between px-6">
       <div className="flex items-center gap-6">

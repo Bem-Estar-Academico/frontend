@@ -19,7 +19,7 @@ export type StudentRegistration = {
   id: number
   student_id: number
   notice_id: number
-  status: "PENDING" | "APPROVED" | "REJECTED" | "APPEAL" | "ANALISYS"
+  status: "PENDING" | "APPROVED" | "REJECTED" | "APPEAL" | "ANALISYS" | "CANCELLED"
   registration_date: string
   created_at: string
   updated_at: string

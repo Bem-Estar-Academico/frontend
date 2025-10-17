@@ -1,3 +1,5 @@
+import { ErrorComponent } from '@/components/error'
+import { NotFoundComponent } from '@/components/not-found'
 import { TanstackDevtools } from '@tanstack/react-devtools'
 import type { QueryClient } from '@tanstack/react-query'
 import { Outlet, createRootRouteWithContext } from '@tanstack/react-router'
@@ -22,5 +24,6 @@ export const Route = createRootRouteWithContext<{
       />
     </>
   ),
-  notFoundComponent: () => <div>404 - Not Found</div>,
+  notFoundComponent: NotFoundComponent,
+  errorComponent: ErrorComponent,
 })

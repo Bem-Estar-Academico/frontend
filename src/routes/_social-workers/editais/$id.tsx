@@ -8,6 +8,7 @@ import type { StudentRegistration } from "@/types/student-registration";
 
 export const Route = createFileRoute("/_social-workers/editais/$id")({
   component: PageEdital,
+  loader: ({ context: { queryClient }, params: { id } }) => queryClient.ensureQueryData(editalQueryOptions(Number(id)))
 });
 
 export function PageEdital() {
@@ -38,8 +39,6 @@ export function PageEdital() {
     ANALISYS: { name: "Em Análise", color: "var(--color-blue-500)" }
   };
 
-  console.log('statusCounts', statusCounts);
-
   const chartData = Object.entries(statusCounts).map(([status, value]) => ({
     name: statusMap[status as keyof typeof statusMap].name,
     value,
@@ -65,8 +64,8 @@ export function PageEdital() {
       nome: registration.student.full_name,
       matricula: registration.student.student_registration,
       status: statusTranslation[registration.status],
-      progresso: Math.ceil(Math.random() * 100), // TODO: replace with actual progress
-      documentos: Math.ceil(Math.random() * 10), // TODO: replace with actual document count
+      progresso: Math.ceil(Math.random() * 100),
+      documentos: Math.ceil(Math.random() * 10),
       dataInscricao: registration.registration_date,
     })
   );
@@ -74,8 +73,8 @@ export function PageEdital() {
   return (
     <>
       <section className="text-sm font-medium px-10" dir="ltr">
-        <h2 className="text-xl pt-6">{edital.title}</h2>
-        <div className="text-sm font-medium flex items-center justify-between">
+        <h2 className="text-xl pt-6 mb-6">{edital.title}</h2>
+        <div className="text-sm font-medium flex items-center justify-between flex-wrap gap-6">
           <div className="grid grid-cols-3 gap-10">
             <div className="flex-col">
               <div>Início das Inscrições</div>

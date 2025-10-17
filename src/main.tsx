@@ -8,6 +8,8 @@ import { routeTree } from './routeTree.gen'
 
 import reportWebVitals from './reportWebVitals.ts'
 import './styles.css'
+import { NotFoundComponent } from './components/not-found.tsx'
+import { ErrorComponent } from './components/error.tsx'
 
 const queryClient = new QueryClient()
 
@@ -21,6 +23,9 @@ const router = createRouter({
   scrollRestoration: true,
   defaultStructuralSharing: true,
   defaultPreloadStaleTime: 0,
+  defaultNotFoundComponent: NotFoundComponent,
+  defaultErrorComponent: ErrorComponent,
+  defaultPendingComponent: () => <div>Carregando...</div>,
 })
 
 // Register the router instance for type safety

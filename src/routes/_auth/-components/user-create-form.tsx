@@ -1,5 +1,3 @@
-"use client";
-
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -120,11 +118,11 @@ export default function UserCreateForm() {
     <>
       <div className="flex flex-col h-full w-full items-center justify-center">
         <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
-          <img src="/logo-ufal.png" alt="Logo UFAL" className="size-5" />
-          <div className="flex flex-row items-center justify-center">
-            <h1 className="text-2xl font-semibold tracking-tight pt-8">
+          <div className="flex items-center pt-8">
+            <h1 className="text-2xl font-semibold tracking-tight w-full">
               Inscrever-se
             </h1>
+            <img src="/logo-ufal.png" alt="Logo UFAL" className="w-10" />
           </div>
           <div>
             <Form {...form}>

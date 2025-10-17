@@ -53,7 +53,8 @@ export function PageEdital() {
     APPROVED: "Deferido",
     REJECTED: "Indeferido",
     APPEAL: "Em Recurso",
-    ANALISYS: "Em Análise"
+    ANALISYS: "Em Análise",
+    CANCELLED: "Indeferido"
   };
 
   const students = studentsRegistrations.registrations.map(

@@ -3,6 +3,9 @@ import { HeaderSocialWorkers } from './_social-workers/-components/header'
 
 export const Route = createFileRoute('/_social-workers')({
   component: LayoutComponent,
+  loader: ({context: {queryClient}}) => {
+
+  }
 })
 
 function LayoutComponent() {

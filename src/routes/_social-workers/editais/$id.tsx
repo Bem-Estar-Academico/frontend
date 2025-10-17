@@ -1,161 +1,145 @@
 import { StudentDataTable } from "@/components/students/student-table";
-import RegistrationStatusGraphic, { type RegistrationData } from "@/components/registration-status-graphic";
+import RegistrationStatusGraphic from "@/components/registration-status-graphic";
 import { createFileRoute } from "@tanstack/react-router";
-import { students } from "./-data";
+import { editalQueryOptions } from "@/queries/edital";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { studentsRegistrationsQueryOptions } from "@/queries/students-registrations";
+import type { StudentRegistration } from "@/types/student-registration";
 
 export const Route = createFileRoute("/_social-workers/editais/$id")({
   component: PageEdital,
 });
 
-interface EditalData {
-  dataGraphic: Array<RegistrationData>;
-  id: number;
-  name: string;
-  beginDateRegistration: Date;
-  endDateRegistration: Date | null;
-  preliminaryResultsDate: Date | null;
-  beginAppealsPhaseDate: Date | null;
-  endAppealsPhaseDate: Date | null;
-  finalResultsDate: Date | null;
-}
-
-const mockData: EditalData[] = [
-  {
-    id: 1,
-    name: "Edital 2025.1",
-    beginDateRegistration: new Date("2025-04-21"),
-    endDateRegistration: new Date("2025-05-22"),
-    preliminaryResultsDate: new Date("2025-06-29"),
-    beginAppealsPhaseDate: new Date("2025-07-21"),
-    endAppealsPhaseDate: new Date("2025-08-22"),
-    finalResultsDate: new Date("2025-09-25"),
-    dataGraphic: [
-      { name: "Deferido", value: 400, color: "#4ADE80" },
-      { name: "Indeferido", value: 300, color: "#EF4444" },
-      { name: "Recurso", value: 300, color: "#A855F7" },
-      { name: "Pendente", value: 200, color: "#9CA3AF" },
-      { name: "Em Análise", value: 100, color: "#60A5FA" },
-    ],
-  },
-  {
-    id: 2,
-    name: "Edital 2025.2",
-    beginDateRegistration: new Date("2025-09-25"),
-    endDateRegistration: new Date("2025-09-25"),
-    preliminaryResultsDate: new Date("2025-09-25"),
-    beginAppealsPhaseDate: new Date("2025-09-25"),
-    endAppealsPhaseDate: new Date("2025-09-25"),
-    finalResultsDate: new Date("2025-09-25"),
-    dataGraphic: [
-      { name: "Deferido", value: 100, color: "#4ADE80" },
-      { name: "Indeferido", value: 300, color: "#EF4444" },
-      { name: "Recurso", value: 20, color: "#A855F7" },
-      { name: "Pendente", value: 250, color: "#9CA3AF" },
-      { name: "Em Análise", value: 150, color: "#60A5FA" },
-    ],
-  },
-  {
-    id: 3,
-    name: "Edital 2024.1",
-    beginDateRegistration: new Date("2025-09-25"),
-    endDateRegistration: null,
-    preliminaryResultsDate: new Date("2025-09-25"),
-    beginAppealsPhaseDate: new Date("2025-09-25"),
-    endAppealsPhaseDate: new Date("2025-09-25"),
-    finalResultsDate: new Date("2025-09-25"),
-    dataGraphic: [
-      { name: "Deferido", value: 4000, color: "#4ADE80" },
-      { name: "Indeferido", value: 300, color: "#EF4444" },
-      { name: "Recurso", value: 700, color: "#A855F7" },
-      { name: "Pendente", value: 200, color: "#9CA3AF" },
-      { name: "Em Análise", value: 100, color: "#60A5FA" },
-    ],
-  },
-  {
-    id: 4,
-    name: "Edital 2025.2",
-    beginDateRegistration: new Date("2025-09-25"),
-    endDateRegistration: new Date("2025-09-25"),
-    preliminaryResultsDate: new Date("2025-09-25"),
-    beginAppealsPhaseDate: new Date("2025-09-25"),
-    endAppealsPhaseDate: new Date("2025-09-25"),
-    finalResultsDate: null,
-    dataGraphic: [
-      { name: "Deferido", value: 200, color: "#4ADE80" },
-      { name: "Indeferido", value: 100, color: "#EF4444" },
-      { name: "Recurso", value: 350, color: "#A855F7" },
-      { name: "Pendente", value: 100, color: "#9CA3AF" },
-      { name: "Em Análise", value: 50, color: "#60A5FA" },
-    ],
-  },
-];
-
 export function PageEdital() {
   const { id } = Route.useParams();
-
-  const edital = mockData.find((e) => e.id === Number(id));
+  const { data: edital } = useSuspenseQuery(editalQueryOptions(Number(id)));
+  const { data: studentsRegistrations } = useSuspenseQuery(
+    studentsRegistrationsQueryOptions(Number(id))
+  );
 
   if (!edital) {
     return <p>Edital não encontrado</p>;
   }
 
+  const statusCounts = studentsRegistrations.registrations.reduce(
+    (acc, registration: StudentRegistration) => {
+      acc[registration.status] = (acc[registration.status] || 0) + 1;
+      return acc;
+    },
+    {} as Record<StudentRegistration["status"], number>
+  );
+
+  const statusMap = {
+    PENDING: { name: "Pendentes", color: "var(--color-gray-500)" },
+    APPROVED: { name: "Deferido", color: "var(--color-green-400)" },
+    REJECTED: { name: "Indeferido", color: "var(--color-red-400)" },
+    CANCELLED: { name: "Cancelados", color: "var(--color-purple-400)" },
+    RECURSO: { name: "Cancelados", color: "var(--color-purple-400)" },
+    ANALISYS: { name: "Em Análise", color: "var(--color-blue-500)" }
+  };
+
+  console.log('statusCounts', statusCounts);
+
+  const chartData = Object.entries(statusCounts).map(([status, value]) => ({
+    name: statusMap[status as keyof typeof statusMap].name,
+    value,
+    color: statusMap[status as keyof typeof statusMap].color,
+  }));
+
+  const statusTranslation: Record<
+    StudentRegistration["status"],
+    "Pendente" | "Deferido" | "Indeferido" | "Recurso" | "Em Análise"
+  > = {
+    PENDING: "Pendente",
+    APPROVED: "Deferido",
+    REJECTED: "Indeferido",
+    
+    RECURSO: "Indeferido",
+    ANALISYS: "Pendente"
+  };
+
+  const students = studentsRegistrations.registrations.map(
+    (registration: StudentRegistration) => ({
+      id: registration.student.id,
+      cpf: registration.student.cpf,
+      nome: registration.student.full_name,
+      matricula: registration.student.student_registration,
+      status: statusTranslation[registration.status],
+      progresso: Math.ceil(Math.random() * 100), // TODO: replace with actual progress
+      documentos: Math.ceil(Math.random() * 10), // TODO: replace with actual document count
+      dataInscricao: registration.registration_date,
+    })
+  );
+
   return (
     <>
       <section className="text-sm font-medium px-10" dir="ltr">
-        <h2 className="text-xl pt-6">{edital.name}</h2>
+        <h2 className="text-xl pt-6">{edital.title}</h2>
         <div className="text-sm font-medium flex items-center justify-between">
           <div className="grid grid-cols-3 gap-10">
             <div className="flex-col">
               <div>Início das Inscrições</div>
               <div className="text-xs font-light">
-                {(edital.beginDateRegistration === null)
+                {edital.registration_start_date === null
                   ? "--/--/----"
-                  : edital.beginDateRegistration.toLocaleDateString("pt-BR")}
+                  : new Date(
+                      edital.registration_start_date
+                    ).toLocaleDateString("pt-BR")}
               </div>
             </div>
             <div className="flex-col">
               <div>Término das Inscrições</div>
               <div className="text-xs font-light">
-                {(edital.endDateRegistration === null)
+                {edital.registration_end_date === null
                   ? "--/--/----"
-                  : edital.endDateRegistration.toLocaleDateString("pt-BR")}
+                  : new Date(edital.registration_end_date).toLocaleDateString(
+                      "pt-BR"
+                    )}
               </div>
             </div>
             <div className="flex-col">
               <div>Divulgação do Resultado Preliminar</div>
               <div className="text-xs font-light">
-                {(edital.preliminaryResultsDate === null)
+                {edital.preliminary_result_date === null
                   ? "--/--/----"
-                  : edital.preliminaryResultsDate.toLocaleDateString("pt-BR")}
+                  : new Date(
+                      edital.preliminary_result_date
+                    ).toLocaleDateString("pt-BR")}
               </div>
             </div>
             <div className="flex-col">
               <div>Início da Fase de Recursos</div>
               <div className="text-xs font-light">
-                {(edital.beginAppealsPhaseDate === null)
+                {edital.appeal_start_date === null
                   ? "--/--/----"
-                  : edital.beginAppealsPhaseDate.toLocaleDateString("pt-BR")}
+                  : new Date(edital.appeal_start_date).toLocaleDateString(
+                      "pt-BR"
+                    )}
               </div>
             </div>
             <div className="flex-col">
               <div>Término da Fase de Recursos</div>
               <div className="text-xs font-light">
-                {(edital.endAppealsPhaseDate === null)
+                {edital.appeal_end_date === null
                   ? "--/--/----"
-                  : edital.endAppealsPhaseDate.toLocaleDateString("pt-BR")}
+                  : new Date(edital.appeal_end_date).toLocaleDateString(
+                      "pt-BR"
+                    )}
               </div>
             </div>
             <div className="flex-col">
               <div>Divulgação do Resultado Final</div>
               <div className="text-xs font-light">
-                {(edital.finalResultsDate === null)
+                {edital.final_result_date === null
                   ? "--/--/----"
-                  : edital.finalResultsDate.toLocaleDateString("pt-BR")}
+                  : new Date(edital.final_result_date).toLocaleDateString(
+                      "pt-BR"
+                    )}
               </div>
             </div>
           </div>
           <div className="flex items-center content-center justify-center">
-            <RegistrationStatusGraphic dataRegistration={edital.dataGraphic} />
+            <RegistrationStatusGraphic dataRegistration={chartData} />
           </div>
         </div>
       </section>

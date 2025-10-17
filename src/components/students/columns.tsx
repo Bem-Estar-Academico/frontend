@@ -72,10 +72,11 @@ export function getColumns(masked: boolean): ColumnDef<Student>[] {
       cell: ({ row }) => {
         const progress = row.getValue("progresso") as number
         let progressColor = "bg-gray-400"
-        if (progress > 0 && progress < 100) progressColor = "bg-yellow-400"
+        if (progress > 0 && progress < 50) progressColor = "bg-yellow-400"
+        if (progress >= 50 && progress < 100) progressColor = "bg-green-400"
         if (progress === 100) {
           const status = row.getValue("status") as string
-          progressColor = status === "Deferido" ? "bg-green-500" : "bg-red-500"
+          progressColor = status === "APPROVED" ? "bg-green-500" : "bg-red-500"
         }
 
         return (

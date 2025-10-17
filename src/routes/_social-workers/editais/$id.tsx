@@ -35,7 +35,7 @@ export function PageEdital() {
     APPROVED: { name: "Deferido", color: "var(--color-green-400)" },
     REJECTED: { name: "Indeferido", color: "var(--color-red-400)" },
     CANCELLED: { name: "Cancelados", color: "var(--color-purple-400)" },
-    RECURSO: { name: "Cancelados", color: "var(--color-purple-400)" },
+    APPEAL: { name: "Em Recurso", color: "var(--color-purple-400)" },
     ANALISYS: { name: "Em Análise", color: "var(--color-blue-500)" }
   };
 
@@ -47,13 +47,12 @@ export function PageEdital() {
 
   const statusTranslation: Record<
     StudentRegistration["status"],
-    "Pendente" | "Deferido" | "Indeferido" | "Recurso" | "Em Análise"
+    "Pendente" | "Deferido" | "Indeferido" | "Em Recurso" | "Em Análise"
   > = {
     PENDING: "Pendente",
     APPROVED: "Deferido",
     REJECTED: "Indeferido",
-    
-    RECURSO: "Indeferido",
+    APPEAL: "Em Recurso",
     ANALISYS: "Pendente"
   };
 

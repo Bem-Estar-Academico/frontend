@@ -71,7 +71,7 @@ export type Student = {
   cpf: string
   nome: string
   matricula: string
-  status: "Pendente" | "Em Análise" | "Recurso" | "Deferido" | "Indeferido"
+  status: "Pendente" | "Em Análise" | "Em Recurso" | "Deferido" | "Indeferido"
   progresso: number
   documentos: number
   dataInscricao: string

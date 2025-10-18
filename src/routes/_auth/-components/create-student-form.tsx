@@ -58,7 +58,7 @@ const formFieldsConfig = [
 const formSchema = z
   .object({
     full_name: z.string().min(2, {
-      message: "Nome deve ter no mínimo 15 caracteres.",
+      message: "Nome deve ter no mínimo 2 caracteres.",
     }),
     student_registration: z
       .string()

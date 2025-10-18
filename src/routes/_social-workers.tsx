@@ -26,7 +26,7 @@ function LayoutComponent() {
 
   return (
     <>
-      <HeaderSocialWorkers name={user.full_name} id={user?.id} />
+      <HeaderSocialWorkers name={user.full_name} id={user.id} />
       <Outlet />
     </>
   )

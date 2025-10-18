@@ -6,8 +6,6 @@ export const Route = createFileRoute('/_student')({
 
 function LayoutComponent() {
   return (
-    <>
-      <Outlet />
-    </>
+    <Outlet />
   )
 }

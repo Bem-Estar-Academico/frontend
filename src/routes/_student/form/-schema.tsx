@@ -39,7 +39,7 @@ const schemaShape = formData.sections
           : z.boolean().optional();
         break;
 
-      case 'file':
+      case 'file': {
         const maxSize = q.maxSize || 10 * 1024 * 1024;
         
         const acceptedTypes = q.accept 
@@ -61,7 +61,7 @@ const schemaShape = formData.sections
           ? fileSchema 
           : fileSchema.optional().nullable();
         break;
-        
+      }
       default:
         fieldSchema = z.any();
     }

@@ -55,7 +55,7 @@ function renderTextInput({ question, value, error, onChange }: TextRenderProps) 
         className="!text-xs placeholder:text-xs max-w-2xl"
         
         aria-invalid={!!error}
-        aria-describedby={error ? error : undefined}
+        aria-describedby={error || undefined}
       />
       
       {error && <p id={error} className="text-xs text-red-600">{error}</p>}
@@ -95,7 +95,7 @@ function renderRadio({ question, value, error, onChange }: TextRenderProps) {
         <p className="text-xs text-gray-500 mb-2">{question.description}</p>
       )}
       <RadioGroup value={value} onValueChange={onChange}>
-        {question.options && question.options.map((option: FormOption) => (
+        {question.options?.map((option: FormOption) => (
           <div className="flex items-center gap-3" key={option.id}>
             <RadioGroupItem value={option.id} id={`${question.id}_${option.id}`} />
             <Label htmlFor={`${question.id}_${option.id}`} className="text-xs font-[400]">
@@ -120,7 +120,7 @@ function renderCheckbox({ question, value, error, onCheckedChange }: CheckboxRen
         <p className="text-xs text-gray-500 mb-2">{question.description}</p>
       )}
       <div className="flex flex-col gap-2">
-        {question.options && question.options.map((option: FormOption) => (
+        {question.options?.map((option: FormOption) => (
           <div className="flex items-center gap-3" key={option.id}>
             <Checkbox
               id={`${question.id}_${option.id}`}
@@ -305,28 +305,30 @@ export function Form() {
     if (validationResult.success) {
       alert("Formulário Válido! Enviando JSON:\n" + JSON.stringify(validationResult.data, null, 2));
       console.log(JSON.stringify(validationResult.data, null, 2));
-    } else {
-      const errors = validationResult.error.flatten().fieldErrors;
-      const formattedErrors: Record<string, string> = {};
-      let firstErrorKey: string | null = null;
+      return;
+    }
 
-      for (const key in errors) {
-        if (errors[key]) {
-          formattedErrors[key] = errors[key]![0];
-          if (!firstErrorKey) {
-            firstErrorKey = key;
-          }
+    const errors = validationResult.error.flatten().fieldErrors;
+    const formattedErrors: Record<string, string> = {};
+    let firstErrorKey: string | null = null;
+
+    for (const key in errors) {
+      if (errors[key]) {
+        formattedErrors[key] = errors[key]![0];
+        if (!firstErrorKey) {
+          firstErrorKey = key;
         }
       }
-      setFormErrors(formattedErrors);
+    }
+    
+    setFormErrors(formattedErrors);
 
-      if (firstErrorKey) {
-        const errorSection = formData.sections.find(s => 
-          s.questions.some(q => q.id === firstErrorKey)
-        );
-        if (errorSection) {
-          setActiveTab(errorSection.id);
-        }
+    if (firstErrorKey) {
+      const errorSection = formData.sections.find(s => 
+        s.questions.some(q => q.id === firstErrorKey)
+      );
+      if (errorSection) {
+        setActiveTab(errorSection.id);
       }
     }
   };

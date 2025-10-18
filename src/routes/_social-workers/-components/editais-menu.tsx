@@ -7,9 +7,11 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { ChevronDown } from "lucide-react";
 
-const mockIds = [1, 2, 3, 4];
+interface EditaisMenuProps {
+  data: Array<{ id: number; title: string }>;
+}
 
-export function EditaisMenu() {
+export function EditaisMenu({ data }: Readonly<EditaisMenuProps>) {
 
   const params = useParams({
     from: "/_social-workers/editais/$id",
@@ -25,17 +27,17 @@ export function EditaisMenu() {
           Editais <ChevronDown className="w-4 h-4" />
         </button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-48">
-        {mockIds.map((id) => (
-          <DropdownMenuItem key={id} asChild>
+      <DropdownMenuContent className="w-48 max-h-60 overflow-y-auto">
+        {data.map((edital) => (
+          <DropdownMenuItem key={edital.id} asChild>
             <Link
               to={`/editais/$id`}
-              params={{ id: String(id) }}
+              params={{ id: String(edital.id) }}
               className={
-                currentId === String(id) ? "w-full font-bold" : ""
+                currentId === String(edital.id) ? "w-full font-bold" : ""
               }
             >
-              Edital {id}
+              {edital.title}
             </Link>
           </DropdownMenuItem>
         ))}

@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 import { UserAuthForm } from "./-components/user-auth-form";
 
 import {
@@ -10,6 +10,14 @@ import {
 } from "@/components/ui/card";
 
 export const Route = createFileRoute("/_auth/login")({
+  validateSearch: (search) => ({
+    redirect: (search.redirect as string) || '/',
+  }),
+  beforeLoad: async ({ context, search }) => {
+    if (context.auth?.isAuthenticated) {
+      throw redirect({ to: search.redirect })
+    }
+  },
   component: () => {
     return (
         <div className="bg-gray-100 flex flex-col h-screen w-full items-center justify-center">

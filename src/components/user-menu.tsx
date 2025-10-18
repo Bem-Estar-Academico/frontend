@@ -9,6 +9,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { ChevronDown } from "lucide-react"
 import { Button } from "@/components/ui/button";
+import { useRouteContext } from "@tanstack/react-router";
 
 interface UserMenuProps {
   id: number;
@@ -16,13 +17,15 @@ interface UserMenuProps {
 };
 
 export function UserMenu({ name }: Readonly<UserMenuProps>) {
+  const { auth } = useRouteContext({ from: '__root__'});
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" className="relative flex items-center h-fit gap-4 text-gray-800 hover:text-gray-600 transition">
           <Avatar>
             <AvatarImage src={'/avatar-image.png'} alt={name} />
-            <AvatarFallback className="bg-gray-300">{name[0]}</AvatarFallback>
+            <AvatarFallback className="bg-gray-30 0">{name[0]}</AvatarFallback>
           </Avatar> 
           <div className="flex gap-2 items-center">
             {name}
@@ -33,7 +36,7 @@ export function UserMenu({ name }: Readonly<UserMenuProps>) {
       <DropdownMenuContent className="w-56" align="start">
         <DropdownMenuLabel>Minha Conta</DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>
+        <DropdownMenuItem onClick={auth?.logout}>
           Log out
         </DropdownMenuItem>
       </DropdownMenuContent>

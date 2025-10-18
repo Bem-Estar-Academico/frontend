@@ -16,8 +16,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Link } from "@tanstack/react-router";
 import { Spinner } from "@/components/ui/spinner";
+import { useAuth } from "@/contexts/auth";
 
-interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}
+export type UserAuthFormProps = React.HTMLAttributes<HTMLDivElement>
 
 const formSchema = z.object({
   email: z.string().email({
@@ -29,7 +30,7 @@ const formSchema = z.object({
 });
 
 export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
-  const [isLoading, setIsLoading] = React.useState<boolean>(false);
+  const { login } = useAuth();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -39,12 +40,10 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
     },
   });
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
-    setIsLoading(true);
+  const isSubmitting = form.formState.isSubmitting;
 
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 3000);
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    await login(values.email, values.password);
   }
 
   return (
@@ -64,7 +63,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
                     autoCapitalize="none"
                     autoComplete="email"
                     autoCorrect="off"
-                    disabled={isLoading}
+                    disabled={isSubmitting}
                     {...field}
                   />
                 </FormControl>
@@ -84,7 +83,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
                     autoCapitalize="none"
                     autoComplete="current-password"
                     autoCorrect="off"
-                    disabled={isLoading}
+                    disabled={isSubmitting}
                     {...field}
                   />
                 </FormControl>
@@ -93,8 +92,8 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
             )}
           />
           <div className="grid gap-2 pt-2">
-            <Button disabled={isLoading} className="w-full">
-              {isLoading && <Spinner />}
+            <Button disabled={isSubmitting} className="w-full">
+              {isSubmitting && <Spinner />}
               Entrar
             </Button>
             <Button variant="link" asChild>

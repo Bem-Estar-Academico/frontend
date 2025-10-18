@@ -12,6 +12,9 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { createStudentMutationOptions } from "@/mutations/create-student";
+import { useMutation } from "@tanstack/react-query";
+import { Spinner } from "@/components/ui/spinner";
 
 const formFieldsConfig = [
   {
@@ -33,13 +36,13 @@ const formFieldsConfig = [
     type: "password",
   },
   {
-    name: "nomeCompleto",
+    name: "full_name",
     label: "Nome Completo",
     placeholder: "João da Silva",
     type: "text",
   },
   {
-    name: "matricula",
+    name: "student_registration",
     label: "Matrícula",
     placeholder: "xxxxxxxx",
     type: "text",
@@ -49,69 +52,70 @@ const formFieldsConfig = [
     label: "CPF",
     placeholder: "000.000.000-00",
     type: "text",
-  },
-  {
-    name: "dataNascimento",
-    label: "Data de Nascimento",
-    placeholder: "DD/MM/AAAA",
-    type: "text",
-  },
+  }
 ] as const;
 
 const formSchema = z
   .object({
-    nomeCompleto: z.string().min(2, {
+    full_name: z.string().min(2, {
       message: "Nome deve ter no mínimo 15 caracteres.",
     }),
-    matricula: z
+    student_registration: z
       .string()
       .min(8, { message: "A matrícula deve ter no mínimo 8 dígitos." })
       .regex(/^[0-9]+$/, {
         message: "A matrícula deve conter apenas números.",
       }),
-
     cpf: z.string().regex(/^\d{3}\.\d{3}\.\d{3}-\d{2}$/, {
       message: "CPF inválido. Use o formato XXX.XXX.XXX-XX.",
     }),
-
-    dataNascimento: z
-      .string()
-      .regex(/^(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[0-2])\/\d{4}$/, {
-        message: "Data inválida. Use o formato DD/MM/AAAA.",
-      }),
     email: z.string().email({
       message: "Por favor, insira um endereço de email válido.",
     }),
-
     password: z.string().min(8, {
       message: "A senha deve ter no mínimo 8 caracteres.",
     }),
-
-    confirmPassword: z.string().min(8, {
-      message: "A confirmação de senha deve ter no mínimo 8 caracteres.",
-    }),
+    confirmPassword: z.string()
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "As senhas não coincidem.",
     path: ["confirmPassword"],
   });
 
-export default function UserCreateForm() {
+
+interface CreateStudentFormProps {
+  onSuccess?: () => void;
+}
+
+export default function CreateStudentForm({ onSuccess }: CreateStudentFormProps) {
+  const createStudentMutation = useMutation(createStudentMutationOptions);
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      nomeCompleto: "",
-      matricula: "",
+      full_name: "",
+      student_registration: "",
       cpf: "",
-      dataNascimento: "",
       email: "",
       password: "",
       confirmPassword: "",
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
+  const isSubmitting = form.formState.isSubmitting;
+
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    return createStudentMutation.mutateAsync({
+      full_name: values.full_name,
+      student_registration: values.student_registration,
+      cpf: values.cpf,
+      email: values.email,
+      password: values.password,
+      is_active: true,
+      user_type: "STUDENT",
+    }).then(() => {
+      onSuccess?.();
+    });
   }
 
   return (
@@ -135,6 +139,7 @@ export default function UserCreateForm() {
                     key={formField.name}
                     control={form.control}
                     name={formField.name}
+                  
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>{formField.label}</FormLabel>
@@ -142,6 +147,7 @@ export default function UserCreateForm() {
                           <Input
                             placeholder={formField.placeholder}
                             type={formField.type}
+                             disabled={isSubmitting}
                             {...field}
                           />
                         </FormControl>
@@ -151,8 +157,9 @@ export default function UserCreateForm() {
                   />
                 ))}
                 <div className="flex w-full items-center justify-center pb-8">
-                  <Button type="submit" className="justify-center w-full">
-                    Submit
+                  <Button disabled={isSubmitting} type="submit" className="justify-center w-full">
+                    {isSubmitting && <Spinner />}
+                    {isSubmitting ? "Cadastrando..." : "Criar conta"}
                   </Button>
                 </div>
               </form>

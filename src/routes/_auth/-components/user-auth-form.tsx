@@ -97,7 +97,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
               Entrar
             </Button>
             <Button variant="link" asChild>
-              <Link to="/create-user">Crie uma conta</Link>
+              <Link to="/cadastro">Crie uma conta</Link>
             </Button>
           </div>
         </form>

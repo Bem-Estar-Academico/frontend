@@ -11,6 +11,7 @@ import './styles.css'
 import { NotFoundComponent } from './components/not-found.tsx'
 import { ErrorComponent } from './components/error.tsx'
 import { AuthProvider, useAuth } from './contexts/auth.tsx'
+import { Toaster } from './components/ui/sonner.tsx'
 
 const queryClient = new QueryClient()
 
@@ -51,6 +52,7 @@ function App() {
       <AuthProvider>
         <InnerApp />
       </AuthProvider>
+      <Toaster />
     </QueryClientProvider>
   )
 }

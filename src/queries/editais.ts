@@ -9,7 +9,8 @@ export const editaisQueryOptions = queryOptions({
 })
 
 export async function fetchEditais() {
-    const { data } = await api.get<EditalResponseDTO[]>('/notices');
+    
+    const { data } = await api.get<EditalResponseDTO[]>('/notices/');
 
     if (!data) {
         throw notFound();

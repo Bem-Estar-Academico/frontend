@@ -10,14 +10,16 @@ import reportWebVitals from './reportWebVitals.ts'
 import './styles.css'
 import { NotFoundComponent } from './components/not-found.tsx'
 import { ErrorComponent } from './components/error.tsx'
+import { AuthProvider, useAuth } from './contexts/auth.tsx'
+import { Toaster } from './components/ui/sonner.tsx'
 
 const queryClient = new QueryClient()
 
-// Create a new router instance
-const router = createRouter({
+export const router = createRouter({
   routeTree,
   context: {
     queryClient,
+    auth: undefined,
   },
   defaultPreload: 'intent',
   scrollRestoration: true,
@@ -35,15 +37,33 @@ declare module '@tanstack/react-router' {
   }
 }
 
+
+function InnerApp() {
+  const auth = useAuth()
+
+  return (
+      <RouterProvider router={router} context={{ auth }} />
+  )
+}
+
+function App() {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <AuthProvider>
+        <InnerApp />
+      </AuthProvider>
+      <Toaster />
+    </QueryClientProvider>
+  )
+}
+
 // Render the app
 const rootElement = document.getElementById('app')
 if (rootElement && !rootElement.innerHTML) {
   const root = ReactDOM.createRoot(rootElement)
   root.render(
     <StrictMode>
-      <QueryClientProvider client={queryClient}>
-        <RouterProvider router={router} />
-      </QueryClientProvider>
+      <App />
     </StrictMode>,
   )
 }

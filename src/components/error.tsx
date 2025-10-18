@@ -1,3 +1,4 @@
+import { Link } from "@tanstack/react-router";
 import { Button } from "./ui/button";
 
 export function ErrorComponent() {
@@ -8,7 +9,9 @@ export function ErrorComponent() {
                 <h2 className="mt-4 text-xl text-center">Erro no Servidor</h2>
                 <p className='text-sm text-muted-foreground'>Parece que ocorreu um erro interno no servidor durante o processamento da sua solicitação. Nossa equipe foi notificada e está trabalhando para resolver o problema.</p>
                 <p></p>
-                <Button className="mt-4">Voltar para a página inicial</Button>
+                <Button className="mt-4" asChild>
+                    <Link to="/">Voltar para a página inicial</Link>
+                </Button>
             </div>
         </div>
     )

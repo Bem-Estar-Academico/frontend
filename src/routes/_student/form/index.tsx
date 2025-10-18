@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { GalleryVerticalEnd } from "lucide-react";
-import { useState, type ChangeEvent } from "react";
+import { useState, type ChangeEvent, useMemo } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -232,6 +232,46 @@ export function Form() {
     }
   };
 
+  // Função para verificar se uma pergunta foi respondida
+  const isQuestionAnswered = (question: FormQuestion): boolean => {
+    const value = formValues[question.id as keyof FormValues];
+    
+    // Se a pergunta não é obrigatória, sempre considera como respondida
+    if (!question.required) return true;
+    
+    switch (question.type) {
+      case "text":
+      case "email":
+      case "textarea":
+        return typeof value === "string" && value.trim().length > 0;
+      case "radio":
+        return typeof value === "string" && value.length > 0;
+      case "checkbox":
+        return Array.isArray(value) && value.length > 0;
+      case "checkbox-single":
+        return value === true;
+      case "file":
+        return value instanceof File;
+      default:
+        return false;
+    }
+  };
+
+  // Calcular progresso de cada seção
+  const sectionProgress = useMemo(() => {
+    return formData.sections.map(section => {
+      const requiredQuestions = section.questions.filter(q => q.required);
+      const totalRequired = requiredQuestions.length;
+      const answeredRequired = requiredQuestions.filter(q => isQuestionAnswered(q)).length;
+      
+      return {
+        sectionId: section.id,
+        answered: answeredRequired,
+        total: totalRequired,
+        percentage: totalRequired > 0 ? Math.round((answeredRequired / totalRequired) * 100) : 100
+      };
+    });
+  }, [formValues]);
 
   function renderQuestion(question: FormQuestion) {
     const value = formValues[question.id as keyof FormValues];
@@ -308,23 +348,47 @@ export function Form() {
         </div>
 
         <div className="flex flex-col gap-2 pr-2">
-          {formData.sections.map((section, idx) => (
-            <button
-              key={section.id}
-              onClick={() => setActiveTab(section.id)}
-              className={`flex items-center gap-2 p-2 pl-3 min-h-12 border justify-between rounded-tr-md rounded-br-md transition 
-                ${
-                  activeTab === section.id
-                    ? "bg-blue-100"
-                    : "bg-card hover:bg-slate-100"
-                }`}
-            >
-              <p className="text-xs text-left max-w-48">{section.title}</p>
-              <div className="flex items-center justify-center size-6 rounded-full bg-slate-300">
-                <p className="text-xs font-bold">{idx + 1}</p>
-              </div>
-            </button>
-          ))}
+          {formData.sections.map((section, idx) => {
+            const progress = sectionProgress.find(p => p.sectionId === section.id);
+            const isComplete = progress?.percentage === 100;
+            
+            return (
+              <button
+                key={section.id}
+                onClick={() => setActiveTab(section.id)}
+                className={`flex flex-col gap-2 p-2 pl-3 min-h-12 border rounded-tr-md rounded-br-md transition 
+                  ${
+                    activeTab === section.id
+                      ? "bg-blue-100"
+                      : "bg-card hover:bg-slate-100"
+                  }`}
+              >
+                <div className="flex items-center justify-between w-full">
+                  <p className="text-xs text-left max-w-40">{section.title}</p>
+                  <div className={`flex items-center justify-center size-6 rounded-full ${
+                    isComplete ? "bg-green-500 text-white" : "bg-slate-300"
+                  }`}>
+                    <p className="text-xs font-bold">{idx + 1}</p>
+                  </div>
+                </div>
+                
+                {/* Barra de progresso */}
+                <div className="w-full bg-gray-200 rounded-full h-1.5">
+                  <div
+                    className={`h-1.5 rounded-full transition-all duration-300 ${
+                      isComplete ? "bg-green-500" : "bg-blue-500"
+                    }`}
+                    style={{ width: `${progress?.percentage || 0}%` }}
+                  />
+                </div>
+                
+                {/* Texto do progresso */}
+                <p className="text-[10px] text-gray-500 text-left">
+                  {progress?.answered}/{progress?.total} respondidas
+                </p>
+              </button>
+            );
+          })}
         </div>
       </div>
 
@@ -353,19 +417,19 @@ export function Form() {
                 {section.alert && (
                   <div className={`col-span-2 ${
                     section.alert.type === 'warning' 
-                    ? 'bg-yellow-50 border-yellow-200' // Alterado para amarelo/warning
+                    ? 'bg-red-50 border-red-200'
                     : 'bg-blue-50 border-blue-200'
                   } border p-3 rounded-md`}>
                     <p className={`text-sm font-medium ${
                       section.alert.type === 'warning' 
-                        ? 'text-yellow-800' 
+                        ? 'text-red-800' 
                         : 'text-blue-800'
                     }`}>
                       {section.alert.title}
                     </p>
                     <p className={`text-xs ${
                       section.alert.type === 'warning' 
-                        ? 'text-yellow-700' 
+                        ? 'text-red-700' 
                         : 'text-blue-700'
                     }`}>
                       {section.alert.message}

@@ -20,7 +20,7 @@ export default function RegistrationStatusGraphic({
 
   return (
     <>
-      <div className="flex flex-col justify-center items-center">
+      <div className="flex flex-col justify-center">
         <h3>Status das Inscrições</h3>
         <PieChart width={200} height={200}>
           <Pie

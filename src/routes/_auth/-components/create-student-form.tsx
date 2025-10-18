@@ -63,7 +63,7 @@ const formSchema = z
     student_registration: z
       .string()
       .min(8, { message: "A matrícula deve ter no mínimo 8 dígitos." })
-      .regex(/^[0-9]+$/, {
+      .regex(/^\d+$/, {
         message: "A matrícula deve conter apenas números.",
       }),
     cpf: z.string().regex(/^\d{3}\.\d{3}\.\d{3}-\d{2}$/, {
@@ -87,7 +87,7 @@ interface CreateStudentFormProps {
   onSuccess?: () => void;
 }
 
-export default function CreateStudentForm({ onSuccess }: CreateStudentFormProps) {
+export default function CreateStudentForm({ onSuccess }: Readonly<CreateStudentFormProps>) {
   const createStudentMutation = useMutation(createStudentMutationOptions);
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -119,54 +119,52 @@ export default function CreateStudentForm({ onSuccess }: CreateStudentFormProps)
   }
 
   return (
-    <>
-      <div className="flex flex-col h-full w-full items-center justify-center">
-        <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
-          <div className="flex items-center pt-8">
-            <h1 className="text-2xl font-semibold tracking-tight w-full">
-              Inscrever-se
-            </h1>
-            <img src="/logo-ufal.png" alt="Logo UFAL" className="w-10" />
-          </div>
-          <div>
-            <Form {...form}>
-              <form
-                onSubmit={form.handleSubmit(onSubmit)}
-                className="space-y-8"
-              >
-                {formFieldsConfig.map((formField) => (
-                  <FormField
-                    key={formField.name}
-                    control={form.control}
-                    name={formField.name}
-                  
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>{formField.label}</FormLabel>
-                        <FormControl>
-                          <Input
-                            placeholder={formField.placeholder}
-                            type={formField.type}
-                             disabled={isSubmitting}
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                ))}
-                <div className="flex w-full items-center justify-center pb-8">
-                  <Button disabled={isSubmitting} type="submit" className="justify-center w-full">
-                    {isSubmitting && <Spinner />}
-                    {isSubmitting ? "Cadastrando..." : "Criar conta"}
-                  </Button>
-                </div>
-              </form>
-            </Form>
-          </div>
+    <div className="flex flex-col h-full w-full items-center justify-center">
+      <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
+        <div className="flex items-center pt-8">
+          <h1 className="text-2xl font-semibold tracking-tight w-full">
+            Inscrever-se
+          </h1>
+          <img src="/logo-ufal.png" alt="Logo UFAL" className="w-10" />
+        </div>
+        <div>
+          <Form {...form}>
+            <form
+              onSubmit={form.handleSubmit(onSubmit)}
+              className="space-y-8"
+            >
+              {formFieldsConfig.map((formField) => (
+                <FormField
+                  key={formField.name}
+                  control={form.control}
+                  name={formField.name}
+                
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>{formField.label}</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder={formField.placeholder}
+                          type={formField.type}
+                            disabled={isSubmitting}
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              ))}
+              <div className="flex w-full items-center justify-center pb-8">
+                <Button disabled={isSubmitting} type="submit" className="justify-center w-full">
+                  {isSubmitting && <Spinner />}
+                  {isSubmitting ? "Cadastrando..." : "Criar conta"}
+                </Button>
+              </div>
+            </form>
+          </Form>
         </div>
       </div>
-    </>
+    </div>
   );
 }

@@ -16,8 +16,11 @@ export interface AuthState {
 
 const AuthContext = createContext<AuthState | undefined>(undefined)
 
+interface AuthProviderProps {
+  children: React.ReactNode
+}
 
-export function AuthProvider({ children }: { children: React.ReactNode }) {
+export function AuthProvider({ children }: Readonly<AuthProviderProps>) {
   const [user, setUser] = useState<User | null>(null)
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [isLoading, setIsLoading] = useState(true)

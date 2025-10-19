@@ -30,7 +30,6 @@ export function Editais() {
     });
   }, [editais, search]);
 
-  
   if (isLoading) return <p>Carregando editais...</p>;
   if (isError) return <p>Erro ao carregar editais.</p>;
 

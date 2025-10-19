@@ -5,7 +5,7 @@ import { notFound } from "@tanstack/react-router";
 
 export const editaisQueryOptions = queryOptions({
     queryKey: ['editais'],
-    queryFn: fetchEditais
+    queryFn: () => fetchEditais()
 })
 
 export async function fetchEditais() {

@@ -1,40 +1,38 @@
 import EditalCard from "@/components/edital-card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { SemesterSelect } from "@/components/ui/semester-select";
 import { IconPlus } from "@tabler/icons-react";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState, useMemo } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { useMemo, useState } from "react";
 import { Pagination } from "@/components/ui/pagination";
-import { editais, SEMESTERS } from "./-data";
+import { editaisQueryOptions } from "@/queries/editais";
 
 export const Route = createFileRoute("/_coordinator/editais/")({
   component: Editais,
 });
 
 export function Editais() {
+  const { data: editais, isLoading, isError } = useQuery(editaisQueryOptions);
+
   const [search, setSearch] = useState("");
-  const [semester, setSemester] = useState<string | undefined>(undefined);
   const [page, setPage] = useState(1);
   const pageSize = 5;
 
-  const handleClearFilters = () => {
-    setSearch("");
-    setSemester(undefined);
-    setPage(1);
-  };
-
   const filteredEditais = useMemo(() => {
+    if (!editais) return [];
     return editais.filter((edital) => {
       const matchesSearch =
         edital.title.toLowerCase().includes(search.toLowerCase()) ||
         edital.description.toLowerCase().includes(search.toLowerCase());
 
-        const matchesSemester = semester ? edital.title.includes(semester) : true;
-
-      return matchesSearch && matchesSemester;
+      return matchesSearch;
     });
-  }, [search, semester]);
+  }, [editais, search]);
+
+  
+  if (isLoading) return <p>Carregando editais...</p>;
+  if (isError) return <p>Erro ao carregar editais.</p>;
 
   const totalPages = Math.ceil(filteredEditais.length / pageSize);
   const currentData = filteredEditais.slice(
@@ -44,7 +42,7 @@ export function Editais() {
 
   return (
     <div className="flex flex-1 flex-col gap-7">
-      <h1 className="text-3xl font-medium px-5 py-4 border-b">Editais</h1>
+      <p className="text-md font-medium p-4 border-b">Editais</p>
 
       <div className="max-h-fit flex flex-1 px-5">
         <div className="flex flex-1 gap-5">
@@ -56,19 +54,8 @@ export function Editais() {
               setPage(1);
             }}
           />
-          <SemesterSelect
-            semesters={SEMESTERS}
-            value={semester}
-            onChange={(val) => {
-              setSemester(val);
-              setPage(1);
-            }}
-          />
         </div>
         <div className="flex flex-1 justify-end gap-5">
-          <Button variant="ghost" onClick={handleClearFilters}>
-            Limpar filtros
-          </Button>
           <Link to="/editais/criar">
             <Button variant="default">
               <IconPlus />
@@ -81,11 +68,15 @@ export function Editais() {
       <div className="flex flex-col px-5 gap-6">
         {currentData.length > 0 ? (
           currentData.map((edital) => (
-            <Link key={edital.id} to={'/editais/$id'} params={{ id: edital.id }}>
+            <Link
+              key={edital.id}
+              to={"/editais/$id"}
+              params={{ id: String(edital.id) }}
+            >
               <EditalCard
                 title={edital.title}
                 description={edital.description}
-                lastModification={edital.lastModification}
+                lastModification={new Date(edital.updated_at)}
               />
             </Link>
           ))

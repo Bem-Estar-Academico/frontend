@@ -41,7 +41,7 @@ export function Editais() {
 
   return (
     <div className="flex flex-1 flex-col gap-7">
-      <p className="text-md font-medium p-4 border-b">Editais</p>
+      <h1 className="text-md font-medium p-4 border-b">Editais</h1>
 
       <div className="max-h-fit flex flex-1 px-5">
         <div className="flex flex-1 gap-5">

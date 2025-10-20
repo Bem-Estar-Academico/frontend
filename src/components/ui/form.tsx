@@ -98,9 +98,10 @@ function FormLabel({
     <Label
       data-slot="form-label"
       data-error={!!error}
-      className={cn("data-[error=true]:text-destructive", isRequired ? "after:ml-0.5 after:text-red-500 after:content-['*']" : "", className)}
+      className={cn("data-[error=true]:text-destructive", className)}
       htmlFor={formItemId}
       {...props}
+      isRequired={isRequired}
     />
   )
 }

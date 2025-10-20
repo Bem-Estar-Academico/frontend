@@ -104,7 +104,7 @@ function getCreationErrorMessage(error: any): string {
     return "Dados inválidos. Verifique se todos os campos foram preenchidos corretamente."
   }
   if (status === 409) {
-    return "Já existe um edital com este número. Escolha um número diferente."
+    return "Já existe um edital com este título e ano. Escolha um título ou ano diferente."
   }
   if (status === 401 || status === 403) {
     return "Você não tem permissão para criar editais."

@@ -5,7 +5,7 @@ import { mutationOptions } from '@tanstack/react-query';
 
 export const createNoticeMutationOptions = mutationOptions({
     mutationFn: async (data: CreateNoticeDTO) => {
-        const response = await api.post<Notice>('/notices/', data);
+        const response = await api.post<Notice>('/api/v1/notices/', data);
 
         return response.data;
     }

@@ -125,6 +125,44 @@ function CreateEdital() {
   })
 
   const createNoticeMutation = useMutation(createNoticeMutationOptions)
+
+  function getCreationErrorMessage(error: any): string {
+    const status = error.response?.status
+    
+    if (status === 400) {
+      return "Dados inválidos. Verifique se todos os campos foram preenchidos corretamente."
+    }
+    if (status === 409) {
+      return "Já existe um edital com este número. Escolha um número diferente."
+    }
+    if (status === 401 || status === 403) {
+      return "Você não tem permissão para criar editais."
+    }
+    if (error.response?.data?.message) {
+      return `Erro ao criar edital: ${error.response.data.message}`
+    }
+    if (error.response?.data?.detail) {
+      return `Erro ao criar edital: ${error.response.data.detail}`
+    }
+    
+    return "Erro ao criar o edital. Verifique sua conexão e tente novamente."
+  }
+
+  function getTeamErrorMessage(error: any): string {
+    const hasTeamMemberError = error.message?.includes("coordenador") || error.message?.includes("assistente social")
+    
+    if (hasTeamMemberError) {
+      return error.message + ". O edital foi criado, mas houve problema ao adicionar a equipe. Você pode editá-lo posteriormente."
+    }
+    if (error.response?.status === 404) {
+      return "Edital criado, mas não foi possível adicionar a equipe. Usuário não encontrado."
+    }
+    if (error.response?.status === 400) {
+      return "Edital criado, mas alguns membros da equipe não puderam ser adicionados. Verifique se os usuários selecionados são válidos."
+    }
+    
+    return "O edital foi criado, mas houve um erro ao adicionar a equipe. Você pode editá-lo para adicionar os membros."
+  }
   
   async function onSubmit(values: EditalFormData) {
     try {
@@ -133,7 +171,7 @@ function CreateEdital() {
       const payload = {
         title: values.title,
         notice_number: "",
-        year: parseInt(values.year),
+        year: Number.parseInt(values.year),
         registration_start_date: values.applicationStart.toISOString(),
         registration_end_date: values.applicationEnd?.toISOString() || "",
         appeal_start_date: values.appealStart?.toISOString() || "",
@@ -176,33 +214,9 @@ function CreateEdital() {
     } catch (error: any) {
       setCreationStep('idle')
       
-      let errorMessage = "Ocorreu um erro inesperado. Tente novamente."
-      
-      if (creationStep === 'creating') {
-        if (error.response?.status === 400) {
-          errorMessage = "Dados inválidos. Verifique se todos os campos foram preenchidos corretamente."
-        } else if (error.response?.status === 409) {
-          errorMessage = "Já existe um edital com este número. Escolha um número diferente."
-        } else if (error.response?.status === 401 || error.response?.status === 403) {
-          errorMessage = "Você não tem permissão para criar editais."
-        } else if (error.response?.data?.message) {
-          errorMessage = `Erro ao criar edital: ${error.response.data.message}`
-        } else if (error.response?.data?.detail) {
-          errorMessage = `Erro ao criar edital: ${error.response.data.detail}`
-        } else {
-          errorMessage = "Erro ao criar o edital. Verifique sua conexão e tente novamente."
-        }
-      } else if (creationStep === 'adding_team') {
-        if (error.message?.includes("coordenador") || error.message?.includes("assistente social")) {
-          errorMessage = error.message + ". O edital foi criado, mas houve problema ao adicionar a equipe. Você pode editá-lo posteriormente."
-        } else if (error.response?.status === 404) {
-          errorMessage = "Edital criado, mas não foi possível adicionar a equipe. Usuário não encontrado."
-        } else if (error.response?.status === 400) {
-          errorMessage = "Edital criado, mas alguns membros da equipe não puderam ser adicionados. Verifique se os usuários selecionados são válidos."
-        } else {
-          errorMessage = "O edital foi criado, mas houve um erro ao adicionar a equipe. Você pode editá-lo para adicionar os membros."
-        }
-      }
+      const errorMessage = creationStep === 'creating' 
+        ? getCreationErrorMessage(error)
+        : getTeamErrorMessage(error)
       
       toast.error(errorMessage)
     }

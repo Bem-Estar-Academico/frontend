@@ -10,7 +10,7 @@ export const usersQueryOptions = queryOptions({
 
 export async function fetchUsers() {
     
-    const { data } = await api.get<UsersResponseDTO>('/users/');
+    const { data } = await api.get<UsersResponseDTO>('/api/v1/users/');
 
     if (!data) {
         throw notFound();

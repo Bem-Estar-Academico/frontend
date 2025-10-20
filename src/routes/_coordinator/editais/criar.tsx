@@ -97,6 +97,44 @@ const editalSchema = z.object({
   }
 )
 
+function getCreationErrorMessage(error: any): string {
+  const status = error.response?.status
+  
+  if (status === 400) {
+    return "Dados inválidos. Verifique se todos os campos foram preenchidos corretamente."
+  }
+  if (status === 409) {
+    return "Já existe um edital com este número. Escolha um número diferente."
+  }
+  if (status === 401 || status === 403) {
+    return "Você não tem permissão para criar editais."
+  }
+  if (error.response?.data?.message) {
+    return `Erro ao criar edital: ${error.response.data.message}`
+  }
+  if (error.response?.data?.detail) {
+    return `Erro ao criar edital: ${error.response.data.detail}`
+  }
+  
+  return "Erro ao criar o edital. Verifique sua conexão e tente novamente."
+}
+
+function getTeamErrorMessage(error: any): string {
+  const hasTeamMemberError = error.message?.includes("coordenador") || error.message?.includes("assistente social")
+  
+  if (hasTeamMemberError) {
+    return error.message + ". O edital foi criado, mas houve problema ao adicionar a equipe. Você pode editá-lo posteriormente."
+  }
+  if (error.response?.status === 404) {
+    return "Edital criado, mas não foi possível adicionar a equipe. Usuário não encontrado."
+  }
+  if (error.response?.status === 400) {
+    return "Edital criado, mas alguns membros da equipe não puderam ser adicionados. Verifique se os usuários selecionados são válidos."
+  }
+  
+  return "O edital foi criado, mas houve um erro ao adicionar a equipe. Você pode editá-lo para adicionar os membros."
+}
+
 type EditalFormData = z.infer<typeof editalSchema>
 
 export const Route = createFileRoute("/_coordinator/editais/criar")({
@@ -125,44 +163,6 @@ function CreateEdital() {
   })
 
   const createNoticeMutation = useMutation(createNoticeMutationOptions)
-
-  function getCreationErrorMessage(error: any): string {
-    const status = error.response?.status
-    
-    if (status === 400) {
-      return "Dados inválidos. Verifique se todos os campos foram preenchidos corretamente."
-    }
-    if (status === 409) {
-      return "Já existe um edital com este número. Escolha um número diferente."
-    }
-    if (status === 401 || status === 403) {
-      return "Você não tem permissão para criar editais."
-    }
-    if (error.response?.data?.message) {
-      return `Erro ao criar edital: ${error.response.data.message}`
-    }
-    if (error.response?.data?.detail) {
-      return `Erro ao criar edital: ${error.response.data.detail}`
-    }
-    
-    return "Erro ao criar o edital. Verifique sua conexão e tente novamente."
-  }
-
-  function getTeamErrorMessage(error: any): string {
-    const hasTeamMemberError = error.message?.includes("coordenador") || error.message?.includes("assistente social")
-    
-    if (hasTeamMemberError) {
-      return error.message + ". O edital foi criado, mas houve problema ao adicionar a equipe. Você pode editá-lo posteriormente."
-    }
-    if (error.response?.status === 404) {
-      return "Edital criado, mas não foi possível adicionar a equipe. Usuário não encontrado."
-    }
-    if (error.response?.status === 400) {
-      return "Edital criado, mas alguns membros da equipe não puderam ser adicionados. Verifique se os usuários selecionados são válidos."
-    }
-    
-    return "O edital foi criado, mas houve um erro ao adicionar a equipe. Você pode editá-lo para adicionar os membros."
-  }
   
   async function onSubmit(values: EditalFormData) {
     try {

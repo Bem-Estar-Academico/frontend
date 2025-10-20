@@ -29,6 +29,7 @@ import { YearSelect } from "@/components/ui/year-select"
 import { DatePicker } from "@/components/ui/date-picker"
 import { Label } from "@/components/ui/label"
 import { createNoticeMutationOptions } from "@/mutations/create-notice"
+import { addTeamMemberMutationOptions } from "@/mutations/add-team-member"
 import { toast } from "sonner"
 import { Textarea } from "@/components/ui/textarea"
 import { usersQueryOptions } from "@/queries/users"
@@ -190,17 +191,19 @@ function CreateEdital() {
       
       setCreationStep('adding_team')
 
+      const addTeamMemberMutation = useMutation(addTeamMemberMutationOptions(createdNotice.id))
+      
       const coordinatorPromises = values.coordinators.map(userId =>
-        api.post(`/api/v1/notices/${createdNotice.id}/team`, null, {
-          params: { user_id: userId, role: "COORDINATOR" }
+        addTeamMemberMutation.mutateAsync({ 
+          user_id: userId, role: "COORDINATOR"
         }).catch(error => {
           throw new Error(`Erro ao adicionar coordenador (ID: ${userId}): ${error.message}`)
         })
       )
 
       const socialWorkerPromises = values.social_workers.map(userId =>
-        api.post(`/api/v1/notices/${createdNotice.id}/team`, null, {
-          params: { user_id: userId, role: "SOCIAL_WORKER" }
+        addTeamMemberMutation.mutateAsync({ 
+          user_id: userId, role: "SOCIAL_WORKER"
         }).catch(error => {
           throw new Error(`Erro ao adicionar assistente social (ID: ${userId}): ${error.message}`)
         })

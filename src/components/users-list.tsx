@@ -56,6 +56,7 @@ export function UsersList({
         <div className="text-sm font-medium">{title}</div>
         {allowEdit && <div>
           <Button
+            type="button"
             className="cursor-pointer"
             variant="outline"
             size="sm"
@@ -88,6 +89,7 @@ export function UsersList({
               </div>
               { allowEdit && (
                   <Button
+                    type="button"
                     variant="ghost"
                     onClick={() => {
                       onDelete(user.id)
@@ -140,6 +142,7 @@ export function UsersList({
                         <span>{user.name}</span>
                       </div>
                       <Button
+                        type="button"
                         size="sm"
                         variant="ghost"
                         onClick={() => handleSelectUser(user)}
@@ -155,7 +158,10 @@ export function UsersList({
 
             <DialogFooter className="sm:justify-start">
               <DialogClose asChild>
-                <Button variant="secondary" className="cursor-pointer">
+                <Button
+                  type="button"
+                  variant="secondary"
+                  className="cursor-pointer">
                   Fechar
                 </Button>
               </DialogClose>

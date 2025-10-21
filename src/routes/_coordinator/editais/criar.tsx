@@ -29,11 +29,11 @@ import { YearSelect } from "@/components/ui/year-select"
 import { DatePicker } from "@/components/ui/date-picker"
 import { Label } from "@/components/ui/label"
 import { createNoticeMutationOptions } from "@/mutations/create-notice"
-import { addTeamMemberMutationOptions } from "@/mutations/add-team-member"
+import { addTeamMember } from "@/mutations/add-team-member"
 import { toast } from "sonner"
 import { Textarea } from "@/components/ui/textarea"
 import { usersQueryOptions } from "@/queries/users"
-import { api } from "@/api"
+import type { CreateNoticeDTO } from "@/types/create-notice-dto"
 
 const PLACEHOLDER_IMAGE = "https://static.vecteezy.com/system/resources/previews/009/292/244/non_2x/default-avatar-icon-of-social-media-user-vector.jpg"
 
@@ -49,7 +49,7 @@ const editalSchema = z.object({
   year: z.string({ required_error: "O ano de vigencia é obrigatório" }),
   description: z.string().min(1, "A descrição é obrigatória."),
 
-  coordinators: z.array(z.number()).min(1, "Selecione ao menos um coordenador."),
+  coordinators: z.array(z.number()).min(0, "Selecione ao menos um coordenador."),
   social_workers: z.array(z.number()),
 
   benefit: z.array(z.string()).min(1, "Selecione ao menos um benefício."),
@@ -166,20 +166,20 @@ function CreateEdital() {
   const createNoticeMutation = useMutation(createNoticeMutationOptions)
   
   async function onSubmit(values: EditalFormData) {
+    let phase: 'creating' | 'adding_team' = 'creating'
+    
     try {
       setCreationStep('creating')
       
-      const payload = {
+      const payload: CreateNoticeDTO = {
         title: values.title,
-        notice_number: "",
         year: Number.parseInt(values.year),
         registration_start_date: values.applicationStart.toISOString(),
-        registration_end_date: values.applicationEnd?.toISOString() || "",
-        appeal_start_date: values.appealStart?.toISOString() || "",
-        appeal_end_date: values.appealEnd?.toISOString() || "",
-        preliminary_result_date: values.preliminaryResult?.toISOString() || "",
-        final_result_date: values.finalResult?.toISOString() || "",
-        responsible_agency: "",
+        registration_end_date: values.applicationEnd?.toISOString(),
+        appeal_start_date: values.appealStart?.toISOString(),
+        appeal_end_date: values.appealEnd?.toISOString(),
+        preliminary_result_date: values.preliminaryResult?.toISOString(),
+        final_result_date: values.finalResult?.toISOString(),
         description: values.description,
         food_allowance: values.benefit.includes("auxilio_alimentacao"),
         housing_allowance: values.benefit.includes("auxilio_moradia"),
@@ -189,21 +189,22 @@ function CreateEdital() {
 
       const createdNotice = await createNoticeMutation.mutateAsync(payload)
       
+      phase = 'adding_team'
       setCreationStep('adding_team')
 
-      const addTeamMemberMutation = useMutation(addTeamMemberMutationOptions(createdNotice.id))
-      
       const coordinatorPromises = values.coordinators.map(userId =>
-        addTeamMemberMutation.mutateAsync({ 
-          user_id: userId, role: "COORDINATOR"
+        addTeamMember(createdNotice.id, { 
+          user_id: userId, 
+          role: "COORDINATOR" 
         }).catch(error => {
           throw new Error(`Erro ao adicionar coordenador (ID: ${userId}): ${error.message}`)
         })
       )
 
       const socialWorkerPromises = values.social_workers.map(userId =>
-        addTeamMemberMutation.mutateAsync({ 
-          user_id: userId, role: "SOCIAL_WORKER"
+        addTeamMember(createdNotice.id, { 
+          user_id: userId, 
+          role: "SOCIAL_WORKER" 
         }).catch(error => {
           throw new Error(`Erro ao adicionar assistente social (ID: ${userId}): ${error.message}`)
         })
@@ -215,9 +216,11 @@ function CreateEdital() {
       onSuccess(createdNotice.id)
       
     } catch (error: any) {
+      console.error(error.message)
+
       setCreationStep('idle')
       
-      const errorMessage = creationStep === 'creating' 
+      const errorMessage = phase === 'creating' 
         ? getCreationErrorMessage(error)
         : getTeamErrorMessage(error)
       
@@ -240,40 +243,30 @@ function CreateEdital() {
 
   const isProcessing = creationStep !== 'idle'
 
-  
-  const { data: usersData, isLoading, isError } = useQuery(usersQueryOptions)
+  const { data: coordinators } = useQuery(usersQueryOptions({
+    skip: 0,
+    limit: 100,
+    user_type: "COORDINATOR"
+  }))
+
+  const { data: socialWorkers } = useQuery(usersQueryOptions({
+    skip: 0,
+    limit: 100,
+    user_type: "SOCIAL_WORKER"
+  }))
+
     
-  const coordinators = usersData?.filter(user => user.user_type === "COORDINATOR") || []
-  const socialWorkers = usersData?.filter(user => user.user_type === "SOCIAL_WORKER") || []
-
-  const formattedCoordinators = coordinators.map(user => ({
+  const formattedCoordinators = coordinators?.map(user => ({
     id: user.id,
     name: user.full_name,
     img: PLACEHOLDER_IMAGE
-  }))
+  })) || []
 
-  const formattedSocialWorkers = socialWorkers.map(user => ({
+  const formattedSocialWorkers = socialWorkers?.map(user => ({
     id: user.id,
     name: user.full_name,
     img: PLACEHOLDER_IMAGE
-  }))
-
-
-  if (isLoading) {
-    return (
-      <div className="flex flex-col w-full max-w-full bg-gray-100 items-center justify-center min-h-screen">
-        <p className="text-lg">Carregando usuários...</p>
-      </div>
-    )
-  }
-  
-  if (isError) {
-    return (
-      <div className="flex flex-col w-full max-w-full bg-gray-100 items-center justify-center min-h-screen">
-        <p className="text-lg text-red-500">Erro ao carregar usuários.</p>
-      </div>
-    )
-  }
+  })) || []
 
   return (
     <div className="flex flex-col w-full max-w-full bg-gray-100">

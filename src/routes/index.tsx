@@ -5,7 +5,7 @@ export const Route = createFileRoute('/')({
 })
 
 function App() {
-  return (
+  return ( 
     <div className="flex items-center justify-center h-screen">
       <div className=" w-full h-full flex items-center justify-center">
         Home

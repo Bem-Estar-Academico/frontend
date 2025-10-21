@@ -30,13 +30,15 @@ export function PageEdital() {
     {} as Record<StudentRegistration["status"], number>
   );
 
+  console.log(statusCounts)
+
   const statusMap = {
     PENDING: { name: "Pendentes", color: "var(--color-gray-500)" },
     APPROVED: { name: "Deferido", color: "var(--color-green-400)" },
     REJECTED: { name: "Indeferido", color: "var(--color-red-400)" },
     CANCELLED: { name: "Cancelados", color: "var(--color-purple-400)" },
     APPEAL: { name: "Em Recurso", color: "var(--color-purple-400)" },
-    ANALISYS: { name: "Em Análise", color: "var(--color-blue-500)" }
+    REVIEW: { name: "Em Análise", color: "var(--color-blue-500)" }
   };
 
   const chartData = Object.entries(statusCounts).map(([status, value]) => ({

@@ -7,7 +7,6 @@ export const addTeamMemberMutationOptions = (noticeId: number) => mutationOption
         const response = await api.post(`/notices/${noticeId}/team`, null, {
             params: {
                 user_id: data.user_id,
-                role: data.role
             }
         });
 
@@ -19,7 +18,6 @@ export const addTeamMember = async (noticeId: number, data: AddTeamMemberDTO) =>
   const response = await api.post(`/notices/${noticeId}/team`, null, {
     params: {
       user_id: data.user_id,
-      role: data.role
     }
   });
   return response.data;

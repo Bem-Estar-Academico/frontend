@@ -1,6 +1,5 @@
 export type CreateNoticeDTO = {
     title: string,
-    year: number,
     registration_start_date: string,
     registration_end_date?: string,
     appeal_start_date?: string,
@@ -12,4 +11,5 @@ export type CreateNoticeDTO = {
     housing_allowance: boolean,
     daycare_allowance: boolean,
     graduation_scholarship: boolean
+    team_members: number[]
 }

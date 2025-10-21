@@ -25,11 +25,9 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
-import { YearSelect } from "@/components/ui/year-select"
 import { DatePicker } from "@/components/ui/date-picker"
 import { Label } from "@/components/ui/label"
 import { createNoticeMutationOptions } from "@/mutations/create-notice"
-import { addTeamMember } from "@/mutations/add-team-member"
 import { toast } from "sonner"
 import { Textarea } from "@/components/ui/textarea"
 import { usersQueryOptions } from "@/queries/users"
@@ -46,10 +44,8 @@ const availableBenefits = [
 
 const editalSchema = z.object({
   title: z.string().min(1, "O título é obrigatório."),
-  year: z.string({ required_error: "O ano de vigencia é obrigatório" }),
   description: z.string().min(1, "A descrição é obrigatória."),
 
-  coordinators: z.array(z.number()).min(0, "Selecione ao menos um coordenador."),
   social_workers: z.array(z.number()),
 
   benefit: z.array(z.string()).min(1, "Selecione ao menos um benefício."),
@@ -100,6 +96,14 @@ const editalSchema = z.object({
 
 function getCreationErrorMessage(error: any): string {
   const status = error.response?.status
+
+  if (error.response?.data?.message) {
+    return `Erro ao criar edital: ${error.response.data.message}`
+  }
+  if (error.response?.data?.detail) {
+    return `Erro ao criar edital: ${error.response.data.detail}`
+  }
+
   
   if (status === 400) {
     return "Dados inválidos. Verifique se todos os campos foram preenchidos corretamente."
@@ -110,31 +114,11 @@ function getCreationErrorMessage(error: any): string {
   if (status === 401 || status === 403) {
     return "Você não tem permissão para criar editais."
   }
-  if (error.response?.data?.message) {
-    return `Erro ao criar edital: ${error.response.data.message}`
-  }
-  if (error.response?.data?.detail) {
-    return `Erro ao criar edital: ${error.response.data.detail}`
-  }
+  
   
   return "Erro ao criar o edital. Verifique sua conexão e tente novamente."
 }
 
-function getTeamErrorMessage(error: any): string {
-  const hasTeamMemberError = error.message?.includes("coordenador") || error.message?.includes("assistente social")
-  
-  if (hasTeamMemberError) {
-    return error.message + ". O edital foi criado, mas houve problema ao adicionar a equipe. Você pode editá-lo posteriormente."
-  }
-  if (error.response?.status === 404) {
-    return "Edital criado, mas não foi possível adicionar a equipe. Usuário não encontrado."
-  }
-  if (error.response?.status === 400) {
-    return "Edital criado, mas alguns membros da equipe não puderam ser adicionados. Verifique se os usuários selecionados são válidos."
-  }
-  
-  return "O edital foi criado, mas houve um erro ao adicionar a equipe. Você pode editá-lo para adicionar os membros."
-}
 
 type EditalFormData = z.infer<typeof editalSchema>
 
@@ -143,7 +127,7 @@ export const Route = createFileRoute("/_coordinator/editais/criar")({
 })
 
 function CreateEdital() {
-  const [creationStep, setCreationStep] = useState<'idle' | 'creating' | 'adding_team' | 'success'>('idle')
+  const [creationStep, setCreationStep] = useState<'idle' | 'creating' | 'success'>('idle')
 
   const navigate = useNavigate()
 
@@ -157,7 +141,6 @@ function CreateEdital() {
     defaultValues: {
       title: "",
       description: "",
-      coordinators: [],
       social_workers: [],
       benefit: [],
     },
@@ -166,14 +149,12 @@ function CreateEdital() {
   const createNoticeMutation = useMutation(createNoticeMutationOptions)
   
   async function onSubmit(values: EditalFormData) {
-    let phase: 'creating' | 'adding_team' = 'creating'
     
     try {
       setCreationStep('creating')
       
       const payload: CreateNoticeDTO = {
         title: values.title,
-        year: Number.parseInt(values.year),
         registration_start_date: values.applicationStart.toISOString(),
         registration_end_date: values.applicationEnd?.toISOString(),
         appeal_start_date: values.appealStart?.toISOString(),
@@ -185,44 +166,18 @@ function CreateEdital() {
         housing_allowance: values.benefit.includes("auxilio_moradia"),
         daycare_allowance: values.benefit.includes("auxilio_creche"),
         graduation_scholarship: values.benefit.includes("bolsa_pro_graduando"),
+        team_members: values.social_workers
       }
 
       const createdNotice = await createNoticeMutation.mutateAsync(payload)
-      
-      phase = 'adding_team'
-      setCreationStep('adding_team')
-
-      const coordinatorPromises = values.coordinators.map(userId =>
-        addTeamMember(createdNotice.id, { 
-          user_id: userId, 
-          role: "COORDINATOR" 
-        }).catch(error => {
-          throw new Error(`Erro ao adicionar coordenador (ID: ${userId}): ${error.message}`)
-        })
-      )
-
-      const socialWorkerPromises = values.social_workers.map(userId =>
-        addTeamMember(createdNotice.id, { 
-          user_id: userId, 
-          role: "SOCIAL_WORKER" 
-        }).catch(error => {
-          throw new Error(`Erro ao adicionar assistente social (ID: ${userId}): ${error.message}`)
-        })
-      )
-
-      await Promise.all([...coordinatorPromises, ...socialWorkerPromises])
       
       setCreationStep('success')
       onSuccess(createdNotice.id)
       
     } catch (error: any) {
-      console.error(error.message)
-
       setCreationStep('idle')
       
-      const errorMessage = phase === 'creating' 
-        ? getCreationErrorMessage(error)
-        : getTeamErrorMessage(error)
+      const errorMessage = getCreationErrorMessage(error)
       
       toast.error(errorMessage)
     }
@@ -232,8 +187,6 @@ function CreateEdital() {
     switch (creationStep) {
       case 'creating':
         return 'Criando edital...'
-      case 'adding_team':
-        return 'Associando equipe...'
       case 'success':
         return 'Redirecionando...'
       default:
@@ -243,24 +196,12 @@ function CreateEdital() {
 
   const isProcessing = creationStep !== 'idle'
 
-  const { data: coordinators } = useQuery(usersQueryOptions({
-    skip: 0,
-    limit: 100,
-    user_type: "COORDINATOR"
-  }))
 
   const { data: socialWorkers } = useQuery(usersQueryOptions({
     skip: 0,
     limit: 100,
     user_type: "SOCIAL_WORKER"
   }))
-
-    
-  const formattedCoordinators = coordinators?.map(user => ({
-    id: user.id,
-    name: user.full_name,
-    img: PLACEHOLDER_IMAGE
-  })) || []
 
   const formattedSocialWorkers = socialWorkers?.map(user => ({
     id: user.id,
@@ -301,20 +242,6 @@ function CreateEdital() {
                       <FormLabel isRequired>Título do Edital</FormLabel>
                       <FormControl>
                         <Input placeholder="ex.: Cadastramento Socioeconômico 2025.1" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                
-                <FormField
-                  control={form.control}
-                  name="year"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel isRequired>Ano de vigência</FormLabel>
-                      <FormControl>
-                        <YearSelect value={field.value} onChange={field.onChange} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -366,12 +293,6 @@ function CreateEdital() {
               <div className="grid gap-6 py-2">
                 <UserListField 
                   control={form.control} 
-                  name="coordinators" 
-                  title="Coordenadores" 
-                  allUsers={formattedCoordinators} 
-                />
-                <UserListField 
-                  control={form.control} 
                   name="social_workers" 
                   title="Assistentes Sociais" 
                   allUsers={formattedSocialWorkers} 
@@ -383,12 +304,6 @@ function CreateEdital() {
               <Button type="submit" disabled={isProcessing} className="w-full">
                 {getButtonText()}
               </Button>
-              
-              {creationStep === 'adding_team' && (
-                <p className="text-sm text-gray-600 text-center mt-2">
-                  Adicionando membros à equipe...
-                </p>
-              )}
             </div> 
           </form>
         </Form>
@@ -399,7 +314,7 @@ function CreateEdital() {
 
 type UserListFieldProps = {
   control: Control<EditalFormData>
-  name: 'coordinators' | 'social_workers'
+  name: 'social_workers'
   title: string
   allUsers: Array<{ id: number; name: string; img: string }>
 }

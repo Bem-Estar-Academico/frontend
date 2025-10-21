@@ -27,7 +27,6 @@ export type TeamMember = {
 export type Notice = {
   id: number
   title: string
-  notice_number: string
   year: number
   registration_start_date: string
   registration_end_date: string
@@ -35,7 +34,6 @@ export type Notice = {
   appeal_end_date: string
   preliminary_result_date: string
   final_result_date: string
-  responsible_agency: string
   description: string
   food_allowance: boolean
   housing_allowance: boolean

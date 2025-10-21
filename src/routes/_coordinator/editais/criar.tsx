@@ -32,6 +32,7 @@ import { toast } from "sonner"
 import { Textarea } from "@/components/ui/textarea"
 import { usersQueryOptions } from "@/queries/users"
 import type { CreateNoticeDTO } from "@/types/create-notice-dto"
+import { Spinner } from "@/components/ui/spinner"
 
 const PLACEHOLDER_IMAGE = "https://static.vecteezy.com/system/resources/previews/009/292/244/non_2x/default-avatar-icon-of-social-media-user-vector.jpg"
 
@@ -94,32 +95,6 @@ const editalSchema = z.object({
   }
 )
 
-function getCreationErrorMessage(error: any): string {
-  const status = error.response?.status
-
-  if (error.response?.data?.message) {
-    return `Erro ao criar edital: ${error.response.data.message}`
-  }
-  if (error.response?.data?.detail) {
-    return `Erro ao criar edital: ${error.response.data.detail}`
-  }
-
-  
-  if (status === 400) {
-    return "Dados inválidos. Verifique se todos os campos foram preenchidos corretamente."
-  }
-  if (status === 409) {
-    return "Já existe um edital com este título e ano. Escolha um título ou ano diferente."
-  }
-  if (status === 401 || status === 403) {
-    return "Você não tem permissão para criar editais."
-  }
-  
-  
-  return "Erro ao criar o edital. Verifique sua conexão e tente novamente."
-}
-
-
 type EditalFormData = z.infer<typeof editalSchema>
 
 export const Route = createFileRoute("/_coordinator/editais/criar")({
@@ -127,8 +102,6 @@ export const Route = createFileRoute("/_coordinator/editais/criar")({
 })
 
 function CreateEdital() {
-  const [creationStep, setCreationStep] = useState<'idle' | 'creating' | 'success'>('idle')
-
   const navigate = useNavigate()
 
   const onSuccess = (noticeId: number) => {
@@ -149,10 +122,7 @@ function CreateEdital() {
   const createNoticeMutation = useMutation(createNoticeMutationOptions)
   
   async function onSubmit(values: EditalFormData) {
-    
     try {
-      setCreationStep('creating')
-      
       const payload: CreateNoticeDTO = {
         title: values.title,
         registration_start_date: values.applicationStart.toISOString(),
@@ -170,32 +140,16 @@ function CreateEdital() {
       }
 
       const createdNotice = await createNoticeMutation.mutateAsync(payload)
-      
-      setCreationStep('success')
       onSuccess(createdNotice.id)
       
     } catch (error: any) {
-      setCreationStep('idle')
-      
       const errorMessage = getCreationErrorMessage(error)
       
-      toast.error(errorMessage)
+      toast.error('Erro ao criar edital', {
+        description: errorMessage,
+      })
     }
   }
-
-  const getButtonText = () => {
-    switch (creationStep) {
-      case 'creating':
-        return 'Criando edital...'
-      case 'success':
-        return 'Redirecionando...'
-      default:
-        return 'Salvar'
-    }
-  }
-
-  const isProcessing = creationStep !== 'idle'
-
 
   const { data: socialWorkers } = useQuery(usersQueryOptions({
     skip: 0,
@@ -251,7 +205,20 @@ function CreateEdital() {
                 <div className="row-start-2 row-span-2">
                   <Label className="font-medium py-2" isRequired>Benefícios Ofertados</Label>
                   <div className="flex flex-col gap-6 py-2">
-                    <BenefitsList control={form.control} availableBenefits={availableBenefits} />
+                        <FormField
+                          control={form.control}
+                          name="benefit"
+                          render={({ field }) => (
+                            <FormItem>
+                              <div className="flex flex-col gap-4 pb-2">
+                                {availableBenefits.map((item) => (
+                                  <CheckboxItem key={item.id} item={item} field={field} />
+                                ))}
+                              </div>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
                   </div>
                 </div>
                 
@@ -291,58 +258,39 @@ function CreateEdital() {
             <div className='bg-white p-6 rounded-md border'>
               <h3 className="text-lg font-medium py-2">Equipe Responsável</h3>
               <div className="grid gap-6 py-2">
-                <UserListField 
-                  control={form.control} 
-                  name="social_workers" 
-                  title="Assistentes Sociais" 
-                  allUsers={formattedSocialWorkers} 
+                <FormField
+                  control={form.control}
+                  name="social_workers"
+                  render={({ field }) => {
+                    const selectedUsers = formattedSocialWorkers.filter(u => field.value.includes(u.id))
+                    return (
+                      <FormItem>
+                        <FormControl>
+                          <UsersList
+                            title={"Assistentes Sociais"}
+                            list={selectedUsers}
+                            allUsers={formattedSocialWorkers}
+                            allowEdit={true}
+                            onSelect={(user) => field.onChange([...field.value, user.id])}
+                            onDelete={(id) => field.onChange(field.value.filter((uid: number) => uid !== id))}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )
+                  }}
                 />
               </div>
             </div>
-          
-            <div>
-              <Button type="submit" disabled={isProcessing} className="w-full">
-                {getButtonText()}
-              </Button>
-            </div> 
+           
+            <Button type="submit" className="self-end w-3xs" disabled={form.formState.isSubmitting}>
+              {form.formState.isSubmitting && <Spinner />}
+              {form.formState.isSubmitting ? "Criando Edital..." : "Criar Edital"}
+            </Button>     
           </form>
         </Form>
       </div>
     </div>
-  )
-}
-
-type UserListFieldProps = {
-  control: Control<EditalFormData>
-  name: 'social_workers'
-  title: string
-  allUsers: Array<{ id: number; name: string; img: string }>
-}
-
-function UserListField({ control, name, title, allUsers }: Readonly<UserListFieldProps>) {
-  return (
-    <FormField
-      control={control}
-      name={name}
-      render={({ field }) => {
-        const selectedUsers = allUsers.filter(u => field.value.includes(u.id))
-        return (
-          <FormItem>
-            <FormControl>
-              <UsersList
-                title={title}
-                list={selectedUsers}
-                allUsers={allUsers}
-                allowEdit={true}
-                onSelect={(user) => field.onChange([...field.value, user.id])}
-                onDelete={(id) => field.onChange(field.value.filter((uid: number) => uid !== id))}
-              />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )
-      }}
-    />
   )
 }
 
@@ -388,22 +336,26 @@ function CheckboxItem({ item, field }: Readonly<{ item: { id: string, label: str
   )
 }
 
-function BenefitsList({ control, availableBenefits }: Readonly<{ control: Control<EditalFormData>; availableBenefits: { id: string; label: string }[] }>) {
-  return (
-    <FormField
-      control={control}
-      name="benefit"
-      render={({ field }) => (
-        <FormItem>
-          <div className="flex flex-col gap-4 pb-2">
-            {availableBenefits.map((item) => (
-              <CheckboxItem key={item.id} item={item} field={field} />
-            ))}
-          </div>
 
-          <FormMessage />
-        </FormItem>
-      )}
-    />
-  )
+function getCreationErrorMessage(error: any): string {
+  const status = error.response?.status
+
+  if (error.response?.data?.message) {
+    return error.response.data.message
+  }
+  if (error.response?.data?.detail && typeof error.response.data.detail === "string") {
+    return error.response.data.detail
+  }
+  
+  if (status === 400) {
+    return "Dados inválidos. Verifique se todos os campos foram preenchidos corretamente."
+  }
+  if (status === 409) {
+    return "Já existe um edital com este título e ano. Escolha um título ou ano diferente."
+  }
+  if (status === 401 || status === 403) {
+    return "Você não tem permissão para criar editais."
+  }
+
+  return "Erro ao criar o edital. Por favor, tente novamente ou contate um administrador."
 }

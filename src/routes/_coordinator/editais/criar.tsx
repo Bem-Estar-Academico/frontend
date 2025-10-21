@@ -151,11 +151,7 @@ function CreateEdital() {
     }
   }
 
-  const { data: socialWorkers } = useQuery(usersQueryOptions({
-    skip: 0,
-    limit: 100,
-    user_type: "SOCIAL_WORKER"
-  }))
+  const { data: socialWorkers } = useQuery(usersQueryOptions({ user_type: "SOCIAL_WORKER" }))
 
   const formattedSocialWorkers = socialWorkers?.map(user => ({
     id: user.id,

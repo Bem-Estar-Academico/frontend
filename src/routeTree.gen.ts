@@ -13,12 +13,9 @@ import { Route as StudentRouteImport } from './routes/_student'
 import { Route as SocialWorkersRouteImport } from './routes/_social-workers'
 import { Route as CoordinatorRouteImport } from './routes/_coordinator'
 import { Route as IndexRouteImport } from './routes/index'
-<<<<<<< HEAD
-import { Route as StudentFormIndexRouteImport } from './routes/_student/form/index'
-=======
 import { Route as AuthLoginRouteImport } from './routes/_auth/login'
 import { Route as AuthCadastroRouteImport } from './routes/_auth/cadastro'
->>>>>>> develop
+import { Route as StudentFormIndexRouteImport } from './routes/_student/form/index'
 import { Route as SocialWorkersConsultarIvsIndexRouteImport } from './routes/_social-workers/consultar-ivs/index'
 import { Route as CoordinatorEditaisIndexRouteImport } from './routes/_coordinator/editais/index'
 import { Route as AnalisarInscricaoSubscriptionIdRouteImport } from './routes/analisar.inscricao.$subscriptionId'
@@ -43,12 +40,6 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-<<<<<<< HEAD
-const StudentFormIndexRoute = StudentFormIndexRouteImport.update({
-  id: '/form/',
-  path: '/form/',
-  getParentRoute: () => StudentRoute,
-=======
 const AuthLoginRoute = AuthLoginRouteImport.update({
   id: '/_auth/login',
   path: '/login',
@@ -58,7 +49,11 @@ const AuthCadastroRoute = AuthCadastroRouteImport.update({
   id: '/_auth/cadastro',
   path: '/cadastro',
   getParentRoute: () => rootRouteImport,
->>>>>>> develop
+} as any)
+const StudentFormIndexRoute = StudentFormIndexRouteImport.update({
+  id: '/form/',
+  path: '/form/',
+  getParentRoute: () => StudentRoute,
 } as any)
 const SocialWorkersConsultarIvsIndexRoute =
   SocialWorkersConsultarIvsIndexRouteImport.update({
@@ -123,12 +118,9 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_coordinator': typeof CoordinatorRouteWithChildren
   '/_social-workers': typeof SocialWorkersRouteWithChildren
-<<<<<<< HEAD
   '/_student': typeof StudentRouteWithChildren
-=======
   '/_auth/cadastro': typeof AuthCadastroRoute
   '/_auth/login': typeof AuthLoginRoute
->>>>>>> develop
   '/_coordinator/editais/criar': typeof CoordinatorEditaisCriarRoute
   '/_social-workers/consultar-ivs/$id': typeof SocialWorkersConsultarIvsIdRoute
   '/_social-workers/editais/$id': typeof SocialWorkersEditaisIdRoute
@@ -167,12 +159,9 @@ export interface FileRouteTypes {
     | '/'
     | '/_coordinator'
     | '/_social-workers'
-<<<<<<< HEAD
     | '/_student'
-=======
     | '/_auth/cadastro'
     | '/_auth/login'
->>>>>>> develop
     | '/_coordinator/editais/criar'
     | '/_social-workers/consultar-ivs/$id'
     | '/_social-workers/editais/$id'
@@ -186,12 +175,9 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   CoordinatorRoute: typeof CoordinatorRouteWithChildren
   SocialWorkersRoute: typeof SocialWorkersRouteWithChildren
-<<<<<<< HEAD
   StudentRoute: typeof StudentRouteWithChildren
-=======
   AuthCadastroRoute: typeof AuthCadastroRoute
   AuthLoginRoute: typeof AuthLoginRoute
->>>>>>> develop
   AnalisarInscricaoSubscriptionIdRoute: typeof AnalisarInscricaoSubscriptionIdRoute
 }
 
@@ -225,14 +211,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-<<<<<<< HEAD
-    '/_student/form/': {
-      id: '/_student/form/'
-      path: '/form'
-      fullPath: '/form'
-      preLoaderRoute: typeof StudentFormIndexRouteImport
-      parentRoute: typeof StudentRoute
-=======
     '/_auth/login': {
       id: '/_auth/login'
       path: '/login'
@@ -246,7 +224,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/cadastro'
       preLoaderRoute: typeof AuthCadastroRouteImport
       parentRoute: typeof rootRouteImport
->>>>>>> develop
+    }
+    '/_student/form/': {
+      id: '/_student/form/'
+      path: '/form'
+      fullPath: '/form'
+      preLoaderRoute: typeof StudentFormIndexRouteImport
+      parentRoute: typeof StudentRoute
     }
     '/_social-workers/consultar-ivs/': {
       id: '/_social-workers/consultar-ivs/'
@@ -338,12 +322,9 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   CoordinatorRoute: CoordinatorRouteWithChildren,
   SocialWorkersRoute: SocialWorkersRouteWithChildren,
-<<<<<<< HEAD
   StudentRoute: StudentRouteWithChildren,
-=======
   AuthCadastroRoute: AuthCadastroRoute,
   AuthLoginRoute: AuthLoginRoute,
->>>>>>> develop
   AnalisarInscricaoSubscriptionIdRoute: AnalisarInscricaoSubscriptionIdRoute,
 }
 export const routeTree = rootRouteImport

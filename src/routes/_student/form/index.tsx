@@ -232,11 +232,9 @@ export function Form() {
     }
   };
 
-  // Função para verificar se uma pergunta foi respondida
   const isQuestionAnswered = (question: FormQuestion): boolean => {
     const value = formValues[question.id as keyof FormValues];
     
-    // Se a pergunta não é obrigatória, sempre considera como respondida
     if (!question.required) return true;
     
     switch (question.type) {
@@ -257,7 +255,6 @@ export function Form() {
     }
   };
 
-  // Calcular progresso de cada seção
   const sectionProgress = useMemo(() => {
     return formData.sections.map(section => {
       const requiredQuestions = section.questions.filter(q => q.required);
@@ -304,7 +301,6 @@ export function Form() {
 
     if (validationResult.success) {
       alert("Formulário Válido! Enviando JSON:\n" + JSON.stringify(validationResult.data, null, 2));
-      console.log(JSON.stringify(validationResult.data, null, 2));
       return;
     }
 

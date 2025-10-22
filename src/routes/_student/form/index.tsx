@@ -19,28 +19,6 @@ export const Route = createFileRoute("/_student/form/")({
   component: StudentRegistrationForm,
 });
 
-interface RenderProps {
-  question: FormQuestion;
-  value: any;
-  error?: string;
-}
-
-interface TextRenderProps extends RenderProps {
-  onChange: (value: string) => void;
-}
-
-interface CheckboxRenderProps extends RenderProps {
-  onCheckedChange: (optionId: string, checked: boolean) => void;
-}
-
-interface CheckboxSingleRenderProps extends RenderProps {
-  onCheckedChange: (checked: boolean) => void;
-}
-
-interface FileRenderProps extends RenderProps {
-  onFileChange: (file: File | null) => void;
-}
-
 export function StudentRegistrationForm() {
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -260,9 +238,9 @@ export function StudentRegistrationForm() {
   };
 
   return (
-    <div className="flex h-dvh">
+    <div className="flex h-full">
       {/* SIDEBAR */}
-      <div className="flex flex-col w-64 border-r">
+      <div className="flex flex-col h-full w-64 border-r">
         <div className="flex items-center gap-2 p-4">
           <div className="bg-primary rounded-lg p-2">
             <GalleryVerticalEnd className="text-secondary size-4" />
@@ -321,7 +299,7 @@ export function StudentRegistrationForm() {
 
       {/* TABS */}
       <Form {...form}>
-        <form className="flex-1 overflow-y-auto" onSubmit={form.handleSubmit(onSubmit, onError)}>
+        <form className="flex-1 h-full " onSubmit={form.handleSubmit(onSubmit, onError)}>
         <Tabs value={activeTab} onValueChange={setActiveTab}>
           {formData.sections.map((section, sectionIdx) => (
             <TabsContent value={section.id} className="mb-6" key={section.id}>
@@ -340,7 +318,7 @@ export function StudentRegistrationForm() {
               )}
             
               {/* Form Content */}
-              <div className="grid grid-cols-2 px-8 py-4 gap-8">
+              <div className="overflow-auto max-h-full grid grid-cols-2 px-8 py-4 gap-8">
                 {/* Alert */}
                 {section.alert && (
                   <div className={`col-span-2 ${
@@ -382,125 +360,6 @@ export function StudentRegistrationForm() {
         </Tabs>
       </form>
       </Form>
-    </div>
-  );
-}
-
-function renderFileInput({ question, error, onFileChange }: FileRenderProps) {
-  
-  const handleFileSelection = (e: ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files ? e.target.files[0] : null;
-    
-    onFileChange(file); 
-  };
-  
-  return (
-    <div className="flex flex-col gap-2" key={question.id}>
-      <Label className="text-sm" isRequired={question.required}>
-        {question.question}
-      </Label>
-      <div className="grid w-full max-w-xs items-center gap-3">
-        <Label htmlFor={question.id} className="text-xs font-medium">Selecionar Arquivo PDF</Label>
-        <Input 
-          id={question.id} 
-          type="file" 
-          className="!text-xs file:text-xs w-52" 
-          onChange={handleFileSelection}
-          accept={question.accept || "application/pdf"}
-        />
-      </div>
-
-      {error && <p className="text-xs text-red-600">{error}</p>}
-    </div>
-  );
-}
-
-function renderTextInput({ question, value, error, onChange }: TextRenderProps) {
-
-  // return (
-  //   <FormField
-  //     control={formData.control}
-  //   >
-
-  //   </FormField>
-  // )
-
-  return (
-    <div className="flex flex-col gap-2" key={question.id}>
-      <Label htmlFor={question.id} className="text-sm" isRequired={question.required}>
-        {question.question}
-      </Label>
-      {question.description && (
-        <p className="text-xs text-gray-500">{question.description}</p>
-      )}
-      <Input
-        id={question.id}
-        type={question.type === "email" ? "email" : "text"}
-        placeholder={question.placeholder}
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        className="!text-xs placeholder:text-xs max-w-2xl"
-        
-        aria-invalid={!!error}
-        aria-describedby={error || undefined}
-      />
-      
-      {error && <p id={error} className="text-xs text-red-600">{error}</p>}
-    </div>
-  );
-}
-
-function renderCheckbox({ question, value, error, onCheckedChange }: CheckboxRenderProps) {
-  const valueSet = new Set(value || []);
-  return (
-    <div className="flex flex-col gap-2" key={question.id}>
-      <Label className="text-sm mb-3" isRequired={question.required}>
-        {question.question}
-      </Label>
-      {question.description && (
-        <p className="text-xs text-gray-500 mb-2">{question.description}</p>
-      )}
-      <div className="flex flex-col gap-2">
-        {question.options?.map((option: FormOption) => (
-          <div className="flex items-center gap-3" key={option.id}>
-            <Checkbox
-              id={`${question.id}_${option.id}`}
-              checked={valueSet.has(option.id)}
-              onCheckedChange={(checked) => onCheckedChange(option.id, !!checked)}
-            />
-            <Label htmlFor={`${question.id}_${option.id}`} className="text-xs font-[400]">
-              {option.label}
-            </Label>
-          </div>
-        ))}
-      </div>
-      {error && <p className="text-xs text-red-600">{error}</p>}
-    </div>
-  );
-}
-
-function renderCheckboxSingle({ question, value, error, onCheckedChange }: CheckboxSingleRenderProps) {
-  return (
-    <div className="flex flex-col gap-2" key={question.id}>
-      <Label className="text-sm" isRequired={question.required}>
-        {question.question}
-      </Label>
-      {question.options && (
-        <div className="flex items-center gap-3 p-4 border rounded-md">
-          <Checkbox
-            id={`${question.id}_${question.options[0].id}`}
-            checked={value}
-            onCheckedChange={(checked) => onCheckedChange(!!checked)}
-          />
-          <Label
-            htmlFor={`${question.id}_${question.options[0].id}`}
-            className="text-xs font-[400] text-gray-600"
-          >
-            {question.options[0].label}
-          </Label>
-        </div>
-      )}
-      {error && <p className="text-xs text-red-600">{error}</p>}
     </div>
   );
 }

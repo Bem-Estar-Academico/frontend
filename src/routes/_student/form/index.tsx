@@ -10,9 +10,13 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import formData, { type FormQuestion, type FormOption } from "./-data";
 import { formSchema, getInitialValues, type FormValues } from "./-schema";
+import { useForm, useWatch, type FieldErrors } from "react-hook-form";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/_student/form/")({
-  component: Form,
+  component: StudentRegistrationForm,
 });
 
 interface RenderProps {
@@ -37,200 +41,13 @@ interface FileRenderProps extends RenderProps {
   onFileChange: (file: File | null) => void;
 }
 
-function renderTextInput({ question, value, error, onChange }: TextRenderProps) {
-  return (
-    <div className="flex flex-col gap-2" key={question.id}>
-      <Label htmlFor={question.id} className="text-sm" isRequired={question.required}>
-        {question.question}
-      </Label>
-      {question.description && (
-        <p className="text-xs text-gray-500">{question.description}</p>
-      )}
-      <Input
-        id={question.id}
-        type={question.type === "email" ? "email" : "text"}
-        placeholder={question.placeholder}
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        className="!text-xs placeholder:text-xs max-w-2xl"
-        
-        aria-invalid={!!error}
-        aria-describedby={error || undefined}
-      />
-      
-      {error && <p id={error} className="text-xs text-red-600">{error}</p>}
-    </div>
-  );
-}
-
-function renderTextarea({ question, value, error, onChange }: TextRenderProps) {
-  return (
-    <div className="flex flex-col gap-2" key={question.id}>
-      <Label htmlFor={question.id} className="text-sm" isRequired={question.required}>
-        {question.question}
-      </Label>
-      {question.description && (
-        <p className="text-xs text-gray-500 whitespace-pre-line">{question.description}</p>
-      )}
-      <Textarea
-        id={question.id}
-        placeholder={question.placeholder}
-        rows={question.rows}
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        className="!text-xs placeholder:text-xs"
-      />
-      {error && <p className="text-xs text-red-600">{error}</p>}
-    </div>
-  );
-}
-
-function renderRadio({ question, value, error, onChange }: TextRenderProps) {
-  return (
-    <div className="flex flex-col gap-2" key={question.id}>
-      <Label className="text-sm mb-3" isRequired={question.required}>
-        {question.question}
-      </Label>
-      {question.description && (
-        <p className="text-xs text-gray-500 mb-2">{question.description}</p>
-      )}
-      <RadioGroup value={value} onValueChange={onChange}>
-        {question.options?.map((option: FormOption) => (
-          <div className="flex items-center gap-3" key={option.id}>
-            <RadioGroupItem value={option.id} id={`${question.id}_${option.id}`} />
-            <Label htmlFor={`${question.id}_${option.id}`} className="text-xs font-[400]">
-              {option.label}
-            </Label>
-          </div>
-        ))}
-      </RadioGroup>
-      {error && <p className="text-xs text-red-600">{error}</p>}
-    </div>
-  );
-}
-
-function renderCheckbox({ question, value, error, onCheckedChange }: CheckboxRenderProps) {
-  const valueSet = new Set(value || []);
-  return (
-    <div className="flex flex-col gap-2" key={question.id}>
-      <Label className="text-sm mb-3" isRequired={question.required}>
-        {question.question}
-      </Label>
-      {question.description && (
-        <p className="text-xs text-gray-500 mb-2">{question.description}</p>
-      )}
-      <div className="flex flex-col gap-2">
-        {question.options?.map((option: FormOption) => (
-          <div className="flex items-center gap-3" key={option.id}>
-            <Checkbox
-              id={`${question.id}_${option.id}`}
-              checked={valueSet.has(option.id)}
-              onCheckedChange={(checked) => onCheckedChange(option.id, !!checked)}
-            />
-            <Label htmlFor={`${question.id}_${option.id}`} className="text-xs font-[400]">
-              {option.label}
-            </Label>
-          </div>
-        ))}
-      </div>
-      {error && <p className="text-xs text-red-600">{error}</p>}
-    </div>
-  );
-}
-
-function renderCheckboxSingle({ question, value, error, onCheckedChange }: CheckboxSingleRenderProps) {
-  return (
-    <div className="flex flex-col gap-2" key={question.id}>
-      <Label className="text-sm" isRequired={question.required}>
-        {question.question}
-      </Label>
-      {question.options && (
-        <div className="flex items-center gap-3 p-4 border rounded-md">
-          <Checkbox
-            id={`${question.id}_${question.options[0].id}`}
-            checked={value}
-            onCheckedChange={(checked) => onCheckedChange(!!checked)}
-          />
-          <Label
-            htmlFor={`${question.id}_${question.options[0].id}`}
-            className="text-xs font-[400] text-gray-600"
-          >
-            {question.options[0].label}
-          </Label>
-        </div>
-      )}
-      {error && <p className="text-xs text-red-600">{error}</p>}
-    </div>
-  );
-}
-
-function renderFileInput({ question, error, onFileChange }: FileRenderProps) {
-  
-  const handleFileSelection = (e: ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files ? e.target.files[0] : null;
-    
-    onFileChange(file); 
-  };
-  
-  return (
-    <div className="flex flex-col gap-2" key={question.id}>
-      <Label className="text-sm" isRequired={question.required}>
-        {question.question}
-      </Label>
-      <div className="grid w-full max-w-xs items-center gap-3">
-        <Label htmlFor={question.id} className="text-xs font-medium">Selecionar Arquivo PDF</Label>
-        <Input 
-          id={question.id} 
-          type="file" 
-          className="!text-xs file:text-xs w-52" 
-          onChange={handleFileSelection}
-          accept={question.accept || "application/pdf"}
-        />
-      </div>
-
-      {error && <p className="text-xs text-red-600">{error}</p>}
-    </div>
-  );
-}
-
-export function Form() {
+export function StudentRegistrationForm() {
+  const form = useForm({
+    resolver: zodResolver(formSchema),
+    defaultValues: getInitialValues(),
+  })
+  const formValues = useWatch({ control: form.control });
   const [activeTab, setActiveTab] = useState(formData.sections[0].id);
-  const [formValues, setFormValues] = useState<FormValues>(getInitialValues());
-  const [formErrors, setFormErrors] = useState<Record<string, string>>({});
-
-  const handleTextChange = (id: string, value: string) => {
-    setFormValues(prev => ({ ...prev, [id]: value }));
-    if (formErrors[id]) {
-      setFormErrors(prev => ({ ...prev, [id]: "" }));
-    }
-  };
-
-  const handleCheckboxChange = (questionId: string, optionId: string, checked: boolean) => {
-    setFormValues(prev => {
-      const currentValues = prev[questionId as keyof FormValues] as string[] || [];
-      const newValues = checked
-        ? [...currentValues, optionId]
-        : currentValues.filter(val => val !== optionId);
-      return { ...prev, [questionId]: newValues };
-    });
-    if (formErrors[questionId]) {
-      setFormErrors(prev => ({ ...prev, [questionId]: "" }));
-    }
-  };
-
-  const handleCheckboxSingleChange = (id: string, checked: boolean) => {
-    setFormValues(prev => ({ ...prev, [id]: checked }));
-    if (formErrors[id]) {
-      setFormErrors(prev => ({ ...prev, [id]: "" }));
-    }
-  };
-
-  const handleFileChange = (id: string, file: File | null) => {
-    setFormValues(prev => ({ ...prev, [id]: file }));
-    if (formErrors[id]) {
-      setFormErrors(prev => ({ ...prev, [id]: "" }));
-    }
-  };
 
   const isQuestionAnswered = (question: FormQuestion): boolean => {
     const value = formValues[question.id as keyof FormValues];
@@ -271,64 +88,176 @@ export function Form() {
   }, [formValues]);
 
   function renderQuestion(question: FormQuestion) {
-    const value = formValues[question.id as keyof FormValues];
-    const error = formErrors[question.id];
-
     switch (question.type) {
       case "text":
       case "email":
-        return renderTextInput({ question, value, error, onChange: (val) => handleTextChange(question.id, val) });
+        return (
+          <FormField
+            control={form.control}
+            name={question.id}
+            key={question.id}
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{question.question}</FormLabel>
+                <FormControl>
+                  <Input placeholder={question.placeholder} {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        )
       case "textarea":
-        return renderTextarea({ question, value, error, onChange: (val) => handleTextChange(question.id, val) });
+        return (
+          <FormField
+            control={form.control}
+            name={question.id}
+            key={question.id}
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{question.question}</FormLabel>
+                <FormControl>
+                  <Textarea placeholder={question.placeholder} {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        )
       case "radio":
-        return renderRadio({ question, value, error, onChange: (val) => handleTextChange(question.id, val) });
+          return (
+            <FormField
+              control={form.control}
+              name={question.id}
+              render={({ field }) => (
+                <FormItem className="space-y-3">
+                  <FormLabel>{question.question}</FormLabel>
+                    <FormControl>
+                      <RadioGroup
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                        className="flex flex-col space-y-1"
+                      >
+                        {question.options?.map(option => (
+                          <FormItem className="flex items-center space-x-3 space-y-0" key={option.id}>
+                            <FormControl>
+                              <RadioGroupItem value={option.id} />
+                            </FormControl>
+                            <FormLabel className="font-normal">
+                              {option.label} {option.id}
+                            </FormLabel>
+                          </FormItem>
+                        ))}
+                      
+                      </RadioGroup>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+          )
       case "checkbox":
-        return renderCheckbox({ question, value, error, onCheckedChange: (optId, checked) => handleCheckboxChange(question.id, optId, checked) });
+        return (
+          <FormField
+            control={form.control}
+            name={question.id}
+            render={({ field }) => {
+              const valueSet = new Set(field.value || []);
+              return (
+                <FormItem className="space-y-3">
+                  <FormLabel>{question.question}</FormLabel>
+                  <FormControl>
+                    <div className="flex flex-col space-y-1">
+                      {question.options?.map(option => (
+                        <FormItem className="flex items-center space-x-3 space-y-0" key={option.id}>
+                          <FormControl>
+                            <Checkbox
+                              checked={valueSet.has(option.id)}
+                              onCheckedChange={(checked) => {
+                                const newValue = new Set(valueSet);
+                                if (checked) {
+                                  newValue.add(option.id);
+                                } else {
+                                  newValue.delete(option.id);
+                                }
+                                field.onChange(Array.from(newValue));
+                              }}
+                            />
+                          </FormControl>
+                          <FormLabel className="font-normal">
+                            {option.label} {option.id}
+                          </FormLabel>
+                        </FormItem>
+                      ))}
+                    </div>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              );
+            }}
+          />
+        );
       case "checkbox-single":
-        return renderCheckboxSingle({ question, value, error, onCheckedChange: (checked) => handleCheckboxSingleChange(question.id, checked) });
+        return (
+          <FormField
+            control={form.control}
+            name={question.id}
+            render={({ field }) => (
+              <FormItem className="space-y-3">
+                <FormLabel>{question.question}</FormLabel>
+                <FormControl>
+                  <div className="flex items-center space-x-3">
+                    <Checkbox
+                      checked={field.value}
+                      onCheckedChange={(checked) => field.onChange(!!checked)}
+                    />
+                    {question.options && (
+                      <FormLabel className="font-normal">
+                        {question.options[0].label} {question.options[0].id}
+                      </FormLabel>
+                    )}
+                  </div>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        );
       case "file":
-        return renderFileInput({ question, value, error, onFileChange: (file) => handleFileChange(question.id, file) });
+        return (
+          <FormField
+            control={form.control}
+            name={question.id}
+            render={({ field }) => (
+              <FormItem className="space-y-3">
+                <FormLabel>{question.question}</FormLabel>
+                <FormControl>
+                  <Input 
+                    type="file" 
+                    onChange={(e) => {
+                      const file = e.target.files ? e.target.files[0] : null;
+                      field.onChange(file);
+                    }}
+                    accept={question.accept || "application/pdf"}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        );
       default:
         return null;
     }
   }
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setFormErrors({});
-
-    const validationResult = formSchema.safeParse(formValues);
-
-    if (validationResult.success) {
-      alert("Formulário Válido! Enviando JSON:\n" + JSON.stringify(validationResult.data, null, 2));
-      return;
-    }
-
-    const errors = validationResult.error.flatten().fieldErrors;
-    const formattedErrors: Record<string, string> = {};
-    let firstErrorKey: string | null = null;
-
-    for (const key in errors) {
-      if (errors[key]) {
-        formattedErrors[key] = errors[key]![0];
-        if (!firstErrorKey) {
-          firstErrorKey = key;
-        }
-      }
-    }
-    
-    setFormErrors(formattedErrors);
-
-    if (firstErrorKey) {
-      const errorSection = formData.sections.find(s => 
-        s.questions.some(q => q.id === firstErrorKey)
-      );
-      if (errorSection) {
-        setActiveTab(errorSection.id);
-      }
-    }
+  const onSubmit = (values: FormValues) => {
+    console.log("Form submitted:", values);
   };
 
+  const onError = (errors: FieldErrors<FormValues>) => {
+    toast.error("Por favor, verifique as seções e corrija os erros no formulário antes de enviar.");
+  };
 
   return (
     <div className="flex h-dvh">
@@ -391,7 +320,8 @@ export function Form() {
       </div>
 
       {/* TABS */}
-      <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto">
+      <Form {...form}>
+        <form className="flex-1 overflow-y-auto" onSubmit={form.handleSubmit(onSubmit, onError)}>
         <Tabs value={activeTab} onValueChange={setActiveTab}>
           {formData.sections.map((section, sectionIdx) => (
             <TabsContent value={section.id} className="mb-6" key={section.id}>
@@ -451,6 +381,126 @@ export function Form() {
           ))}
         </Tabs>
       </form>
+      </Form>
+    </div>
+  );
+}
+
+function renderFileInput({ question, error, onFileChange }: FileRenderProps) {
+  
+  const handleFileSelection = (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files ? e.target.files[0] : null;
+    
+    onFileChange(file); 
+  };
+  
+  return (
+    <div className="flex flex-col gap-2" key={question.id}>
+      <Label className="text-sm" isRequired={question.required}>
+        {question.question}
+      </Label>
+      <div className="grid w-full max-w-xs items-center gap-3">
+        <Label htmlFor={question.id} className="text-xs font-medium">Selecionar Arquivo PDF</Label>
+        <Input 
+          id={question.id} 
+          type="file" 
+          className="!text-xs file:text-xs w-52" 
+          onChange={handleFileSelection}
+          accept={question.accept || "application/pdf"}
+        />
+      </div>
+
+      {error && <p className="text-xs text-red-600">{error}</p>}
+    </div>
+  );
+}
+
+function renderTextInput({ question, value, error, onChange }: TextRenderProps) {
+
+  // return (
+  //   <FormField
+  //     control={formData.control}
+  //   >
+
+  //   </FormField>
+  // )
+
+  return (
+    <div className="flex flex-col gap-2" key={question.id}>
+      <Label htmlFor={question.id} className="text-sm" isRequired={question.required}>
+        {question.question}
+      </Label>
+      {question.description && (
+        <p className="text-xs text-gray-500">{question.description}</p>
+      )}
+      <Input
+        id={question.id}
+        type={question.type === "email" ? "email" : "text"}
+        placeholder={question.placeholder}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        className="!text-xs placeholder:text-xs max-w-2xl"
+        
+        aria-invalid={!!error}
+        aria-describedby={error || undefined}
+      />
+      
+      {error && <p id={error} className="text-xs text-red-600">{error}</p>}
+    </div>
+  );
+}
+
+function renderCheckbox({ question, value, error, onCheckedChange }: CheckboxRenderProps) {
+  const valueSet = new Set(value || []);
+  return (
+    <div className="flex flex-col gap-2" key={question.id}>
+      <Label className="text-sm mb-3" isRequired={question.required}>
+        {question.question}
+      </Label>
+      {question.description && (
+        <p className="text-xs text-gray-500 mb-2">{question.description}</p>
+      )}
+      <div className="flex flex-col gap-2">
+        {question.options?.map((option: FormOption) => (
+          <div className="flex items-center gap-3" key={option.id}>
+            <Checkbox
+              id={`${question.id}_${option.id}`}
+              checked={valueSet.has(option.id)}
+              onCheckedChange={(checked) => onCheckedChange(option.id, !!checked)}
+            />
+            <Label htmlFor={`${question.id}_${option.id}`} className="text-xs font-[400]">
+              {option.label}
+            </Label>
+          </div>
+        ))}
+      </div>
+      {error && <p className="text-xs text-red-600">{error}</p>}
+    </div>
+  );
+}
+
+function renderCheckboxSingle({ question, value, error, onCheckedChange }: CheckboxSingleRenderProps) {
+  return (
+    <div className="flex flex-col gap-2" key={question.id}>
+      <Label className="text-sm" isRequired={question.required}>
+        {question.question}
+      </Label>
+      {question.options && (
+        <div className="flex items-center gap-3 p-4 border rounded-md">
+          <Checkbox
+            id={`${question.id}_${question.options[0].id}`}
+            checked={value}
+            onCheckedChange={(checked) => onCheckedChange(!!checked)}
+          />
+          <Label
+            htmlFor={`${question.id}_${question.options[0].id}`}
+            className="text-xs font-[400] text-gray-600"
+          >
+            {question.options[0].label}
+          </Label>
+        </div>
+      )}
+      {error && <p className="text-xs text-red-600">{error}</p>}
     </div>
   );
 }

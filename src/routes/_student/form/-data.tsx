@@ -1,12 +1,12 @@
 const formData: FormDataStructure = {
   sections: [
     {
-      id: "s1",
+      id: "programas_interesse_elegibilidade",
       title: "Programas de Interesse e Critérios de Elegibilidade",
       description: "Esta seção inicial serve para entender as solicitações do estudante e verificar critérios básicos de elegibilidade para os auxílios.",
       questions: [
         {
-          id: "q5",
+          id: "programas_desejados",
           question: "Quais programas você deseja solicitar?",
           type: "checkbox",
           required: true,
@@ -19,7 +19,7 @@ const formData: FormDataStructure = {
           ]
         },
         {
-          id: "q21",
+          id: "graduacao",
           question: "Graduação:",
           type: "radio",
           required: true,
@@ -28,15 +28,15 @@ const formData: FormDataStructure = {
             { id: "outra", label: "Estou cursando ou concluí outra graduação." }
           ]
         },
-        {
-          id: "q22",
+        { // ! Revisar pergunta, pois pode estar repetida.
+          id: "curso_instituicao",
           question: "Se está cursando ou concluiu outra graduação, especifique o curso e a instituição:",
           type: "text",
           required: true,
           placeholder: "Ex: Direito - UFPE"
         },
         {
-          id: "q36",
+          id: "instituicao_ens_medio",
           question: "Estudou o Ensino Médio em:",
           type: "radio",
           required: true,
@@ -49,123 +49,123 @@ const formData: FormDataStructure = {
       ]
     },
     {
-      id: "s2",
+      id: "identificacao_dados_academicos",
       title: "Identificação e Dados Acadêmicos do Estudante",
       questions: [
         {
-          id: "q6",
+          id: "nome_completo",
           question: "Nome completo:",
           type: "text",
           required: true,
           placeholder: "Digite seu nome completo"
         },
         {
-          id: "q7",
+          id: "rg",
           question: "RG:",
           type: "text",
           required: true,
           placeholder: "Digite seu RG"
         },
         {
-          id: "q8",
+          id: "cpf",
           question: "CPF:",
           type: "text",
           required: true,
           placeholder: "Digite seu CPF"
         },
         {
-          id: "q9",
+          id: "telefone_celular",
           question: "Telefone/Celular:",
           type: "text",
           required: true,
           placeholder: "(XX) XXXXX-XXXX"
         },
         {
-          id: "q10",
+          id: "email",
           question: "E-mail:",
           type: "email",
           required: true,
           placeholder: "seuemail@exemplo.com"
         },
         {
-          id: "q11",
+          id: "endereco_residencial",
           question: "Endereço (Onde reside atualmente):",
           type: "text",
           required: true,
           placeholder: "Endereço completo"
         },
         {
-          id: "q12",
+          id: "tipo_logradouro",
           question: "Tipo de Logradouro:",
           type: "text",
           required: true,
           placeholder: "Ex: Rua, Av."
         },
         {
-          id: "q13",
+          id: "nome_logradouro",
           question: "Nome de Logradouro:",
           type: "text",
           required: true,
           placeholder: "Nome da rua/avenida"
         },
         {
-          id: "q14",
+          id: "numero_residencia",
           question: "Número da residência:",
           type: "text",
           required: true,
           placeholder: "Ex: 123 ou S/N"
         },
         {
-          id: "q15",
+          id: "complemento",
           question: "Complemento:",
           type: "text",
           required: true,
           placeholder: "Ex: Apto 101, Fundos"
         },
         {
-          id: "q16",
+          id: "bairro",
           question: "Bairro:",
           type: "text",
           required: true,
           placeholder: "Digite seu bairro"
         },
         {
-          id: "q17",
+          id: "cep",
           question: "CEP:",
           type: "text",
           required: true,
           placeholder: "XXXXX-XXX"
         },
         {
-          id: "q19",
+          id: "estado",
           question: "Estado:",
           type: "text",
           required: true,
           placeholder: "Ex: Alagoas"
         },
         {
-          id: "q20",
+          id: "cidade_procedencia",
           question: "Cidade de Procedência (se for diferente da residência atual):",
           type: "text",
           required: true,
           placeholder: "Cidade onde morava antes"
         },
         {
-          id: "q23",
+          id: "curso",
           question: "Curso:",
           type: "text",
           required: true,
           placeholder: "Ex: Ciência da Computação"
         },
         {
-          id: "q24",
+          id: "matricula",
           question: "Matrícula:",
           type: "text",
           required: true,
           placeholder: "Ex: 2021001234"
         },
         {
-          id: "q25",
+          id: "campus",
           question: "Onde você estuda?",
           type: "radio",
           required: true,
@@ -181,21 +181,21 @@ const formData: FormDataStructure = {
           ]
         },
         {
-          id: "q26",
+          id: "ano_ingresso",
           question: "Ano/semestre letivo de ingresso:",
           type: "text",
           required: true,
           placeholder: "Ex: 2024.1"
         },
         {
-          id: "q27",
+          id: "periodo_atual",
           question: "Período em que se encontra atualmente no curso:",
           type: "text",
           required: true,
           placeholder: "Ex: 3"
         },
         {
-          id: "q28",
+          id: "turno_matriculado",
           question: "Turno matriculado:",
           type: "radio",
           required: true,
@@ -207,7 +207,7 @@ const formData: FormDataStructure = {
           ]
         },
         {
-          id: "q29",
+          id: "forma_ingresso",
           question: "Forma de ingresso na Ufal:",
           type: "radio",
           required: true,
@@ -218,14 +218,14 @@ const formData: FormDataStructure = {
           ]
         },
         {
-          id: "q30",
+          id: "ingresso_ufal_explicacao",
           question: "Caso não tenha ingressado por nenhuma das modalidades da pergunta anterior, explique como se deu o ingresso na universidade:",
           type: "textarea",
           required: true,
           placeholder: "Explique sua forma de ingresso..."
         },
         {
-          id: "q31",
+          id: "sexo",
           question: "Sexo (categoria biológica):",
           type: "radio",
           required: true,
@@ -238,7 +238,7 @@ const formData: FormDataStructure = {
           ]
         },
         {
-          id: "q32",
+          id: "identidade_genero",
           question: "Identidade de gênero (como cada pessoa se identifica):",
           type: "radio",
           required: true,
@@ -254,7 +254,7 @@ const formData: FormDataStructure = {
           ]
         },
         {
-          id: "q33",
+          id: "orientacao_sexual",
           question: "Orientação Sexual:",
           type: "radio",
           required: true,
@@ -269,7 +269,7 @@ const formData: FormDataStructure = {
           ]
         },
         {
-          id: "q34",
+          id: "estado_civil",
           question: "Estado Civil:",
           type: "radio",
           required: true,
@@ -282,7 +282,7 @@ const formData: FormDataStructure = {
           ]
         },
         {
-          id: "q35",
+          id: "ori_instituicao_abrigo",
           question: "Você é oriundo/a de uma entidade ou abrigo de acolhimento institucional e não foi adotado na idade de saída?",
           type: "radio",
           required: true,
@@ -294,11 +294,11 @@ const formData: FormDataStructure = {
       ]
     },
     {
-      id: "s3",
+      id: "caracterizacao_nucleo_familiar",
       title: "Caracterização do Núcleo Familiar",
       questions: [
         {
-          id: "q37",
+          id: "escolaridade_pai",
           question: "Escolaridade do pai:",
           type: "radio",
           required: true,
@@ -314,7 +314,7 @@ const formData: FormDataStructure = {
           ]
         },
         {
-          id: "q38",
+          id: "escolaridade_mae",
           question: "Escolaridade da mãe:",
           type: "radio",
           required: true,
@@ -330,7 +330,7 @@ const formData: FormDataStructure = {
           ]
         },
         {
-          id: "q39",
+          id: "escolaridade_outro_mantenedor",
           question: "Qual nível de escolaridade do mantenedor da família caso não seja o pai e/ou a mãe?",
           type: "radio",
           required: true,
@@ -346,7 +346,7 @@ const formData: FormDataStructure = {
           ]
         },
         {
-          id: "q40",
+          id: "situacao_conjugal_pais",
           question: "Seus pais são separados?",
           type: "radio",
           required: true,
@@ -356,7 +356,7 @@ const formData: FormDataStructure = {
           ]
         },
         {
-          id: "q41",
+          id: "reside_pais",
           question: "Reside com pai e/ou mãe?",
           type: "radio",
           required: true,
@@ -366,28 +366,28 @@ const formData: FormDataStructure = {
           ]
         },
         {
-          id: "q42",
+          id: "motivo_nao_reside",
           question: "Em caso de não residir com pai e/ou mãe esclareça o motivo:",
           type: "textarea",
           required: true,
           placeholder: "Descreva o motivo..."
         },
         {
-          id: "q43",
+          id: "endereco_responsavel",
           question: "Em caso de não residir com pai e/ou mãe informe o endereço dele/s:",
           type: "textarea",
           required: true,
           placeholder: "Informe o endereço completo..."
         },
         {
-          id: "q44",
+          id: "sustento_nao_reside",
           question: "Caso não resida com pai e/ou mãe, explique há quanto tempo e como se sustenta.",
           type: "textarea",
           required: true,
           placeholder: "Há quanto tempo e como se sustenta..."
         },
         {
-          id: "q45",
+          id: "ausencia_pais",
           question: "Seu pai ou sua mãe está ausente da composição familiar?",
           type: "radio",
           required: true,
@@ -397,21 +397,21 @@ const formData: FormDataStructure = {
           ]
         },
         {
-          id: "q46",
+          id: "motivo_ausencia",
           question: "Em caso afirmativo, explique a ausência.",
           type: "textarea",
           required: true,
           placeholder: "Explique a situação de ausência..."
         },
         {
-          id: "q47",
+          id: "telefone_responsavel",
           question: "Telefone dos pais e/ou responsáveis, para o caso de emergência:",
           type: "text",
           required: true,
           placeholder: "(XX) XXXXX-XXXX"
         },
         {
-          id: "q49",
+          id: "moradia_familiar",
           question: "Seu núcleo familiar de origem mora em:",
           type: "radio",
           required: true,
@@ -425,14 +425,14 @@ const formData: FormDataStructure = {
           ]
         },
         {
-          id: "q50",
+          id: "motivo_moradia",
           question: "Caso o imóvel seja cedido, explique por quem foi:",
           type: "text",
           required: true,
           placeholder: "Ex: Parente, Amigo..."
         },
         {
-          id: "q58",
+          id: "egresso_sistema_prisional",
           question: "Estudante ou membro da família nuclear é egresso do Sistema Prisional (em liberdade ou no regime semi-aberto)?",
           type: "radio",
           required: true,
@@ -444,7 +444,7 @@ const formData: FormDataStructure = {
       ]
     },
     {
-      id: "s4",
+      id: "analise_socioeconomica",
       title: "Análise Socioeconômica",
       alert: {
         type: "warning",
@@ -453,42 +453,42 @@ const formData: FormDataStructure = {
       },
       questions: [
         {
-          id: "q1",
+          id: "nis_candidato",
           question: "Número de Identificação Social - NIS do Candidato/a",
           type: "text",
           required: true,
           placeholder: "Digite seu NIS"
         },
         {
-          id: "q2",
+          id: "nis_responsavel",
           question: "Número de Identificação Social - NIS do Responsável pela unidade familiar (núcleo familiar de origem)",
           type: "text",
           required: true,
           placeholder: "Digite o NIS do responsável"
         },
         {
-          id: "q3",
+          id: "codigo_grupo_familiar_candidato",
           question: "Número Código do grupo familiar no comprovante de Cadastro do CadÚnico do candidato/a",
           type: "text",
           required: true,
           placeholder: "Digite o código do grupo familiar"
         },
         {
-          id: "q4",
+          id: "codigo_grupo_familiar_responsavel",
           question: "Número do Código do Grupo familiar no comprovante de Cadastro do CadÚnico do responsável pela unidade familiar (núcleo familiar de origem)",
           type: "text",
           required: true,
           placeholder: "Digite o código do grupo familiar do responsável"
         },
         {
-          id: "q51",
+          id: "motivo_n_fornecimento_energia",
           question: "Caso não haja fornecimento de energia ou não haja cobrança da conta de energia, explique a situação:",
           type: "textarea",
           required: true,
           placeholder: "Explique a situação..."
         },
         {
-          id: "q52",
+          id: "existe_transporte_publico",
           question: "Existe transporte público (municipal e/ou intermunicipal) na localidade onde mora?",
           type: "radio",
           required: true,
@@ -498,7 +498,7 @@ const formData: FormDataStructure = {
           ]
         },
         {
-          id: "q53",
+          id: "meios_transporte_ufal",
           question: "Qual/quais o/s meio/s de transporte/s utilizado/s para o deslocamento até a UFAL?",
           type: "checkbox",
           required: true,
@@ -516,8 +516,8 @@ const formData: FormDataStructure = {
           ]
         },
         {
-          id: "q55",
-          question: "Qual o tempo gasto para chegar à Ufal?",
+          id: "tempo_deslocamento_ufal",
+          question: "Qual o tempo gasto para chegar à UFAL?",
           type: "radio",
           required: true,
           options: [
@@ -527,7 +527,7 @@ const formData: FormDataStructure = {
           ]
         },
         {
-          id: "q56",
+          id: "equipamentos_acesso_atividades_remotas",
           question: "Qual(is) desse(s) equipamento(s) para acesso às atividades remotas você possui?",
           type: "checkbox",
           required: true,
@@ -540,7 +540,7 @@ const formData: FormDataStructure = {
           ]
         },
         {
-          id: "q57",
+          id: "tipos_conexao_internet",
           question: "Qual(is) o(s) tipo(s) de conexão de internet disponível(is) na sua residência?",
           type: "checkbox",
           required: true,
@@ -553,7 +553,7 @@ const formData: FormDataStructure = {
           ]
         },
         {
-          id: "q59",
+          id: "situacao_refugio",
           question: "Estudante está em situação de refúgio no Brasil?",
           type: "radio",
           required: true,
@@ -563,7 +563,7 @@ const formData: FormDataStructure = {
           ]
         },
         {
-          id: "q60",
+          id: "reside_moradia_diversa",
           question: "Por motivo da graduação reside em moradia diversa da casa do seu núcleo familiar de origem?",
           type: "radio",
           required: true,
@@ -573,7 +573,7 @@ const formData: FormDataStructure = {
           ]
         },
         {
-          id: "q61",
+          id: "reside_moradia_diversa_explicacao",
           question: "Caso sim, reside em:",
           type: "radio",
           required: true,
@@ -590,7 +590,7 @@ const formData: FormDataStructure = {
           ]
         },
         {
-          id: "q62",
+          id: "divide_moradia",
           question: "Divide essa moradia?",
           type: "radio",
           required: true,
@@ -601,14 +601,14 @@ const formData: FormDataStructure = {
           ]
         },
         {
-          id: "q63",
+          id: "divide_moradia_com",
           question: "Caso divida a moradia, com quem divide?",
           type: "text",
           required: true,
           placeholder: "Ex: Colegas de quarto, família..."
         },
         {
-          id: "q64",
+          id: "divide_despesas_moradia",
           question: "Caso divida a moradia, há divisão das despesas?",
           type: "radio",
           required: true,
@@ -621,11 +621,11 @@ const formData: FormDataStructure = {
       ]
     },
     {
-      id: "s5",
+      id: "saude_estudante_e_nucleo_familiar",
       title: "Saúde do Estudante e do Núcleo Familiar",
       questions: [
         {
-          id: "q48",
+          id: "gestante",
           question: "Está gestante?",
           type: "radio",
           required: true,
@@ -636,7 +636,7 @@ const formData: FormDataStructure = {
           ]
         },
         {
-          id: "q65",
+          id: "cuidados_saude",
           question: "Quando necessita de cuidados de saúde, você utiliza:",
           type: "radio",
           required: true,
@@ -647,21 +647,21 @@ const formData: FormDataStructure = {
           ]
         },
         {
-          id: "q66",
+          id: "despesa_plano_saude",
           question: "Qual a despesa mensal com plano de saúde e/ou serviços particulares (na residência de seu núcleo familiar de origem)?",
           type: "text",
           required: true,
           placeholder: "R$ 0,00"
         },
         {
-          id: "q67",
+          id: "despesa_medicamentos",
           question: "Caso você ou alguém do seu núcleo familiar faça uso de medicamento de uso contínuo, qual a despesa mensal?",
           type: "text",
           required: true,
           placeholder: "R$ 0,00"
         },
         {
-          id: "q68",
+          id: "problema_saude_acompanhamento_periodico",
           question: "Você ou alguém do seu núcleo familiar possui problema de saúde que requeira acompanhamento ambulatorial periódico?",
           type: "radio",
           required: true,
@@ -671,14 +671,14 @@ const formData: FormDataStructure = {
           ]
         },
         {
-          id: "q69",
+          id: "problema_saude_explicacao",
           question: "Caso a resposta anterior tenha sido afirmativa. (Explique):",
           type: "textarea",
           required: true,
           placeholder: "Explique a situação"
         },
         {
-          id: "q70",
+          id: "violencia_discriminacao_sofrida",
           question: "Você passa ou já passou por alguma situação descrita abaixo?",
           type: "checkbox",
           required: true,
@@ -695,7 +695,7 @@ const formData: FormDataStructure = {
           ]
         },
         {
-          id: "q71",
+          id: "violencia_discriminacao_explicacao",
           question: "Caso se sinta confortável, comente sobre a situação:",
           type: "textarea",
           required: false,
@@ -704,11 +704,11 @@ const formData: FormDataStructure = {
       ]
     },
     {
-      id: "s6",
+      id: "relato_final",
       title: "Relato Final",
       questions: [
         {
-          id: "q72",
+          id: "q_dinamica_familiar",
           question: "Relate sobre sua dinâmica familiar:",
           type: "textarea",
           required: false,
@@ -726,32 +726,32 @@ const formData: FormDataStructure = {
         }
       ]
     },
-    {
-      id: "s7",
-      title: "Documentos Finais",
-      questions: [
-        {
-          id: "q73",
-          question: "Anexe aqui o arquivo único em PDF com a documentação obrigatória. Tamanho máximo 10MB.",
-          type: "file",
-          required: true,
-          accept: "application/pdf",
-          maxSize: 10485760
-        },
-        {
-          id: "q74",
-          question: "Declaração:",
-          type: "checkbox-single",
-          required: true,
-          options: [
-            {
-              id: "declaracao",
-              label: "Ratifico serem verdadeiras as informações prestadas, estando ciente de que a informação falsa incorrerá nas penas do crime do art. 299 do Código Penal (falsidade ideológica), além de, caso configurada a prestação de informação falsa, apurada posteriormente à adesão a quaisquer dos programas da Assistência Estudantil, em procedimento que assegure o contraditório e a ampla defesa, ensejará o desligamento, sem prejuízo das sanções penais cabíveis."
-            }
-          ]
-        }
-      ]
-    }
+    // {
+    //   id: "s7",
+    //   title: "Documentos",
+    //   questions: [
+    //     {
+    //       id: "q73",
+    //       question: "Anexe aqui o arquivo único em PDF com a documentação obrigatória. Tamanho máximo 10MB.",
+    //       type: "file",
+    //       required: true,
+    //       accept: "application/pdf",
+    //       maxSize: 10485760
+    //     },
+    //     {
+    //       id: "q74",
+    //       question: "Declaração:",
+    //       type: "checkbox-single",
+    //       required: true,
+    //       options: [
+    //         {
+    //           id: "declaracao",
+    //           label: "Ratifico serem verdadeiras as informações prestadas, estando ciente de que a informação falsa incorrerá nas penas do crime do art. 299 do Código Penal (falsidade ideológica), além de, caso configurada a prestação de informação falsa, apurada posteriormente à adesão a quaisquer dos programas da Assistência Estudantil, em procedimento que assegure o contraditório e a ampla defesa, ensejará o desligamento, sem prejuízo das sanções penais cabíveis."
+    //         }
+    //       ]
+    //     }
+    //   ]
+    // }
   ]
 };
 

@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as StudentRouteImport } from './routes/_student'
 import { Route as SocialWorkersRouteImport } from './routes/_social-workers'
 import { Route as CoordinatorRouteImport } from './routes/_coordinator'
 import { Route as IndexRouteImport } from './routes/index'
@@ -20,7 +21,12 @@ import { Route as AnalisarInscricaoSubscriptionIdRouteImport } from './routes/an
 import { Route as SocialWorkersEditaisIdRouteImport } from './routes/_social-workers/editais/$id'
 import { Route as SocialWorkersConsultarIvsIdRouteImport } from './routes/_social-workers/consultar-ivs/$id'
 import { Route as CoordinatorEditaisCriarRouteImport } from './routes/_coordinator/editais/criar'
+import { Route as StudentEditaisIdInscricaoRouteImport } from './routes/_student/editais.$id.inscricao'
 
+const StudentRoute = StudentRouteImport.update({
+  id: '/_student',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SocialWorkersRoute = SocialWorkersRouteImport.update({
   id: '/_social-workers',
   getParentRoute: () => rootRouteImport,
@@ -77,6 +83,12 @@ const CoordinatorEditaisCriarRoute = CoordinatorEditaisCriarRouteImport.update({
   path: '/editais/criar',
   getParentRoute: () => CoordinatorRoute,
 } as any)
+const StudentEditaisIdInscricaoRoute =
+  StudentEditaisIdInscricaoRouteImport.update({
+    id: '/editais/$id/inscricao',
+    path: '/editais/$id/inscricao',
+    getParentRoute: () => StudentRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -88,6 +100,7 @@ export interface FileRoutesByFullPath {
   '/analisar/inscricao/$subscriptionId': typeof AnalisarInscricaoSubscriptionIdRoute
   '/editais': typeof CoordinatorEditaisIndexRoute
   '/consultar-ivs': typeof SocialWorkersConsultarIvsIndexRoute
+  '/editais/$id/inscricao': typeof StudentEditaisIdInscricaoRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -99,12 +112,14 @@ export interface FileRoutesByTo {
   '/analisar/inscricao/$subscriptionId': typeof AnalisarInscricaoSubscriptionIdRoute
   '/editais': typeof CoordinatorEditaisIndexRoute
   '/consultar-ivs': typeof SocialWorkersConsultarIvsIndexRoute
+  '/editais/$id/inscricao': typeof StudentEditaisIdInscricaoRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_coordinator': typeof CoordinatorRouteWithChildren
   '/_social-workers': typeof SocialWorkersRouteWithChildren
+  '/_student': typeof StudentRouteWithChildren
   '/_auth/cadastro': typeof AuthCadastroRoute
   '/_auth/login': typeof AuthLoginRoute
   '/_coordinator/editais/criar': typeof CoordinatorEditaisCriarRoute
@@ -113,6 +128,7 @@ export interface FileRoutesById {
   '/analisar/inscricao/$subscriptionId': typeof AnalisarInscricaoSubscriptionIdRoute
   '/_coordinator/editais/': typeof CoordinatorEditaisIndexRoute
   '/_social-workers/consultar-ivs/': typeof SocialWorkersConsultarIvsIndexRoute
+  '/_student/editais/$id/inscricao': typeof StudentEditaisIdInscricaoRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -126,6 +142,7 @@ export interface FileRouteTypes {
     | '/analisar/inscricao/$subscriptionId'
     | '/editais'
     | '/consultar-ivs'
+    | '/editais/$id/inscricao'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -137,11 +154,13 @@ export interface FileRouteTypes {
     | '/analisar/inscricao/$subscriptionId'
     | '/editais'
     | '/consultar-ivs'
+    | '/editais/$id/inscricao'
   id:
     | '__root__'
     | '/'
     | '/_coordinator'
     | '/_social-workers'
+    | '/_student'
     | '/_auth/cadastro'
     | '/_auth/login'
     | '/_coordinator/editais/criar'
@@ -150,12 +169,14 @@ export interface FileRouteTypes {
     | '/analisar/inscricao/$subscriptionId'
     | '/_coordinator/editais/'
     | '/_social-workers/consultar-ivs/'
+    | '/_student/editais/$id/inscricao'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   CoordinatorRoute: typeof CoordinatorRouteWithChildren
   SocialWorkersRoute: typeof SocialWorkersRouteWithChildren
+  StudentRoute: typeof StudentRouteWithChildren
   AuthCadastroRoute: typeof AuthCadastroRoute
   AuthLoginRoute: typeof AuthLoginRoute
   AnalisarInscricaoSubscriptionIdRoute: typeof AnalisarInscricaoSubscriptionIdRoute
@@ -163,6 +184,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/_student': {
+      id: '/_student'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof StudentRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_social-workers': {
       id: '/_social-workers'
       path: ''
@@ -240,6 +268,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CoordinatorEditaisCriarRouteImport
       parentRoute: typeof CoordinatorRoute
     }
+    '/_student/editais/$id/inscricao': {
+      id: '/_student/editais/$id/inscricao'
+      path: '/editais/$id/inscricao'
+      fullPath: '/editais/$id/inscricao'
+      preLoaderRoute: typeof StudentEditaisIdInscricaoRouteImport
+      parentRoute: typeof StudentRoute
+    }
   }
 }
 
@@ -273,10 +308,22 @@ const SocialWorkersRouteWithChildren = SocialWorkersRoute._addFileChildren(
   SocialWorkersRouteChildren,
 )
 
+interface StudentRouteChildren {
+  StudentEditaisIdInscricaoRoute: typeof StudentEditaisIdInscricaoRoute
+}
+
+const StudentRouteChildren: StudentRouteChildren = {
+  StudentEditaisIdInscricaoRoute: StudentEditaisIdInscricaoRoute,
+}
+
+const StudentRouteWithChildren =
+  StudentRoute._addFileChildren(StudentRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   CoordinatorRoute: CoordinatorRouteWithChildren,
   SocialWorkersRoute: SocialWorkersRouteWithChildren,
+  StudentRoute: StudentRouteWithChildren,
   AuthCadastroRoute: AuthCadastroRoute,
   AuthLoginRoute: AuthLoginRoute,
   AnalisarInscricaoSubscriptionIdRoute: AnalisarInscricaoSubscriptionIdRoute,

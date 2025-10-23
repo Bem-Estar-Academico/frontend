@@ -16,7 +16,7 @@ import { useMutation } from "@tanstack/react-query";
 import { createStudentRegistrationMutationOptions } from "@/mutations/create-student-registration";
 import { CreateStudentRegistrationFormSidebar } from "./-sidebar";
 
-export const Route = createFileRoute("/_student/form/")({
+export const Route = createFileRoute("/_student/editais/$id/inscricao")({
   component: StudentRegistrationForm,
 });
 
@@ -25,8 +25,9 @@ export function StudentRegistrationForm() {
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: getInitialValues(),
-
   })  
+
+  const { id } = Route.useParams()
  
   const [activeTab, setActiveTab] = useState(formData.sections[0].id);
 
@@ -88,7 +89,7 @@ export function StudentRegistrationForm() {
                               <RadioGroupItem value={option.id} />
                             </FormControl>
                             <FormLabel className="font-normal">
-                              {option.label} {option.id}
+                              {option.label}
                             </FormLabel>
                           </FormItem>
                         ))}
@@ -158,7 +159,7 @@ export function StudentRegistrationForm() {
                     />
                     {question.options && (
                       <FormLabel className="font-normal">
-                        {question.options[0].label} {question.options[0].id}
+                        {question.options[0].label}
                       </FormLabel>
                     )}
                   </div>
@@ -193,12 +194,12 @@ export function StudentRegistrationForm() {
           />
         );
       default:
-        return null;
+        return null;  
     }
-  }, [])
+  }, [form])
 
   const onSubmit = async (values: FormValues) => {
-    await mutateAsync({ editalId: 1, data: {answer: values} });
+    await mutateAsync({ editalId: Number.parseInt(id), data: {answer: values} });
   };
 
   const onError = (errors: FieldErrors<FormValues>) => {

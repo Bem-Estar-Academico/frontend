@@ -8,7 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import formData, { type FormQuestion } from "./-data";
 import { formSchema, getInitialValues, type FormValues } from "./-schema";
-import { useForm, type FieldErrors } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
@@ -202,7 +202,7 @@ export function StudentRegistrationForm() {
     await mutateAsync({ editalId: Number.parseInt(id), data: {answer: values} });
   };
 
-  const onError = (errors: FieldErrors<FormValues>) => {
+  const onError = () => {
     toast.error("Por favor, verifique as seções e corrija os erros no formulário antes de enviar.");
   };
 

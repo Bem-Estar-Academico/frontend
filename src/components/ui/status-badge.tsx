@@ -36,7 +36,7 @@ const variantIcons = {
   review: { Icon: IconProgress },
 }
 
-const variantText = {
+export const variantText = {
   approved: "Deferido",
   denied: "Indeferido",
   pending: "Pendente",

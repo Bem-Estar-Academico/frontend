@@ -1,0 +1,163 @@
+import EditalCard from '@/components/edital-card';
+import { Input } from '@/components/ui/input';
+import { Pagination } from '@/components/ui/pagination';
+import { editaisQueryOptions } from '@/queries/editais';
+import { useQuery } from '@tanstack/react-query';
+import { createFileRoute, Link } from '@tanstack/react-router'
+import { useState, useMemo } from 'react';
+import { Button } from '@/components/ui/button';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Filter } from 'lucide-react';
+import { Label } from '@/components/ui/label';
+import { Checkbox } from '@/components/ui/checkbox';
+
+export const Route = createFileRoute('/student/editais/')({
+  component: EditaisList,
+})
+
+function EditaisList() {
+  const { data: editais, isLoading, isError } = useQuery(editaisQueryOptions);
+
+  const [search, setSearch] = useState("");
+  const [page, setPage] = useState(1);
+  const [showAbertos, setShowAbertos] = useState(true);
+  const [showFechados, setShowFechados] = useState(true);
+  const pageSize = 5;
+
+  // Função para determinar se o edital está aberto
+  const isEditalOpen = (edital: any) => {
+    const now = new Date();
+    const registrationEndDate = new Date(edital.registration_end_date);
+    return registrationEndDate >= now;
+  };
+
+  const filteredEditais = useMemo(() => {
+    if (!editais) return [];
+    return editais.filter((edital) => {
+      const matchesSearch =
+        edital.title.toLowerCase().includes(search.toLowerCase()) ||
+        edital.description.toLowerCase().includes(search.toLowerCase());
+
+      // Verifica se o edital está aberto baseado na data de fim das inscrições
+      const isOpen = isEditalOpen(edital);
+      const matchesStatus = 
+        (showAbertos && isOpen) || 
+        (showFechados && !isOpen);
+
+      return matchesSearch && matchesStatus;
+    });
+  }, [editais, search, showAbertos, showFechados]);
+
+  if (isLoading) return <p>Carregando editais...</p>;
+  if (isError) return <p>Erro ao carregar editais.</p>;
+
+  const totalPages = Math.ceil(filteredEditais.length / pageSize);
+  const currentData = filteredEditais.slice(
+    (page - 1) * pageSize,
+    page * pageSize
+  );
+
+  const activeFiltersCount = [!showAbertos, !showFechados].filter(Boolean).length;
+
+  return (
+    <div className="flex flex-1 flex-col gap-7">
+      <h1 className="text-md font-medium p-5 border-b">Editais</h1>
+
+      <div className="max-h-fit flex gap-3 px-5">
+        <Input
+          placeholder="Buscar edital"
+          value={search}
+          onChange={(e) => {
+            setSearch(e.target.value);
+            setPage(1);
+          }}
+          className="max-w-sm"
+        />
+        
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button variant="outline" className="gap-2">
+              <Filter className="h-4 w-4" />
+              Filtros
+              {activeFiltersCount > 0 && (
+                <span className="ml-1 rounded-full bg-primary px-2 py-0.5 text-xs text-primary-foreground">
+                  {activeFiltersCount}
+                </span>
+              )}
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-64" align="start">
+            <div className="space-y-4">
+              <div className="space-y-3">
+                <h4 className="font-medium text-sm">Status do Edital</h4>
+                
+                <div className="flex items-center space-x-2">
+                  <Checkbox 
+                    id="abertos" 
+                    checked={showAbertos}
+                    onCheckedChange={(checked) => {
+                      setShowAbertos(!!checked);
+                      setPage(1);
+                    }}
+                  />
+                  <Label 
+                    htmlFor="abertos" 
+                    className="cursor-pointer text-sm font-normal"
+                  >
+                    Abertos
+                  </Label>
+                </div>
+
+                <div className="flex items-center space-x-2">
+                  <Checkbox 
+                    id="fechados" 
+                    checked={showFechados}
+                    onCheckedChange={(checked) => {
+                      setShowFechados(!!checked);
+                      setPage(1);
+                    }}
+                  />
+                  <Label 
+                    htmlFor="fechados" 
+                    className="cursor-pointer text-sm font-normal"
+                  >
+                    Fechados
+                  </Label>
+                </div>
+              </div>
+            </div>
+          </PopoverContent>
+        </Popover>
+      </div>
+
+      <div className="flex flex-col px-5 gap-6">
+        {currentData.length > 0 ? (
+          currentData.map((edital) => {
+            const isOpen = isEditalOpen(edital);
+            return (
+              <Link
+                key={edital.id}
+                to={"/student/editais/$id"}
+                params={{ id: String(edital.id) }}
+              >
+                <EditalCard
+                  title={edital.title}
+                  description={edital.description}
+                  lastModification={new Date(edital.updated_at)}
+                  id={edital.id}
+                  canSubscribe={isOpen}
+                  isOpen={isOpen}
+                />
+              </Link>
+            );
+          })
+        ) : (
+          <p className="text-gray-500 italic">Nenhum edital encontrado</p>
+        )}
+      </div>
+
+      <Pagination page={page} totalPages={totalPages} onPageChange={setPage} />
+    </div>
+  )
+  
+}

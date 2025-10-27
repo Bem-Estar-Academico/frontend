@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { useState, useCallback } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -6,17 +6,17 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import formData, { type FormQuestion } from "./-data";
-import { formSchema, getInitialValues, type FormValues } from "./-schema";
+import formData, { type FormQuestion } from "../-data";
+import { formSchema, getInitialValues, type FormValues } from "../-schema";
 import { useForm } from "react-hook-form";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import { useMutation } from "@tanstack/react-query";
 import { createStudentRegistrationMutationOptions } from "@/mutations/create-student-registration";
-import { CreateStudentRegistrationFormSidebar } from "./-sidebar";
+import { CreateStudentRegistrationFormSidebar } from "../-sidebar";
 
-export const Route = createFileRoute("/_student/editais/$id/inscricao")({
+export const Route = createFileRoute("/student/editais/$id/inscricao")({
   component: StudentRegistrationForm,
 });
 
@@ -26,7 +26,7 @@ export function StudentRegistrationForm() {
     resolver: zodResolver(formSchema),
     defaultValues: getInitialValues(),
   })  
-
+  const navigate = useNavigate()
   const { id } = Route.useParams()
  
   const [activeTab, setActiveTab] = useState(formData.sections[0].id);
@@ -199,7 +199,14 @@ export function StudentRegistrationForm() {
   }, [form])
 
   const onSubmit = async (values: FormValues) => {
-    await mutateAsync({ editalId: Number.parseInt(id), data: {answer: values} });
+    try {
+      await mutateAsync({ editalId: Number.parseInt(id), data: {answer: values} });
+
+      toast.success("Inscrição realizada com sucesso!")
+      navigate({ to: "/student/home" });
+    } catch(error: any) {
+      console.error(error);
+    }
   };
 
   const onError = () => {

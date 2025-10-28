@@ -65,10 +65,10 @@ function RouteComponent() {
         <ChartProgress totalPercent={50} editalTitle={lastNotice.title} />
         
         <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
-          <StatsCard title='Total' color="bg-blue-500" value={800} />
-          <StatsCard title='Assistentes Sociais' color="bg-green-500" value={15} />
-          <StatsCard title='Análises Realizadas' color="bg-yellow-500" value={1200} />
-          <StatsCard title='Análises Pendentes' color="bg-red-500" value={800} />
+          <StatsCard title='Total' value={800} />
+          <StatsCard title='Assistentes Sociais' value={15} />
+          <StatsCard title='Análises Realizadas' value={1200} />
+          <StatsCard title='Análises Pendentes' value={800} />
         </div>
       </div>
 
@@ -117,7 +117,6 @@ function RouteComponent() {
 interface StatsCardProps {
   title: string;
   value: string | number;
-  color: string;
 }
 
 function StatsCard({ title, value }: StatsCardProps) {

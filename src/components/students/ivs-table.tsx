@@ -11,6 +11,7 @@ import {
   type SortingState,
   useReactTable,
   type VisibilityState,
+  type ColumnDef,
 } from "@tanstack/react-table"
 import {
   Eye,
@@ -29,7 +30,6 @@ import {
 } from "@/components/ui/table"
 import { Skeleton } from "@/components/ui/skeleton"
 import { DataTablePagination } from "@/components/ui/data-table-pagination"
-import type { ColumnDef } from "@tanstack/react-table";
 import { Link } from "@tanstack/react-router";
 import { DataTableColumnHeader } from "@/components/ui/data-table-column-header";
 

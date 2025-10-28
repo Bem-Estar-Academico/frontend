@@ -1,10 +1,8 @@
 import { createFileRoute, Outlet, redirect} from '@tanstack/react-router'
-import { HeaderSocialWorkers } from './_social-workers/-components/header'
 import { editaisQueryOptions } from '@/queries/editais'
-import { useAuth } from '@/contexts/auth'
-import type { User } from '@/types/user'
+import Header from '@/components/header'
 
-export const Route = createFileRoute('/_social-workers')({
+export const Route = createFileRoute('/_app')({
   beforeLoad: async ({ context, location }) => {
     if (!context.auth?.isAuthenticated) {
       throw redirect({
@@ -20,14 +18,12 @@ export const Route = createFileRoute('/_social-workers')({
 })
 
 function LayoutComponent() {
-  const auth = useAuth()
-
-  const user = auth.user as User
-
   return (
     <>
-      <HeaderSocialWorkers name={user.full_name} id={user.id} />
-      <Outlet />
+      <Header />
+      <main className='px-10 py-6'>
+        <Outlet />
+      </main>
     </>
   )
 }

@@ -38,7 +38,7 @@ export function ChartMeanIVS() {
         <CardHeader>
             <CardTitle className="leading-none font-semibold">Média do Índice de Vulnerabilidade Social</CardTitle>
             <CardDescription className='text-muted-foreground text-sm'>
-                Média dos IVS dos últimos 6 períodos (2022.1 - 2024.1)
+                Média dos IVS dos últimos 6 períodos (2022.1 - 2024.2)
             </CardDescription>
         </CardHeader>
        <CardContent>

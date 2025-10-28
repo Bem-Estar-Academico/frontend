@@ -12,7 +12,6 @@ import type { Props as LegendProps } from "recharts/types/component/Legend"
 import type { TooltipContentProps } from "recharts/types/component/Tooltip"
 
 import { cn } from "@/lib/utils"
-import { Key } from "lucide-react"
 
 // Format: { THEME_NAME: CSS_SELECTOR }
 const THEMES = { light: "", dark: ".dark" } as const

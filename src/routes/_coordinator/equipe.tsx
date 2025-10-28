@@ -46,7 +46,7 @@ function RouteComponent() {
       default:
         return dataCopy;
     }
-  }, [orderBy]);
+  }, [orderBy, teamProgress]);
 
   if (!lastNotice) {
     return <div>Nenhum edital encontrado.</div>

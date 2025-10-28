@@ -73,6 +73,7 @@ export function Editais() {
               params={{ id: String(edital.id) }}
             >
               <EditalCard
+                id={edital.id}
                 title={edital.title}
                 description={edital.description}
                 lastModification={new Date(edital.updated_at)}

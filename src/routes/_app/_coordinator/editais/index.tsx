@@ -8,7 +8,7 @@ import { useMemo, useState } from "react";
 import { Pagination } from "@/components/ui/pagination";
 import { editaisQueryOptions } from "@/queries/editais";
 
-export const Route = createFileRoute("/_coordinator/editais/")({
+export const Route = createFileRoute("/_app/_coordinator/editais/")({
   component: Editais,
 });
 
@@ -41,7 +41,7 @@ export function Editais() {
 
   return (
     <div className="flex flex-1 flex-col gap-7">
-      <h1 className="text-md font-medium p-4 border-b">Editais</h1>
+       <h1 className="font-bold text-2xl">Editais</h1>
 
       <div className="max-h-fit flex flex-1 px-5">
         <div className="flex flex-1 gap-5">

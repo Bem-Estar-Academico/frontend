@@ -16,7 +16,7 @@ import { useMutation } from "@tanstack/react-query";
 import { createStudentRegistrationMutationOptions } from "@/mutations/create-student-registration";
 import { CreateStudentRegistrationFormSidebar } from "./-sidebar";
 
-export const Route = createFileRoute("/_student/editais/$id/inscricao")({
+export const Route = createFileRoute("/_app/_student/editais/$id/inscricao")({
   component: StudentRegistrationForm,
 });
 

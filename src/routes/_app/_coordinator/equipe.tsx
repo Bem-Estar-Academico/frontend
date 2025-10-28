@@ -20,7 +20,7 @@ import { useSuspenseQuery } from '@tanstack/react-query'
 import { editaisQueryOptions } from '@/queries/editais'
 import { teamProgressQueryOptions } from '@/queries/team-progress'
 
-export const Route = createFileRoute('/_coordinator/equipe')({
+export const Route = createFileRoute('/_app/_coordinator/equipe')({
   component: RouteComponent,
 })
 
@@ -54,13 +54,12 @@ function RouteComponent() {
 
   return (
    <div className='w-full'>
-    <header className='w-full p-4 flex items-center'>
-      <h1 className='text-2xl font-medium'>Equipe</h1>
+    <header className='w-full flex items-center'>
+      <h1 className="font-bold text-2xl">Equipe</h1>
     </header>
 
-    <Separator className="w-full" />
-
-    <section className='p-4'>
+   
+    <section className='mt-4'>
       <div className="grid grid-cols-[minmax(0,600px)_1fr]">
         <ChartProgress totalPercent={50} editalTitle={lastNotice.title} />
         

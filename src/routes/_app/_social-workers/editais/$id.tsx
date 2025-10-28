@@ -6,7 +6,7 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { studentsRegistrationsQueryOptions } from "@/queries/students-registrations";
 import type { StudentRegistration } from "@/types/student-registration";
 
-export const Route = createFileRoute("/_social-workers/editais/$id")({
+export const Route = createFileRoute("/_app/_social-workers/editais/$id")({
   component: PageEdital,
   loader: ({ context: { queryClient }, params: { id } }) => queryClient.ensureQueryData(editalQueryOptions(Number(id)))
 });
@@ -72,8 +72,8 @@ export function PageEdital() {
 
   return (
     <>
-      <section className="text-sm font-medium px-10" dir="ltr">
-        <h2 className="text-xl pt-6 mb-6">{edital.title}</h2>
+      <section className="text-sm font-medium" dir="ltr">
+        <h1 className="font-bold text-2xl">{edital.title}</h1>
         <div className="text-sm font-medium flex items-center justify-between flex-wrap gap-6">
           <div className="grid grid-cols-3 gap-10">
             <div className="flex-col">
@@ -142,7 +142,7 @@ export function PageEdital() {
           </div>
         </div>
       </section>
-      <section className="px-10">
+      <section>
         <StudentDataTable data={students} />
       </section>
     </>

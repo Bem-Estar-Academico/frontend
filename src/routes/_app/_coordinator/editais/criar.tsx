@@ -16,14 +16,14 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form"
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb"
+// import {
+//   Breadcrumb,
+//   BreadcrumbItem,
+//   BreadcrumbLink,
+//   BreadcrumbList,
+//   BreadcrumbPage,
+//   BreadcrumbSeparator,
+// } from "@/components/ui/breadcrumb"
 import { DatePicker } from "@/components/ui/date-picker"
 import { Label } from "@/components/ui/label"
 import { createNoticeMutationOptions } from "@/mutations/create-notice"
@@ -96,7 +96,7 @@ const editalSchema = z.object({
 
 type EditalFormData = z.infer<typeof editalSchema>
 
-export const Route = createFileRoute("/_coordinator/editais/criar")({
+export const Route = createFileRoute("/_app/_coordinator/editais/criar")({
   component: CreateEdital,
 })
 
@@ -159,23 +159,8 @@ function CreateEdital() {
   })) || []
 
   return (
-    <div className="flex flex-col w-full max-w-full bg-gray-100">
-      <div className="p-4 border-b">
-        <Breadcrumb>
-          <BreadcrumbList>
-            <BreadcrumbItem>
-              <BreadcrumbLink href="/editais">Editais</BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbPage>Criar</BreadcrumbPage>
-            </BreadcrumbItem>
-          </BreadcrumbList>
-        </Breadcrumb>
-      </div>
-
-      <div className="flex flex-col w-full h-full max-w-full px-8 py-4">
-        <h2 className="text-2xl font-medium mb-4">Criar Edital</h2>
+      <div className="flex flex-col w-full h-full max-w-full">
+        <h1 className="font-bold text-2xl mb-6">Editais</h1>
 
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="w-full flex flex-col gap-6">
@@ -285,9 +270,24 @@ function CreateEdital() {
           </form>
         </Form>
       </div>
-    </div>
+   
   )
 }
+
+  {/* <div className="p-4 border-b">
+        <Breadcrumb>
+          <BreadcrumbList>
+            <BreadcrumbItem>
+              <BreadcrumbLink href="/editais">Editais</BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbPage>Criar</BreadcrumbPage>
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>
+      </div> */}
+
 
 function DatePickerField({ control, name, title, isRequired }: Readonly<{ control: Control<EditalFormData>; name: 
   | "applicationStart"

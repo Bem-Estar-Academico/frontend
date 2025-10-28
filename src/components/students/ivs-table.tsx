@@ -52,22 +52,22 @@ export function getColumns(masked: boolean): ColumnDef<StudentIVS>[] {
       },
     },
     {
-      accessorKey: "name",
+      accessorKey: "full_name",
       enableGlobalFilter: true,
       enableSorting: !masked,
       header: ({ column }) => <DataTableColumnHeader column={column} title="Nome" />,
       cell: ({ row }) => {
-        const value = row.getValue("name") as string
+        const value = row.getValue("full_name") as string
         return <div className="text-center">{masked ? MASK : value}</div>
       },
     },
     {
-      accessorKey: "registration",
+      accessorKey: "registration_number",
       header: ({ column }) => <DataTableColumnHeader title="Matrícula" column={column} />,
       enableGlobalFilter: true,
       enableSorting: !masked,
       cell: ({ row }) => {
-        const value = row.getValue("registration") as string
+        const value = row.getValue("registration_number") as string
         return <div className="text-center">{masked ? MASK : value}</div>
       },
     },
@@ -140,8 +140,8 @@ export function getColumns(masked: boolean): ColumnDef<StudentIVS>[] {
 export type StudentIVS = {
   id: number
   cpf: string
-  name: string
-  registration: string
+  full_name: string
+  registration_number: string
   ivs: number,
   approved_at: string
   expires_at: string

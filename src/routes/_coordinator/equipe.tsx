@@ -11,12 +11,14 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import React from 'react'
-import { data } from './-data'
 import { ChartProgress } from './-components/chart-progress'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { LayoutGrid, List } from 'lucide-react'
 import { SocialWorkerProgressDataTable } from '@/components/coordinator/social-worker-progress-datatable'
+import { useSuspenseQuery } from '@tanstack/react-query'
+import { editaisQueryOptions } from '@/queries/editais'
+import { teamProgressQueryOptions } from '@/queries/team-progress'
 
 export const Route = createFileRoute('/_coordinator/equipe')({
   component: RouteComponent,
@@ -26,20 +28,29 @@ type OrderByOption = 'highestProgress' | 'lowestProgress' | 'lastAnalysis'
 
 function RouteComponent() {
   const [orderBy, setOrderBy] = React.useState<OrderByOption>('highestProgress');
+  const { data: editais } = useSuspenseQuery(editaisQueryOptions);
+
+  const lastNotice = editais.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())[0];
+
+  const { data: teamProgress } = useSuspenseQuery(teamProgressQueryOptions(lastNotice?.id));
 
   const sortedData = React.useMemo(() => {
-    const dataCopy = [...data];
+    const dataCopy = [...teamProgress];
     switch (orderBy) {
       case 'highestProgress': 
-        return dataCopy.sort((a, b) => b.workProgress - a.workProgress);
+        return dataCopy.sort((a, b) => b.progress - a.progress);
       case 'lowestProgress':
-        return dataCopy.sort((a, b) => a.workProgress - b.workProgress);
+        return dataCopy.sort((a, b) => a.progress - b.progress);
       case 'lastAnalysis':
-        return dataCopy.sort((a, b) => new Date(b.lastAnalysisDate).getTime() - new Date(a.lastAnalysisDate).getTime());
+        return dataCopy.sort((a, b) => new Date(b.last_review ?? 0).getTime() - new Date(a.last_review ?? 0).getTime());
       default:
         return dataCopy;
     }
   }, [orderBy]);
+
+  if (!lastNotice) {
+    return <div>Nenhum edital encontrado.</div>
+  }
 
   return (
    <div className='w-full'>
@@ -51,7 +62,7 @@ function RouteComponent() {
 
     <section className='p-4'>
       <div className="grid grid-cols-[minmax(0,600px)_1fr]">
-        <ChartProgress total_percent={50} />
+        <ChartProgress totalPercent={50} editalTitle={lastNotice.title} />
         
         <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
           <StatsCard title='Total' color="bg-blue-500" value={800} />

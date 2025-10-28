@@ -2,14 +2,29 @@ import { createFileRoute } from "@tanstack/react-router";
 import { ChartMeanIVS } from "../-components/chart-mean-ivs";
 import { ChartEditalResults } from "../-components/chart-edital-results";
 import { ChartTotalIVS } from "../-components/chart-total-ivs";
-import { IVSDataTable } from "@/components/students/ivs-table";
-import { studentsIVS } from "./-data";
+import { IVSDataTable, type StudentIVS } from "@/components/students/ivs-table";
+import { ivsQueryOptions } from "@/queries/ivs";
+import { useSuspenseQuery } from "@tanstack/react-query";
 
 export const Route = createFileRoute("/_social-workers/consultar-ivs/")({
   component: IVS,
 });
 
 export function IVS() {
+  const { data } = useSuspenseQuery(ivsQueryOptions);
+
+  const studentsIVS: StudentIVS[] = data.map(item => ({
+    id: item.student.id,
+    email: item.student.email,
+    full_name: item.student.full_name,
+    user_type: item.student.user_type,
+    registration_number: item.student.registration_number,
+    cpf: item.student.cpf,
+    ivs: item.ivs_score,
+    approved_at: item.expiration_date,
+    expires_at: item.expiration_date
+  }));
+
   return (
     <div className="p-8 space-y-4">
       <h2 className="font-bold text-2xl">Consultar IVS</h2>

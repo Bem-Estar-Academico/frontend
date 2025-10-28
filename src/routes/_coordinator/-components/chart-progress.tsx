@@ -19,7 +19,7 @@ import { type ChartConfig, ChartContainer } from "@/components/ui/chart"
 export const description = "A radial chart with text"
 
 const chartConfig = {
-  total_percent: {
+  totalPercent: {
     label: "Total Processado",
     color: "var(--color-blue-500)",
   },
@@ -27,18 +27,19 @@ const chartConfig = {
 
 
 export interface ChartProgressProps {
-  total_percent: number
+  totalPercent: number
+  editalTitle: string
 }
 
-export function ChartProgress({ total_percent }: ChartProgressProps) {
+export function ChartProgress({ totalPercent, editalTitle }: ChartProgressProps) {
 
-  const chartData = [{ total_percent, fill: "var(--color-total_percent)" }]
+  const chartData = [{ totalPercent, fill: "var(--color-totalPercent)" }]
 
   return (
     <div className="flex flex-col p-4">
       <CardHeader className="items-center pb-0">
         <CardTitle>Progresso</CardTitle>
-        <CardDescription>Edital 2024.2</CardDescription>
+        <CardDescription>{editalTitle}</CardDescription>
       </CardHeader>
       
       <CardContent className="flex-1 pb-0">
@@ -49,7 +50,7 @@ export function ChartProgress({ total_percent }: ChartProgressProps) {
           <RadialBarChart
             data={chartData}
             startAngle={-90}
-            endAngle={(-90) + 360 * (total_percent / 100)}
+            endAngle={(-90) + 360 * (totalPercent / 100)}
             innerRadius={80}
             outerRadius={110}
           >
@@ -60,7 +61,7 @@ export function ChartProgress({ total_percent }: ChartProgressProps) {
               className="first:fill-muted last:fill-background"
               polarRadius={[86, 74]}
             />
-            <RadialBar dataKey="total_percent" background cornerRadius={10} />
+            <RadialBar dataKey="totalPercent" background cornerRadius={10} />
             <PolarRadiusAxis tick={false} tickLine={false} axisLine={false}>
               <Label
                 content={({ viewBox }) => {
@@ -77,7 +78,7 @@ export function ChartProgress({ total_percent }: ChartProgressProps) {
                           y={viewBox.cy}
                           className="fill-foreground text-4xl font-bold"
                         >
-                          {total_percent.toLocaleString()}%
+                          {totalPercent.toLocaleString()}%
                         </tspan>
                         <tspan
                           x={viewBox.cx}

@@ -106,7 +106,6 @@ export function ChartEditalResults() {
   const [selectedSemester, setSelectedSemester] = React.useState(semesters[semesters.length - 1])
   const totalStudents = React.useMemo(() => {
     const selectedSemesterData = data.find(item => item.semester === selectedSemester)
-    console.log(selectedSemesterData)
     if (!selectedSemesterData) return 0
     return selectedSemesterData.approved + selectedSemesterData.denied + selectedSemesterData.appeal + selectedSemesterData.pending + selectedSemesterData.review
   }, [selectedSemester])

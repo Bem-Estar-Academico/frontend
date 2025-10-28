@@ -172,7 +172,7 @@ function ChartTooltipContent({
 
      
     const itemConfig = getPayloadConfigFromPayload(config, item, key)
-     console.log('payload', config, payload, key, itemConfig)
+
     const value = (() => {
       const v =
         !labelKey && typeof label === "string"

@@ -54,7 +54,7 @@ function RouteComponent() {
                                     </CardTitle>
                                     <Badge 
                                         variant="default"
-                                        className={`px-3 py-1 ${isOpen ? "bg-green-500 hover:bg-green-600" : "bg-red-700 hover:bg-red-800"}`}
+                                        className={`px-3 py-1 ${isOpen ? "bg-green-500" : "bg-red-70"}`}
                                     >
                                         {isOpen ? "Aberto" : "Fechado"}
                                     </Badge>

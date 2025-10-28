@@ -30,7 +30,7 @@ export default function EditalCard({
                     </div>
                     <Badge 
                         variant="default"
-                        className={isOpen ? "bg-green-500 hover:bg-green-600" : "bg-red-700 hover:bg-red-800"}
+                        className={isOpen ? "bg-green-500" : "bg-red-700"}
                     >
                         {isOpen ? "Aberto" : "Fechado"}
                     </Badge>

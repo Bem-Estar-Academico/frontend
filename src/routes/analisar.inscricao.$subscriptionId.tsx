@@ -7,7 +7,12 @@ import { createFileRoute } from "@tanstack/react-router";
 import { IconArrowLeft } from "@tabler/icons-react";
 
 export const Route = createFileRoute("/analisar/inscricao/$subscriptionId")({
-  component: ReviewSubscription,
+    component: () => (
+    <>
+      <title>Analisar Inscrição | BEA</title>
+      <ReviewSubscription/>
+    </>
+  ),
 });
 
 const mockData: DocumentsSidebarProps["data"] = [

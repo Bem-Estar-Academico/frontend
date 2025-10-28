@@ -21,6 +21,7 @@ export const Route = createFileRoute("/_auth/login")({
   component: () => {
     return (
         <div className="bg-gray-100 flex flex-col h-screen w-full items-center justify-center">
+          <title>Login | BEA</title>
           <div className="lg:p-8">
             <div className="flex items-center w-full justify-center">
                 <img

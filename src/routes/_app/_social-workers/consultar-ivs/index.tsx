@@ -7,7 +7,12 @@ import { ivsQueryOptions } from "@/queries/ivs";
 import { useSuspenseQuery } from "@tanstack/react-query";
 
 export const Route = createFileRoute("/_app/_social-workers/consultar-ivs/")({
-  component: IVS,
+    component: () => (
+    <>
+      <title>Consultar IVS | BEA</title>
+      <IVS/>
+    </>
+  ),
 });
 
 export function IVS() {

@@ -17,7 +17,12 @@ import { createStudentRegistrationMutationOptions } from "@/mutations/create-stu
 import { CreateStudentRegistrationFormSidebar } from "./-sidebar";
 
 export const Route = createFileRoute("/_app/_student/editais/$id/inscricao")({
-  component: StudentRegistrationForm,
+    component: () => (
+    <>
+      <title>Questionário | BEA</title>
+      <StudentRegistrationForm/>
+    </>
+  ),
 });
 
 export function StudentRegistrationForm() {

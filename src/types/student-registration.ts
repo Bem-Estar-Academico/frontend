@@ -3,7 +3,7 @@ export type Student = {
   email: string
   full_name: string
   user_type: "COORDINATOR" | "STUDENT" | "SOCIAL_WORKER"
-  student_registration: string
+  registration_number: string
   cpf: string
 }
 

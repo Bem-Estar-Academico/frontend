@@ -13,6 +13,7 @@ import { Route as StudentRouteImport } from './routes/_student'
 import { Route as SocialWorkersRouteImport } from './routes/_social-workers'
 import { Route as CoordinatorRouteImport } from './routes/_coordinator'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as CoordinatorEquipeRouteImport } from './routes/_coordinator/equipe'
 import { Route as AuthLoginRouteImport } from './routes/_auth/login'
 import { Route as AuthCadastroRouteImport } from './routes/_auth/cadastro'
 import { Route as SocialWorkersConsultarIvsIndexRouteImport } from './routes/_social-workers/consultar-ivs/index'
@@ -39,6 +40,11 @@ const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const CoordinatorEquipeRoute = CoordinatorEquipeRouteImport.update({
+  id: '/equipe',
+  path: '/equipe',
+  getParentRoute: () => CoordinatorRoute,
 } as any)
 const AuthLoginRoute = AuthLoginRouteImport.update({
   id: '/_auth/login',
@@ -94,6 +100,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/cadastro': typeof AuthCadastroRoute
   '/login': typeof AuthLoginRoute
+  '/equipe': typeof CoordinatorEquipeRoute
   '/editais/criar': typeof CoordinatorEditaisCriarRoute
   '/consultar-ivs/$id': typeof SocialWorkersConsultarIvsIdRoute
   '/editais/$id': typeof SocialWorkersEditaisIdRoute
@@ -106,6 +113,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/cadastro': typeof AuthCadastroRoute
   '/login': typeof AuthLoginRoute
+  '/equipe': typeof CoordinatorEquipeRoute
   '/editais/criar': typeof CoordinatorEditaisCriarRoute
   '/consultar-ivs/$id': typeof SocialWorkersConsultarIvsIdRoute
   '/editais/$id': typeof SocialWorkersEditaisIdRoute
@@ -122,6 +130,7 @@ export interface FileRoutesById {
   '/_student': typeof StudentRouteWithChildren
   '/_auth/cadastro': typeof AuthCadastroRoute
   '/_auth/login': typeof AuthLoginRoute
+  '/_coordinator/equipe': typeof CoordinatorEquipeRoute
   '/_coordinator/editais/criar': typeof CoordinatorEditaisCriarRoute
   '/_social-workers/consultar-ivs/$id': typeof SocialWorkersConsultarIvsIdRoute
   '/_social-workers/editais/$id': typeof SocialWorkersEditaisIdRoute
@@ -136,6 +145,7 @@ export interface FileRouteTypes {
     | '/'
     | '/cadastro'
     | '/login'
+    | '/equipe'
     | '/editais/criar'
     | '/consultar-ivs/$id'
     | '/editais/$id'
@@ -148,6 +158,7 @@ export interface FileRouteTypes {
     | '/'
     | '/cadastro'
     | '/login'
+    | '/equipe'
     | '/editais/criar'
     | '/consultar-ivs/$id'
     | '/editais/$id'
@@ -163,6 +174,7 @@ export interface FileRouteTypes {
     | '/_student'
     | '/_auth/cadastro'
     | '/_auth/login'
+    | '/_coordinator/equipe'
     | '/_coordinator/editais/criar'
     | '/_social-workers/consultar-ivs/$id'
     | '/_social-workers/editais/$id'
@@ -211,6 +223,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/_coordinator/equipe': {
+      id: '/_coordinator/equipe'
+      path: '/equipe'
+      fullPath: '/equipe'
+      preLoaderRoute: typeof CoordinatorEquipeRouteImport
+      parentRoute: typeof CoordinatorRoute
     }
     '/_auth/login': {
       id: '/_auth/login'
@@ -279,11 +298,13 @@ declare module '@tanstack/react-router' {
 }
 
 interface CoordinatorRouteChildren {
+  CoordinatorEquipeRoute: typeof CoordinatorEquipeRoute
   CoordinatorEditaisCriarRoute: typeof CoordinatorEditaisCriarRoute
   CoordinatorEditaisIndexRoute: typeof CoordinatorEditaisIndexRoute
 }
 
 const CoordinatorRouteChildren: CoordinatorRouteChildren = {
+  CoordinatorEquipeRoute: CoordinatorEquipeRoute,
   CoordinatorEditaisCriarRoute: CoordinatorEditaisCriarRoute,
   CoordinatorEditaisIndexRoute: CoordinatorEditaisIndexRoute,
 }

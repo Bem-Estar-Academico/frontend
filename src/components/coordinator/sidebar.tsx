@@ -3,9 +3,7 @@ import { Users, NotepadText, ListTodo } from "lucide-react"
 
 export function Sidebar() {
   return (
-    <div className="flex h-screen">
-      {/* Sidebar */}
-      
+    <div className="flex h-screen">     
       <aside className="flex w-56 flex-col border-r bg-gray-50 p-4">
         <nav className="flex flex-col gap-6">
           <Link

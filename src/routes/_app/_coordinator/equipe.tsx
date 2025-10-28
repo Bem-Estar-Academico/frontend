@@ -1,5 +1,4 @@
 import { CardSocialWorker } from '@/components/coordinator/card-social-worker'
-import { Separator } from '@/components/ui/separator'
 import { createFileRoute } from '@tanstack/react-router'
 import {
   Select,

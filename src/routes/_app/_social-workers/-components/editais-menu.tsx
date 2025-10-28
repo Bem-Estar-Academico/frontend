@@ -14,7 +14,7 @@ interface EditaisMenuProps {
 export function EditaisMenu({ data }: Readonly<EditaisMenuProps>) {
 
   const params = useParams({
-    from: "/_social-workers/editais/$id",
+    from: "/_app/_social-workers/editais/$id",
     shouldThrow: false,
   });
 

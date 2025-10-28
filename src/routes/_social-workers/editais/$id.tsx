@@ -62,7 +62,7 @@ export function PageEdital() {
       id: registration.student.id,
       cpf: registration.student.cpf,
       nome: registration.student.full_name,
-      matricula: registration.student.student_registration,
+      matricula: registration.student.registration_number,
       status: statusTranslation[registration.status],
       progresso: Math.ceil(Math.random() * 100),
       documentos: Math.ceil(Math.random() * 10),

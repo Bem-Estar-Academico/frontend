@@ -12,7 +12,7 @@ const statusBadgeVariants = cva(
       variant: {
         approved:
           "[&>svg]:text-green-500",
-        denied:
+        rejected:
           "[&>svg]:text-red-600",
         pending:
           "[&>svg]:text-muted-foreground",
@@ -30,7 +30,7 @@ const statusBadgeVariants = cva(
 
 const variantIcons = {
   approved: { Icon: IconCircleCheckFilled },
-  denied: { Icon: IconCircleXFilled },
+  rejected: { Icon: IconCircleXFilled },
   pending: { Icon: IconCircle },
   appeal: { Icon: IconHelpCircleFilled },
   review: { Icon: IconProgress },
@@ -38,7 +38,7 @@ const variantIcons = {
 
 export const variantText = {
   approved: "Deferido",
-  denied: "Indeferido",
+  rejected: "Indeferido",
   pending: "Pendente",
   appeal: "Recurso",
   review: "Em Análise",

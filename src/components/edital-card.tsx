@@ -1,4 +1,4 @@
-import { ClipboardPen } from "lucide-react"
+import { ClipboardCheck, ClipboardPen } from "lucide-react"
 import { Button } from "./ui/button"
 import { Link } from "@tanstack/react-router"
 import { Badge } from "./ui/badge"
@@ -10,6 +10,7 @@ interface EditalCardProps {
     lastModification: Date,
     canSubscribe?: boolean,
     isOpen?: boolean,
+    registered?: boolean,
 }
 
 
@@ -19,7 +20,8 @@ export default function EditalCard({
     description,
     lastModification,
     canSubscribe = false,
-    isOpen = true
+    isOpen = true,
+    registered = false,
 }: Readonly<EditalCardProps>) {
     return (
         <div className="flex border rounded-xl p-6 shadow-sm items-center justify-between gap-12">
@@ -42,18 +44,26 @@ export default function EditalCard({
                     {description}
                 </div>
             </div>
-            {canSubscribe && isOpen && <div>
-                <Button variant={"outline"} asChild>
-                    <Link
-                        key={"form"}
+            {canSubscribe && isOpen && (
+                <div>
+                    {registered ? (
+                    <Button variant={"outline"} disabled>
+                        <ClipboardCheck/>
+                        Inscrito
+                    </Button>
+                    ) : (
+                    <Button variant={"outline"} asChild>
+                        <Link
                         to={"/student/editais/$id/inscricao"}
                         params={{ id: String(id) }}
-                    >
+                        >
                         <ClipboardPen/>
                         Cadastre-se
-                    </Link>
-                </Button> 
-            </div>}
+                        </Link>
+                    </Button>
+                    )}
+            </div>
+            )}
 
         </div>
     )

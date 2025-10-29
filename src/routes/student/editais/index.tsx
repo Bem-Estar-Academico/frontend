@@ -10,13 +10,19 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Filter } from 'lucide-react';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
+import { useAuth } from '@/contexts/auth';
+import { studentRegistrationsQueryOptions } from '@/queries/student-registrations';
 
 export const Route = createFileRoute('/student/editais/')({
   component: EditaisList,
 })
 
 function EditaisList() {
+  const { user } = useAuth()
+
   const { data: editais, isLoading, isError } = useQuery(editaisQueryOptions);
+
+  const { data: studentRegistrations } = useQuery(studentRegistrationsQueryOptions(user!.id));
 
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
@@ -24,7 +30,6 @@ function EditaisList() {
   const [showFechados, setShowFechados] = useState(true);
   const pageSize = 5;
 
-  // Função para determinar se o edital está aberto
   const isEditalOpen = (edital: any) => {
     const now = new Date();
     const registrationEndDate = new Date(edital.registration_end_date);
@@ -37,8 +42,6 @@ function EditaisList() {
       const matchesSearch =
         edital.title.toLowerCase().includes(search.toLowerCase()) ||
         edital.description.toLowerCase().includes(search.toLowerCase());
-
-      // Verifica se o edital está aberto baseado na data de fim das inscrições
       const isOpen = isEditalOpen(edital);
       const matchesStatus = 
         (showAbertos && isOpen) || 
@@ -147,6 +150,7 @@ function EditaisList() {
                   id={edital.id}
                   canSubscribe={isOpen}
                   isOpen={isOpen}
+                  registered={studentRegistrations?.registrations.some(reg => reg.notice_id === edital.id)}
                 />
               </Link>
             );

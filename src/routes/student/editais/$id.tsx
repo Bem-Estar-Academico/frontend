@@ -1,10 +1,12 @@
 import { editalQueryOptions } from '@/queries/edital';
-import { useSuspenseQuery } from '@tanstack/react-query';
+import { useQuery, useSuspenseQuery } from '@tanstack/react-query';
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { ClipboardPen } from 'lucide-react';
+import { ClipboardCheck, ClipboardPen } from 'lucide-react';
+import { studentRegistrationsQueryOptions } from '@/queries/student-registrations';
+import { useAuth } from '@/contexts/auth';
 
 export const Route = createFileRoute('/student/editais/$id')({
   component: RouteComponent,
@@ -14,6 +16,9 @@ function RouteComponent() {
     const { id } = Route.useParams();
     
     const { data: edital } = useSuspenseQuery(editalQueryOptions(Number(id)));
+    const { user } = useAuth();
+    const { data: studentRegistrations } = useQuery(studentRegistrationsQueryOptions(user!.id));
+
 
     const beneficios = [
         { label: 'Auxílio Alimentação', enabled: edital.food_allowance },
@@ -31,7 +36,7 @@ function RouteComponent() {
     };
 
     const formatDate = (date: string | null) => {
-        if (!date) return "A decidir";
+        if (!date) return "Á decidir";
         return new Date(date).toLocaleDateString("pt-BR", { 
             day: '2-digit', 
             month: 'long', 
@@ -78,15 +83,22 @@ function RouteComponent() {
                             </div>
                             {isOpen && (
                                 <div className="self-start">
-                                    <Button variant="outline" asChild>
-                                        <Link
-                                            to="/student/editais/$id/inscricao"
+                                    {studentRegistrations?.registrations.some(reg => reg.notice_id === edital.id) ? (
+                                        <Button variant={"outline"} disabled>
+                                            <ClipboardCheck/>
+                                            Inscrito
+                                        </Button>
+                                        ) : (
+                                        <Button variant={"outline"} asChild>
+                                            <Link
+                                            to={"/student/editais/$id/inscricao"}
                                             params={{ id: String(id) }}
-                                        >
-                                            <ClipboardPen className="mr-2 h-4 w-4" />
+                                            >
+                                            <ClipboardPen/>
                                             Cadastre-se
-                                        </Link>
-                                    </Button>
+                                            </Link>
+                                        </Button>
+                                    )}
                                 </div>
                             )}
                         </div>

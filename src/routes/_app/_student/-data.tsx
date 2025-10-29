@@ -1,4 +1,4 @@
-const formData: FormDataStructure = {
+const fullFormData: FormDataStructure = {
   sections: [
     {
       id: "programas_interesse_elegibilidade",
@@ -754,6 +754,144 @@ const formData: FormDataStructure = {
     // }
   ]
 };
+
+export const simpleFormData: FormDataStructure =  {
+  sections: [
+    {
+      id: "programas_interesse_elegibilidade",
+      title: "Programas de Interesse e Critérios de Elegibilidade",
+      description: "Esta seção inicial serve para entender as solicitações do estudante e verificar critérios básicos de elegibilidade para os auxílios.",
+      questions: [
+        {
+          id: "programas_desejados",
+          question: "Quais programas você deseja solicitar?",
+          type: "checkbox",
+          required: true,
+          options: [
+            { id: "bpg", label: "Bolsa Pró-Graduando" },
+            { id: "aa", label: "Auxílio Alimentação - apenas para unidades educacionais que não possuem restaurante universitário." },
+            { id: "am", label: "Auxílio Moradia" },
+            { id: "ac", label: "Auxílio Creche" },
+            { id: "ru", label: "Residência Universitária" }
+          ]
+        },
+        {
+          id: "graduacao",
+          question: "Graduação:",
+          type: "radio",
+          required: true,
+          options: [
+            { id: "primeira", label: "Estou cursando a primeira graduação." },
+            { id: "outra", label: "Estou cursando ou concluí outra graduação." }
+          ]
+        },
+        { // ! Revisar pergunta, pois pode estar repetida.
+          id: "curso_instituicao",
+          question: "Se está cursando ou concluiu outra graduação, especifique o curso e a instituição:",
+          type: "text",
+          required: true,
+          placeholder: "Ex: Direito - UFPE"
+        },
+        {
+          id: "instituicao_ens_medio",
+          question: "Estudou o Ensino Médio em:",
+          type: "radio",
+          required: true,
+          options: [
+            { id: "priv_bolsa", label: "Escola privada com bolsa integral" },
+            { id: "pub_priv_bolsa", label: "Escola pública e escola privada com bolsa integral" },
+            { id: "pub_priv", label: "Escola pública e escola privada" }
+          ]
+        }
+      ]
+    },
+     {
+      id: "saude_estudante_e_nucleo_familiar",
+      title: "Saúde do Estudante e do Núcleo Familiar",
+      questions: [
+        {
+          id: "gestante",
+          question: "Está gestante?",
+          type: "radio",
+          required: true,
+          options: [
+            { id: "sim", label: "Sim" },
+            { id: "nao", label: "Não" },
+            { id: "na", label: "Não se aplica" }
+          ]
+        },
+        {
+          id: "cuidados_saude",
+          question: "Quando necessita de cuidados de saúde, você utiliza:",
+          type: "radio",
+          required: true,
+          options: [
+            { id: "sus", label: "O Sistema Único de Saúde - SUS" },
+            { id: "plano", label: "Plano de Saúde" },
+            { id: "particular", label: "Serviços particulares" }
+          ]
+        },
+        {
+          id: "despesa_plano_saude",
+          question: "Qual a despesa mensal com plano de saúde e/ou serviços particulares (na residência de seu núcleo familiar de origem)?",
+          type: "text",
+          required: true,
+          placeholder: "R$ 0,00"
+        },
+        {
+          id: "despesa_medicamentos",
+          question: "Caso você ou alguém do seu núcleo familiar faça uso de medicamento de uso contínuo, qual a despesa mensal?",
+          type: "text",
+          required: true,
+          placeholder: "R$ 0,00"
+        },
+        {
+          id: "problema_saude_acompanhamento_periodico",
+          question: "Você ou alguém do seu núcleo familiar possui problema de saúde que requeira acompanhamento ambulatorial periódico?",
+          type: "radio",
+          required: true,
+          options: [
+            { id: "sim", label: "Sim" },
+            { id: "nao", label: "Não" }
+          ]
+        },
+        {
+          id: "problema_saude_explicacao",
+          question: "Caso a resposta anterior tenha sido afirmativa. (Explique):",
+          type: "textarea",
+          required: true,
+          placeholder: "Explique a situação"
+        },
+        {
+          id: "violencia_discriminacao_sofrida",
+          question: "Você passa ou já passou por alguma situação descrita abaixo?",
+          type: "checkbox",
+          required: true,
+          options: [
+            { id: "fisica", label: "Violência física" },
+            { id: "sexual", label: "Violência sexual" },
+            { id: "psico", label: "Violência psicológica" },
+            { id: "patri", label: "Violência patrimonial" },
+            { id: "assedio", label: "Assédio moral" },
+            { id: "disc", label: "Discriminações" },
+            { id: "prec", label: "Preconceitos" },
+            { id: "pnr", label: "Prefiro não responder" },
+            { id: "nao", label: "Não, nenhuma das situações" }
+          ]
+        },
+        {
+          id: "violencia_discriminacao_explicacao",
+          question: "Caso se sinta confortável, comente sobre a situação:",
+          type: "textarea",
+          required: false,
+          placeholder: "Comente se desejar..."
+        }
+      ]
+    },
+  ]
+}
+
+const formData: FormDataStructure = simpleFormData
 
 export interface FormOption {
   id: string;

@@ -16,6 +16,7 @@ import { ChevronDown, ChevronUp, Files } from "lucide-react"
 
 type Document = {
   id: string
+  url: string
   title: string
   items?: Document[]
 }
@@ -118,13 +119,14 @@ function renderDocuments(
       );
     }
     return (
-      <SidebarMenuSubItem key={doc.id}>
+      <SidebarMenuSubItem className="" key={doc.id}>
         <SidebarMenuSubButton
           asChild
           isActive={activeDocumentId === doc.id}
           onClick={() => handleDocumentClick(doc.id)}
           style={{ paddingLeft: `${level * 1.5 + 1}rem` }}
-          className={level > 0 ? "text-xs" : ""}
+          className={`data-[active=true]:bg-zinc-300 cursor-pointer h-auto p-1 ${level > 0 ? "text-xs" : ""}`}
+          // data-[active=true]:bg-sidebar-accent
         >
           <p>{doc.title}</p>
         </SidebarMenuSubButton>

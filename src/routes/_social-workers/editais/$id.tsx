@@ -49,7 +49,7 @@ export function PageEdital() {
     (registration: RegistrationItem) => ({
       id: registration.student.id,
       cpf: registration.student.cpf,
-      nome: registration.student.name,
+      nome: registration.student.full_name,
       matricula: registration.student.registration_number,
       status: registration.review ? statusTranslation[registration.review.status as Registration["status"]] : "Pendente",
       progresso: registration.review ? registration.review.progress : 0,

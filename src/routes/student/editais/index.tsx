@@ -10,19 +10,18 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Filter } from 'lucide-react';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
-import { useAuth } from '@/contexts/auth';
 import { studentRegistrationsQueryOptions } from '@/queries/student-registrations';
+import type { EditalResponseDTO } from '@/types/edital-response-dto';
 
 export const Route = createFileRoute('/student/editais/')({
   component: EditaisList,
 })
 
 function EditaisList() {
-  const { user } = useAuth()
 
   const { data: editais, isLoading, isError } = useQuery(editaisQueryOptions);
 
-  const { data: studentRegistrations } = useQuery(studentRegistrationsQueryOptions(user!.id));
+  const { data: studentRegistrations } = useQuery(studentRegistrationsQueryOptions());
 
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
@@ -30,10 +29,10 @@ function EditaisList() {
   const [showFechados, setShowFechados] = useState(true);
   const pageSize = 5;
 
-  const isEditalOpen = (edital: any) => {
+  const isEditalOpen = (edital: EditalResponseDTO) => {
     const now = new Date();
     const registrationEndDate = new Date(edital.registration_end_date);
-    return registrationEndDate >= now;
+    return edital.registration_end_date !== "" || registrationEndDate >= now;
   };
 
   const filteredEditais = useMemo(() => {
@@ -150,7 +149,7 @@ function EditaisList() {
                   id={edital.id}
                   canSubscribe={isOpen}
                   isOpen={isOpen}
-                  registered={studentRegistrations?.registrations.some(reg => reg.notice_id === edital.id)}
+                  registered={studentRegistrations?.some(reg => reg.notice.id === edital.id)}
                 />
               </Link>
             );

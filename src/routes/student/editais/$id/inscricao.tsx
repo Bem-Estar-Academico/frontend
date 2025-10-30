@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { Tabs, TabsContent } from "@/components/ui/tabs";
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Input } from "@/components/ui/input";
@@ -22,16 +22,18 @@ export const Route = createFileRoute('/student/editais/$id/inscricao')({
 });
 
 export function StudentRegistrationForm() {
+
+  const { id } = Route.useParams()
+  const { data: edital } = useSuspenseQuery(editalQueryOptions(Number(id)));
   const { mutateAsync } = useMutation(createStudentRegistrationMutationOptions);
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: getInitialValues(),
   })  
   const navigate = useNavigate()
-  const { id } = Route.useParams()
-  const { data: edital } = useSuspenseQuery(editalQueryOptions(Number(id)));
 
-  const [activeTab, setActiveTab] = useState(formData.sections[0].id);
+
+  const [activeTab, setActiveTab] = useState("1");
 
   const renderQuestion = useCallback((question: FormQuestion) => {
       switch (question.type) {
@@ -44,7 +46,7 @@ export function StudentRegistrationForm() {
             key={question.id}
             render={({ field }) => (
               <FormItem>
-                <FormLabel>{question.question}</FormLabel>
+                <FormLabel isRequired={question.required}>{question.question}</FormLabel>
                 <FormControl>
                   <Input placeholder={question.placeholder} {...field} />
                 </FormControl>
@@ -61,7 +63,7 @@ export function StudentRegistrationForm() {
             key={question.id}
             render={({ field }) => (
               <FormItem>
-                <FormLabel>{question.question}</FormLabel>
+                <FormLabel isRequired={question.required}>{question.question}</FormLabel>
                 <FormControl>
                   <Textarea placeholder={question.placeholder} {...field} />
                 </FormControl>
@@ -78,7 +80,7 @@ export function StudentRegistrationForm() {
               key={question.id}
               render={({ field }) => (
                 <FormItem className="space-y-3">
-                  <FormLabel>{question.question}</FormLabel>
+                  <FormLabel isRequired={question.required}>{question.question}</FormLabel>
                     <FormControl>
                       <RadioGroup
                         onValueChange={field.onChange}
@@ -112,7 +114,7 @@ export function StudentRegistrationForm() {
               const valueSet = new Set(field.value || []);
               return (
                 <FormItem className="space-y-3">
-                  <FormLabel>{question.question}</FormLabel>
+                  <FormLabel isRequired={question.required}>{question.question}</FormLabel>
                   <FormControl>
                     <div className="flex flex-col space-y-1">
                       {question.options?.map(option => (
@@ -152,7 +154,7 @@ export function StudentRegistrationForm() {
             name={question.id}
             render={({ field }) => (
               <FormItem className="space-y-3">
-                <FormLabel>{question.question}</FormLabel>
+                <FormLabel isRequired={question.required}>{question.question}</FormLabel>
                 <FormControl>
                   <div className="flex items-center space-x-3">
                     <Checkbox
@@ -179,7 +181,7 @@ export function StudentRegistrationForm() {
             name={question.id}
             render={({ field }) => (
               <FormItem className="space-y-3">
-                <FormLabel>{question.question}</FormLabel>
+                <FormLabel isRequired={question.required}>{question.question}</FormLabel>
                 <FormControl>
                   <Input 
                     type="file" 
@@ -200,6 +202,14 @@ export function StudentRegistrationForm() {
     }
   }, [form])
 
+  useEffect(() => {
+    form.setValue("has_food_allowance", edital.food_allowance);
+    form.setValue("has_housing_allowance", edital.housing_allowance);
+    form.setValue("has_daycare_allowance", edital.daycare_allowance);
+    form.setValue("has_graduation_scholarship", edital.graduation_scholarship);
+    }, [edital, form]);
+
+
   const onSubmit = async (values: FormValues) => {
     try {
       await mutateAsync({ editalId: Number.parseInt(id), data: {answer: values} });
@@ -211,14 +221,20 @@ export function StudentRegistrationForm() {
     }
   };
 
-  const onError = () => {
+  const onError = (errors: any) => {
+    console.log("Form errors:", errors);
     toast.error("Por favor, verifique as seções e corrija os erros no formulário antes de enviar.");
   };
 
   return (
     <div className="flex h-full">
       {/* SIDEBAR */}
-      <CreateStudentRegistrationFormSidebar title={edital.title} activeTab={activeTab} form={form} changeTab={setActiveTab} />
+      <CreateStudentRegistrationFormSidebar 
+        title={edital.title} 
+        activeTab={activeTab} 
+        form={form} 
+        changeTab={setActiveTab} 
+      />
 
       {/* TABS */}
       <Form {...form}>

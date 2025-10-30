@@ -5,7 +5,6 @@ const requiredString = z.string({
   required_error: "Este campo é obrigatório",
 }).min(1, "Este campo é obrigatório");
 
-
 const schemaShape = formData.sections
   .flatMap(section => section.questions)
   .reduce((acc, q) => {
@@ -70,7 +69,46 @@ const schemaShape = formData.sections
     return acc;
   }, {} as Record<string, z.ZodTypeAny>);
 
-export const formSchema = z.object(schemaShape);
+  
+const beneficiosSchema = z.object({
+    requested_food_allowance: z.boolean(),
+    requested_housing_allowance: z.boolean(),
+    requested_daycare_allowance: z.boolean(),
+    requested_graduation_scholarship: z.boolean(),
+})
+export const formSchema = z.object({
+  has_food_allowance: z.boolean(),
+  has_housing_allowance: z.boolean(),
+  has_daycare_allowance: z.boolean(),
+  has_graduation_scholarship: z.boolean(),
+} ).extend({
+  ...schemaShape,
+}).merge(beneficiosSchema).superRefine((data, ctx) => {
+    if (data.has_food_allowance && !data.requested_food_allowance) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Selecione se deseja solicitar o Auxílio Alimentação.",
+      });
+    }
+    if (data.has_housing_allowance && !data.requested_housing_allowance) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Selecione se deseja solicitar o Auxílio Moradia.",
+      });
+    }
+    if (data.has_daycare_allowance && !data.requested_daycare_allowance) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Selecione se deseja solicitar o Auxílio Creche.",
+      });
+    }
+    if (data.has_graduation_scholarship && !data.requested_graduation_scholarship) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Selecione se deseja solicitar a Bolsa de Graduação.",
+      });
+    }
+});
 
 export type FormValues = z.infer<typeof formSchema>;
 

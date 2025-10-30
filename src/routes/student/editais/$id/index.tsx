@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { ClipboardCheck, ClipboardPen } from 'lucide-react';
 import { studentRegistrationsQueryOptions } from '@/queries/student-registrations';
-import { useAuth } from '@/contexts/auth';
+import type { EditalResponseDTO } from '@/types/edital-response-dto';
 
 export const Route = createFileRoute('/student/editais/$id/')({
   component: RouteComponent,
@@ -16,8 +16,8 @@ function RouteComponent() {
     const { id } = Route.useParams();
     
     const { data: edital } = useSuspenseQuery(editalQueryOptions(Number(id)));
-    const { user } = useAuth();
-    const { data: studentRegistrations } = useQuery(studentRegistrationsQueryOptions(user!.id));
+
+    const { data: studentRegistrations } = useQuery(studentRegistrationsQueryOptions());
 
 
     const beneficios = [
@@ -29,10 +29,10 @@ function RouteComponent() {
 
     const beneficiosOfertados = beneficios.filter(b => b.enabled);
 
-    const isEditalOpen = () => {
-        const now = new Date();
-        const endDate = edital.registration_end_date ? new Date(edital.registration_end_date) : null;
-        return endDate && endDate >= now;
+    const isEditalOpen = (edital: EditalResponseDTO) => {
+      const now = new Date();
+      const registrationEndDate = new Date(edital.registration_end_date);
+      return edital.registration_end_date !== "" || registrationEndDate >= now;
     };
 
     const formatDate = (date: string | null) => {
@@ -44,7 +44,7 @@ function RouteComponent() {
         });
     };
 
-    const isOpen = isEditalOpen();
+    const isOpen = isEditalOpen(edital);
 
     return (
         <div className="min-h-screen">
@@ -83,7 +83,7 @@ function RouteComponent() {
                             </div>
                             {isOpen && (
                                 <div className="self-start">
-                                    {studentRegistrations?.registrations.some(reg => reg.notice_id === edital.id) ? (
+                                    {studentRegistrations?.some(reg => reg.notice.id === edital.id) ? (
                                         <Button variant={"outline"} disabled>
                                             <ClipboardCheck/>
                                             Inscrito

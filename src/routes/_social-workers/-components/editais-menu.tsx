@@ -22,11 +22,12 @@ export function EditaisMenu({ data }: Readonly<EditaisMenuProps>) {
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <button className="flex items-center gap-1 text-gray-800 hover:text-gray-600 transition">
-          Editais <ChevronDown className="w-4 h-4" />
-        </button>
-      </DropdownMenuTrigger>
+      <div className="flex items-center gap-1 text-gray-800 hover:text-gray-600 transition">
+        <Link to={"/editais"}> Editais </Link>
+        <DropdownMenuTrigger asChild>
+          <ChevronDown className="w-4 h-4" />
+        </DropdownMenuTrigger>
+      </div>
       <DropdownMenuContent className="w-48 max-h-60 overflow-y-auto">
         {data.map((edital) => (
           <DropdownMenuItem key={edital.id} asChild>

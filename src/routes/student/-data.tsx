@@ -1,23 +1,18 @@
+
 const formData: FormDataStructure = {
   sections: [
-    {
+     {
       id: "programas_interesse_elegibilidade",
       title: "Programas de Interesse e Critérios de Elegibilidade",
       description: "Esta seção inicial serve para entender as solicitações do estudante e verificar critérios básicos de elegibilidade para os auxílios.",
       questions: [
-        {
-          id: "programas_desejados",
-          question: "Quais programas você deseja solicitar?",
-          type: "checkbox",
-          required: true,
-          options: [
-            { id: "bpg", label: "Bolsa Pró-Graduando" },
-            { id: "aa", label: "Auxílio Alimentação - apenas para unidades educacionais que não possuem restaurante universitário." },
-            { id: "am", label: "Auxílio Moradia" },
-            { id: "ac", label: "Auxílio Creche" },
-            { id: "ru", label: "Residência Universitária" }
-          ]
-        },
+        // {
+        //   id: "programas_desejados",
+        //   question: "Quais programas você deseja solicitar?",
+        //   type: "checkbox",
+        //   required: true,
+        //   options: getBenefitOptions()
+        // },
         {
           id: "graduacao",
           question: "Graduação:",

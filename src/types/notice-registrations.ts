@@ -13,7 +13,7 @@ export interface Review {
 export interface StudentInfo {
   id: number;
   cpf: string;
-  name: string;
+  full_name: string;
   registration_number: string;
   created_at: string;
 }

@@ -1,14 +1,14 @@
 import { api } from "@/api";
-import type { RegistrationsResponse } from "@/types/students-registration";
+import type { StudentRegistrationsDTO } from "@/types/student-registration";
 import { queryOptions } from "@tanstack/react-query";
 
-export const studentRegistrationsQueryOptions = (studentId: number) =>  queryOptions({
-    queryKey: ['student', studentId, 'student-registrations'],
-    queryFn: () => fetchStudentRegistrations(studentId)
+export const studentRegistrationsQueryOptions = () => queryOptions({
+    queryKey: ['my-registrations'],
+    queryFn: () => fetchStudentRegistrations()
 })
 
-export async function fetchStudentRegistrations(studentId: number) {
-    const { data } = await api.get<RegistrationsResponse>(`/student-registrations/student/${studentId}`);
+export async function fetchStudentRegistrations() {
+    const { data } = await api.get<StudentRegistrationsDTO>("/student-registrations/me");
     return data;
 }
 

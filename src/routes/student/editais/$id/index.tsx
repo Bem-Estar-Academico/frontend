@@ -1,6 +1,6 @@
 import { editalQueryOptions } from '@/queries/edital';
 import { useQuery, useSuspenseQuery } from '@tanstack/react-query';
-import { createFileRoute, Link } from '@tanstack/react-router'
+import { createFileRoute, Link, Outlet } from '@tanstack/react-router'
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -8,7 +8,7 @@ import { ClipboardCheck, ClipboardPen } from 'lucide-react';
 import { studentRegistrationsQueryOptions } from '@/queries/student-registrations';
 import { useAuth } from '@/contexts/auth';
 
-export const Route = createFileRoute('/student/editais/$id')({
+export const Route = createFileRoute('/student/editais/$id/')({
   component: RouteComponent,
 })
 
@@ -168,6 +168,9 @@ function RouteComponent() {
                     </CardContent>
                 </Card>
             </div>
+            {/* Slot para rotas filhas (ex: /student/editais/$id/inscricao) */}
+            <Outlet />
         </div>
     )
 }
+

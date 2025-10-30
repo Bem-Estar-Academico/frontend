@@ -4,7 +4,7 @@ import { useWatch } from "react-hook-form";
 import { useCallback, useMemo } from "react";
 import type { FormValues } from "./-schema";
 
-export function CreateStudentRegistrationFormSidebar({form, changeTab, activeTab}: {activeTab: string, form: any, changeTab: (tab: string) => void}) {
+export function CreateStudentRegistrationFormSidebar({title, form, changeTab, activeTab}: {title: string, activeTab: string, form: any, changeTab: (tab: string) => void}) {
 
     const formValues = useWatch({ control: form.control });
     const isQuestionAnswered = useCallback((question: FormQuestion): boolean => {
@@ -48,13 +48,9 @@ export function CreateStudentRegistrationFormSidebar({form, changeTab, activeTab
        <div className="flex flex-col h-full w-64 border-r">
             <div className="flex items-center gap-2 p-4">
                 <div className="bg-primary rounded-lg p-2">
-                <GalleryVerticalEnd className="text-secondary size-4" />
+                    <GalleryVerticalEnd className="text-secondary size-4" />
                 </div>
-                <p className="text-xs font-semibold">
-                Cadastramento
-                <br />
-                Socioeconômico - 2025.1
-                </p>
+                <p className="text-xs font-semibold">{title}</p>
             </div>
 
             <div className="flex flex-col gap-2 pr-2">

@@ -6,17 +6,18 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import formData, { type FormQuestion } from "../-data";
-import { formSchema, getInitialValues, type FormValues } from "../-schema";
+import formData, { type FormQuestion } from "../../-data";
+import { formSchema, getInitialValues, type FormValues } from "../../-schema";
 import { useForm } from "react-hook-form";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
 import { createStudentRegistrationMutationOptions } from "@/mutations/create-student-registration";
-import { CreateStudentRegistrationFormSidebar } from "../-sidebar";
+import { CreateStudentRegistrationFormSidebar } from "../../-sidebar";
+import { editalQueryOptions } from "@/queries/edital";
 
-export const Route = createFileRoute("/student/editais/$id/inscricao")({
+export const Route = createFileRoute('/student/editais/$id/inscricao')({
   component: StudentRegistrationForm,
 });
 
@@ -28,7 +29,8 @@ export function StudentRegistrationForm() {
   })  
   const navigate = useNavigate()
   const { id } = Route.useParams()
- 
+  const { data: edital } = useSuspenseQuery(editalQueryOptions(Number(id)));
+
   const [activeTab, setActiveTab] = useState(formData.sections[0].id);
 
   const renderQuestion = useCallback((question: FormQuestion) => {
@@ -216,7 +218,7 @@ export function StudentRegistrationForm() {
   return (
     <div className="flex h-full">
       {/* SIDEBAR */}
-      <CreateStudentRegistrationFormSidebar activeTab={activeTab} form={form} changeTab={setActiveTab} />
+      <CreateStudentRegistrationFormSidebar title={edital.title} activeTab={activeTab} form={form} changeTab={setActiveTab} />
 
       {/* TABS */}
       <Form {...form}>
@@ -284,3 +286,5 @@ export function StudentRegistrationForm() {
     </div>
   );
 }
+
+export default StudentRegistrationForm;

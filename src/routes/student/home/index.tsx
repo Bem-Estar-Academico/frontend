@@ -39,11 +39,10 @@ function getStatusMessage(status: keyof typeof variantText) {
 export function StudentDashboard() {    
   const { data: studentRegistrations, isLoading, error } = useQuery(studentRegistrationsQueryOptions());
 
-  console.log("Student Registrations Data: ", studentRegistrations);
   const currentRegistration = studentRegistrations?.filter(reg => 
     reg.review.status === "PENDING" || reg.review.status === "REVIEW" || reg.review.status === "APPEAL"
   ) || [];
-  console.log("Current Registration: ", currentRegistration);
+  
   const pastRegistrations = studentRegistrations?.filter(reg => 
     reg.review.status === "APPROVED" || reg.review.status === "REJECTED"
   ) || [];

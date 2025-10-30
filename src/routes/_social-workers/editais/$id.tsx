@@ -19,8 +19,6 @@ export function PageEdital() {
     noticeRegistrationsQueryOptions(Number(id))
   );
 
-  console.log(noticeRegistrations);
-
   if (!edital) {
     return <p>Edital não encontrado</p>;
   }

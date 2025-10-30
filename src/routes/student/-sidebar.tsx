@@ -1,7 +1,7 @@
 import { GalleryVerticalEnd } from "lucide-react";
 import formData, { type FormQuestion } from "./-data";
-import { useWatch } from "react-hook-form";
-import { useCallback, useMemo } from "react";
+import { useWatch, useFormState } from "react-hook-form";
+import { useCallback, useMemo, useEffect, useRef } from "react";
 import type { FormValues } from "./-schema";
 
 export function CreateStudentRegistrationFormSidebar({
@@ -18,8 +18,9 @@ export function CreateStudentRegistrationFormSidebar({
   beneficiosSection?: any;
 }) {
 
-    const formValues = useWatch({ control: form.control });
-    const formErrors = form.formState.errors;
+  const formValues = useWatch({ control: form.control });
+  // subscribe to formState (errors) so the component re-renders when validation changes
+  const { errors: formErrors } = useFormState({ control: form.control });
     
     const isQuestionAnswered = useCallback((question: FormQuestion): boolean => {
       const value = form.getValues(question.id as keyof FormValues);
@@ -44,10 +45,54 @@ export function CreateStudentRegistrationFormSidebar({
       }
     }, [form]);
 
+    // keep a snapshot (stringified) of the field value at the moment an error appears
+    const errorSnapshots = useRef<Record<string, string>>({});
+
+    useEffect(() => {
+      const currentErrors = formErrors ? (formErrors as any) : {};
+
+      // add snapshots for newly errored fields
+      Object.keys(currentErrors).forEach((fieldId) => {
+        if (!(fieldId in errorSnapshots.current)) {
+          try {
+            const val = form.getValues(fieldId as any);
+            errorSnapshots.current[fieldId] = JSON.stringify(val);
+          } catch (e) {
+            // ignore
+          }
+        }
+      });
+
+      // remove snapshots for fields that no longer have errors
+      Object.keys(errorSnapshots.current).forEach((fieldId) => {
+        if (!Object.prototype.hasOwnProperty.call(currentErrors, fieldId)) {
+          delete errorSnapshots.current[fieldId];
+        }
+      });
+    }, [formErrors, form]);
+
     const hasQuestionError = useCallback((question: FormQuestion): boolean => {
-      const fieldState = form.getFieldState(question.id as keyof FormValues);
-      return !!fieldState.error;
-    }, [form]);
+      const rawErr = !!(formErrors && (formErrors as any)[question.id]);
+
+      if (!rawErr) return false;
+
+      // if there is an error, check whether the value that caused the error was modified
+      const snapshot = errorSnapshots.current[question.id];
+      let currentVal: any;
+      try {
+        currentVal = form.getValues(question.id as keyof FormValues);
+      } catch (e) {
+        currentVal = undefined;
+      }
+
+      // compare by JSON stringification (works for primitives, arrays, objects)
+      const currentStr = JSON.stringify(currentVal);
+
+      // if the value changed since the error was recorded, treat the field as "no longer errored" for UI
+      if (snapshot !== undefined && snapshot !== currentStr) return false;
+
+      return true;
+    }, [formErrors, form]);
 
     const allSections = useMemo(() => {
       if (beneficiosSection) {

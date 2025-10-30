@@ -23,7 +23,7 @@ const formData: FormDataStructure = {
             { id: "outra", label: "Estou cursando ou concluí outra graduação." }
           ]
         },
-        { // ! Revisar pergunta, pois pode estar repetida.
+        {
           id: "curso_instituicao",
           question: "Se está cursando ou concluiu outra graduação, especifique o curso e a instituição:",
           type: "text",

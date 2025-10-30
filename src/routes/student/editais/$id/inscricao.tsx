@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { Tabs, TabsContent } from "@/components/ui/tabs";
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useMemo } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Input } from "@/components/ui/input";
@@ -34,6 +34,42 @@ export function StudentRegistrationForm() {
 
 
   const [activeTab, setActiveTab] = useState("1");
+
+  const beneficiosSection = useMemo(() => {
+    if (!edital) return undefined;
+
+    const options: Array<{ id: string; label: string }> = [];
+
+    if (edital.food_allowance) {
+      options.push({ id: 'food_allowance', label: 'Auxílio Alimentação' });
+    }
+    if (edital.housing_allowance) {
+      options.push({ id: 'housing_allowance', label: 'Auxílio Moradia' });
+    }
+    if (edital.daycare_allowance) {
+      options.push({ id: 'daycare_allowance', label: 'Auxílio Creche' });
+    }
+    if (edital.graduation_scholarship) {
+      options.push({ id: 'graduation_scholarship', label: 'Bolsa de Graduação' });
+    }
+
+    if (options.length === 0) return undefined;
+
+    return {
+      id: 'beneficios',
+      title: 'Benefícios',
+      description: 'Selecione os benefícios que deseja solicitar (apenas os oferecidos pelo edital).',
+      questions: [
+        ({
+          id: 'requested_benefits',
+          type: 'checkbox',
+          required: true,
+          question: 'Quais benefícios deseja solicitar?',
+          options,
+        } as FormQuestion),
+      ],
+    };
+  }, [edital]);
 
   const renderQuestion = useCallback((question: FormQuestion) => {
       switch (question.type) {
@@ -212,7 +248,14 @@ export function StudentRegistrationForm() {
 
   const onSubmit = async (values: FormValues) => {
     try {
-      await mutateAsync({ editalId: Number.parseInt(id), data: {answer: values} });
+      const data = {
+        answer: values,
+        requested_food_allowance: values.requested_benefits?.includes('food_allowance') || false,
+        requested_housing_allowance: values.requested_benefits?.includes('housing_allowance') || false,
+        requested_daycare_allowance: values.requested_benefits?.includes('daycare_allowance') || false,
+        requested_graduation_scholarship: values.requested_benefits?.includes('graduation_scholarship') || false,
+      }   
+      await mutateAsync({ editalId: Number.parseInt(id), data});
 
       toast.success("Inscrição realizada com sucesso!")
       navigate({ to: "/student/home" });
@@ -222,7 +265,7 @@ export function StudentRegistrationForm() {
   };
 
   const onError = (errors: any) => {
-    console.log("Form errors:", errors);
+    console.log(errors);
     toast.error("Por favor, verifique as seções e corrija os erros no formulário antes de enviar.");
   };
 
@@ -233,13 +276,33 @@ export function StudentRegistrationForm() {
         title={edital.title} 
         activeTab={activeTab} 
         form={form} 
-        changeTab={setActiveTab} 
+        changeTab={setActiveTab}
+        beneficiosSection={beneficiosSection}
       />
 
       {/* TABS */}
       <Form {...form}>
         <form className="flex-1 h-full " onSubmit={form.handleSubmit(onSubmit, onError)}>
         <Tabs value={activeTab} onValueChange={setActiveTab}>
+
+          {/* Benefícios tab (render only if edital offers any) */}
+          {beneficiosSection && (
+            <TabsContent value={beneficiosSection.id} className="mb-6">
+              <div className="p-4 border-b">
+                <p className="text-md font-medium">{beneficiosSection.title}</p>
+              </div>
+              {beneficiosSection.description && (
+                <div className="p-4">
+                  <p className="text-xs font-[400] text-gray-500">{beneficiosSection.description}</p>
+                </div>
+              )}
+
+              <div className="overflow-auto max-h-full grid grid-cols-2 px-8 py-4 gap-8">
+                {beneficiosSection.questions.map((question) => renderQuestion(question))}
+              </div>
+            </TabsContent>
+          )}
+
           {formData.sections.map((section, sectionIdx) => (
             <TabsContent value={section.id} className="mb-6" key={section.id}>
               {/* Title */}

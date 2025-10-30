@@ -69,51 +69,55 @@ const schemaShape = formData.sections
     return acc;
   }, {} as Record<string, z.ZodTypeAny>);
 
-  
+
 const beneficiosSchema = z.object({
-    requested_food_allowance: z.boolean(),
-    requested_housing_allowance: z.boolean(),
-    requested_daycare_allowance: z.boolean(),
-    requested_graduation_scholarship: z.boolean(),
-})
-export const formSchema = z.object({
-  has_food_allowance: z.boolean(),
-  has_housing_allowance: z.boolean(),
-  has_daycare_allowance: z.boolean(),
-  has_graduation_scholarship: z.boolean(),
-} ).extend({
-  ...schemaShape,
-}).merge(beneficiosSchema).superRefine((data, ctx) => {
-    if (data.has_food_allowance && !data.requested_food_allowance) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: "Selecione se deseja solicitar o Auxílio Alimentação.",
-      });
-    }
-    if (data.has_housing_allowance && !data.requested_housing_allowance) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: "Selecione se deseja solicitar o Auxílio Moradia.",
-      });
-    }
-    if (data.has_daycare_allowance && !data.requested_daycare_allowance) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: "Selecione se deseja solicitar o Auxílio Creche.",
-      });
-    }
-    if (data.has_graduation_scholarship && !data.requested_graduation_scholarship) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: "Selecione se deseja solicitar a Bolsa de Graduação.",
-      });
-    }
+  requested_benefits: z.array(z.string()).optional(),
 });
+
+export const formSchema = z
+  .object({
+    has_food_allowance: z.boolean(),
+    has_housing_allowance: z.boolean(),
+    has_daycare_allowance: z.boolean(),
+    has_graduation_scholarship: z.boolean(),
+  })
+  .extend({
+    ...schemaShape,
+  })
+  .merge(beneficiosSchema)
+  .superRefine((data, ctx) => {
+    const requested: string[] = Array.isArray(data.requested_benefits) ? data.requested_benefits as string[] : [];
+
+    const offered: string[] = [];
+    if (data.has_food_allowance) offered.push('food_allowance');
+    if (data.has_housing_allowance) offered.push('housing_allowance');
+    if (data.has_daycare_allowance) offered.push('daycare_allowance');
+    if (data.has_graduation_scholarship) offered.push('graduation_scholarship');
+
+    if (offered.length > 0) {
+      const intersection = requested.filter(r => offered.includes(r));
+      if (intersection.length === 0) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Selecione ao menos um dos benefícios oferecidos pelo edital.",
+          path: ['requested_benefits'],
+        });
+      }
+    }
+  });
 
 export type FormValues = z.infer<typeof formSchema>;
 
 export const getInitialValues = (): FormValues => {
-  return formData.sections
+  const baseValues: Record<string, any> = {
+    has_food_allowance: false,
+    has_housing_allowance: false,
+    has_daycare_allowance: false,
+    has_graduation_scholarship: false,
+    requested_benefits: [],
+  };
+
+  const questionValues = formData.sections
     .flatMap(section => section.questions)
     .reduce((acc, q) => {
       switch (q.type) {
@@ -137,4 +141,6 @@ export const getInitialValues = (): FormValues => {
       }
       return acc;
     }, {} as Record<string, any>);
+
+  return { ...baseValues, ...questionValues } as FormValues;
 };

@@ -7,6 +7,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 import { Pagination } from "@/components/ui/pagination";
 import { editaisQueryOptions } from "@/queries/editais";
+import type { EditalResponseDTO } from "@/types/edital-response-dto";
 
 export const Route = createFileRoute("/_app/_coordinator/editais/")({
   component: () => (
@@ -43,6 +44,12 @@ export function Editais() {
     (page - 1) * pageSize,
     page * pageSize
   );
+
+  const isEditalOpen = (edital: EditalResponseDTO) => {
+    const now = new Date();
+    const registrationEndDate = new Date(edital.registration_end_date);
+    return !edital.registration_end_date || registrationEndDate >= now;
+  };
 
   return (
     <div className="flex flex-1 flex-col gap-7 px-10 py-6">
@@ -82,6 +89,7 @@ export function Editais() {
                 title={edital.title}
                 description={edital.description}
                 lastModification={new Date(edital.updated_at)}
+                isOpen={isEditalOpen(edital)}
               />
             </Link>
           ))

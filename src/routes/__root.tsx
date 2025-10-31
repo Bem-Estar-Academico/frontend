@@ -28,7 +28,6 @@ export const Route = createRootRouteWithContext<{
     </>
   ),
   head: () => ({
-
     links: [
       {
         rel: 'icon',

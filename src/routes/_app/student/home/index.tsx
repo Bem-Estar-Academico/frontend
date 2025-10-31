@@ -26,7 +26,7 @@ export const Route = createFileRoute("/_app/student/home/")({
 })
 
 function getStatusMessage(status: keyof typeof variantText) {
-  if (status === "pending") return "Sua documentação foi recebida, porém as informações e arquivos não foram análisados pela equipe responsável."
+  if (status === "pending") return "Sua documentação foi recebida, porém as informações e arquivos não foram analisados pela equipe responsável."
   if (status === "appeal") return "Sua documentação foi recebida porém na análise houveram inconsistências ou documentos inválidos."
   if (status === "review") return "Sua documentação foi recebida e está em análise pela equipe responsável. Aguarde o resultado da verificação."
   if (status === "approved") return "Sua solicitação foi analisada e aprovada com sucesso."

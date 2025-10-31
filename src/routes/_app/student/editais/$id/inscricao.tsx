@@ -268,6 +268,7 @@ export function StudentRegistrationForm() {
       navigate({ to: "/student/home" });
     } catch(error: any) {
       console.error(error);
+      toast.error("Ocorreu um erro ao enviar sua inscrição. Por favor, tente novamente.");
     }
   };
 

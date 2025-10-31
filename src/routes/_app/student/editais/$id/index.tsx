@@ -14,11 +14,8 @@ export const Route = createFileRoute('/_app/student/editais/$id/')({
 
 function RouteComponent() {
     const { id } = Route.useParams();
-    
     const { data: edital } = useSuspenseQuery(editalQueryOptions(Number(id)));
-
     const { data: studentRegistrations } = useQuery(studentRegistrationsQueryOptions());
-
 
     const beneficios = [
         { label: 'Auxílio Alimentação', enabled: edital.food_allowance },
@@ -32,11 +29,11 @@ function RouteComponent() {
     const isEditalOpen = (edital: EditalResponseDTO) => {
       const now = new Date();
       const registrationEndDate = new Date(edital.registration_end_date);
-      return edital.registration_end_date !== "" || registrationEndDate >= now;
+      return !edital.registration_end_date || registrationEndDate >= now;
     };
 
     const formatDate = (date: string | null) => {
-        if (!date) return "Á decidir";
+        if (!date) return "A decidir";
         return new Date(date).toLocaleDateString("pt-BR", { 
             day: '2-digit', 
             month: 'long', 
@@ -59,7 +56,7 @@ function RouteComponent() {
                                     </CardTitle>
                                     <Badge 
                                         variant="default"
-                                        className={`px-3 py-1 ${isOpen ? "bg-green-500" : "bg-red-70"}`}
+                                        className={`px-3 py-1 ${isOpen ? "bg-green-500" : "bg-red-700"}`}
                                     >
                                         {isOpen ? "Aberto" : "Fechado"}
                                     </Badge>

@@ -1,4 +1,3 @@
-import { ClipboardList, GalleryVerticalEnd } from "lucide-react";
 import formData, { type FormQuestion } from "./-data";
 import { useWatch, useFormState } from "react-hook-form";
 import { useCallback, useMemo, useEffect, useRef } from "react";
@@ -103,7 +102,7 @@ export function CreateStudentRegistrationFormSidebar({
 
     const sectionProgress = useMemo(() => {
       return allSections.map(section => {
-        const requiredQuestions = section.questions.filter((q: { required: any; }) => q.required);
+        const requiredQuestions = section.questions.filter((q: { required: FormQuestion; }) => q.required);
         const totalRequired = requiredQuestions.length;
         const answeredRequired = requiredQuestions.filter((q: FormQuestion) => isQuestionAnswered(q)).length;
         const hasErrors = section.questions.some((q: FormQuestion) => hasQuestionError(q));

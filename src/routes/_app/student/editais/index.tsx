@@ -25,14 +25,14 @@ function EditaisList() {
 
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
-  const [showAbertos, setShowAbertos] = useState(true);
-  const [showFechados, setShowFechados] = useState(true);
+  const [showOpen, setShowOpen] = useState(true);
+  const [showClosed, setShowClosed] = useState(true);
   const pageSize = 5;
 
   const isEditalOpen = (edital: EditalResponseDTO) => {
     const now = new Date();
     const registrationEndDate = new Date(edital.registration_end_date);
-    return edital.registration_end_date !== "" || registrationEndDate >= now;
+    return !edital.registration_end_date || registrationEndDate >= now;
   };
 
   const filteredEditais = useMemo(() => {
@@ -43,12 +43,12 @@ function EditaisList() {
         edital.description.toLowerCase().includes(search.toLowerCase());
       const isOpen = isEditalOpen(edital);
       const matchesStatus = 
-        (showAbertos && isOpen) || 
-        (showFechados && !isOpen);
+        (showOpen && isOpen) || 
+        (showClosed && !isOpen);
 
       return matchesSearch && matchesStatus;
     });
-  }, [editais, search, showAbertos, showFechados]);
+  }, [editais, search, showOpen, showClosed]);
 
   if (isLoading) return <p>Carregando editais...</p>;
   if (isError) return <p>Erro ao carregar editais.</p>;
@@ -59,7 +59,7 @@ function EditaisList() {
     page * pageSize
   );
 
-  const activeFiltersCount = [!showAbertos, !showFechados].filter(Boolean).length;
+  const activeFiltersCount = [!showOpen, !showClosed].filter(Boolean).length;
 
   return (
     <div className="flex flex-1 flex-col gap-7 px-10 py-6">
@@ -96,9 +96,9 @@ function EditaisList() {
                 <div className="flex items-center space-x-2">
                   <Checkbox 
                     id="abertos" 
-                    checked={showAbertos}
+                    checked={showOpen}
                     onCheckedChange={(checked) => {
-                      setShowAbertos(!!checked);
+                      setShowOpen(!!checked);
                       setPage(1);
                     }}
                   />
@@ -113,9 +113,9 @@ function EditaisList() {
                 <div className="flex items-center space-x-2">
                   <Checkbox 
                     id="fechados" 
-                    checked={showFechados}
+                    checked={showClosed}
                     onCheckedChange={(checked) => {
-                      setShowFechados(!!checked);
+                      setShowClosed(!!checked);
                       setPage(1);
                     }}
                   />

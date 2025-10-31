@@ -1,4 +1,4 @@
-import { GalleryVerticalEnd } from "lucide-react";
+import { ClipboardList, GalleryVerticalEnd } from "lucide-react";
 import formData, { type FormQuestion } from "./-data";
 import { useWatch, useFormState } from "react-hook-form";
 import { useCallback, useMemo, useEffect, useRef } from "react";
@@ -119,12 +119,10 @@ export function CreateStudentRegistrationFormSidebar({
     }, [formValues, formErrors, isQuestionAnswered, hasQuestionError, allSections]);
 
     return (
-      <div className="flex flex-col h-full w-64 border-r">
-        <div className="flex items-center gap-2 p-4">
-          <div className="bg-primary rounded-lg p-2">
-            <GalleryVerticalEnd className="text-secondary size-4" />
-          </div>
-          <p className="text-xs font-semibold">{title}</p>
+      <div className="flex flex-col h-full w-64 border-r p-4">
+        <div className="flex items-center gap-2 mb-4">
+         
+          <p className="text-sm font-semibold">{title}</p>
         </div>
 
         <div className="flex flex-col gap-2 pr-2">
@@ -137,7 +135,7 @@ export function CreateStudentRegistrationFormSidebar({
               <button
                 key={section.id}
                 onClick={() => changeTab(section.id)}
-                className={`flex flex-col gap-2 p-2 pl-3 min-h-12 border rounded-tr-md rounded-br-md transition 
+                className={`flex flex-col gap-2 p-2 pl-3 min-h-12 border rounded-md transition 
                   ${
                     activeTab === section.id
                       ? hasErrors 

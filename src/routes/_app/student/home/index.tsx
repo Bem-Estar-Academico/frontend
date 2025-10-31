@@ -49,7 +49,7 @@ export function StudentDashboard() {
 
   if (isLoading) {
     return (
-      <div className="flex p-5 justify-center bg-linear-to-b from-cyan-200 to-blue-50 min-h-dvh">
+      <div className="flex p-5 justify-center bg-linear-to-b from-cyan-200 to-blue-50  h-full">
         <div className="flex w-full max-w-xl flex-col gap-6 items-center justify-center">
           <p>Carregando...</p>
         </div>
@@ -59,7 +59,7 @@ export function StudentDashboard() {
 
   if (error) {
     return (
-      <div className="flex p-5 justify-center bg-linear-to-b from-cyan-200 to-blue-50 min-h-dvh">
+      <div className="flex p-5 justify-center bg-linear-to-b from-cyan-200 to-blue-50  h-full">
         <div className="flex w-full max-w-xl flex-col gap-6">
           <Alert variant="destructive">
             <AlertCircleIcon />
@@ -71,7 +71,7 @@ export function StudentDashboard() {
   }
 
   return (
-    <div className="flex p-5 justify-center bg-linear-to-b from-cyan-200 to-blue-50 min-h-dvh">
+    <div className="flex p-5 justify-center bg-linear-to-b from-cyan-200 to-blue-50 h-full">
       <div className="flex w-full max-w-xl flex-col gap-6">
         <Tabs defaultValue="current-registration" className="flex gap-5">
           <TabsList className="w-full">

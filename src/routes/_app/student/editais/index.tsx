@@ -62,10 +62,10 @@ function EditaisList() {
   const activeFiltersCount = [!showAbertos, !showFechados].filter(Boolean).length;
 
   return (
-    <div className="flex flex-1 flex-col gap-7">
-      <h1 className="text-md font-medium p-5 border-b">Editais</h1>
+    <div className="flex flex-1 flex-col gap-7 px-10 py-6">
+      <h2 className="font-bold text-2xl">Editais</h2>
 
-      <div className="max-h-fit flex gap-3 px-5">
+      <div className="max-h-fit flex gap-3">
         <Input
           placeholder="Buscar edital"
           value={search}
@@ -132,7 +132,7 @@ function EditaisList() {
         </Popover>
       </div>
 
-      <div className="flex flex-col px-5 gap-6">
+      <div className="flex flex-col gap-6">
         {currentData.length > 0 ? (
           currentData.map((edital) => {
             const isOpen = isEditalOpen(edital);

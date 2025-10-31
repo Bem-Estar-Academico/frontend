@@ -57,10 +57,10 @@ export function PageEdital() {
   );
 
   return (
-    <>
+    <div className="px-10 py-6">
       <title>{edital.title}</title>
       <section className="text-sm font-medium" dir="ltr">
-        <h1 className="font-bold text-2xl">{edital.title}</h1>
+        <h1 className="font-bold text-2xl mb-6">{edital.title}</h1>
         <div className="text-sm font-medium flex items-center justify-between flex-wrap gap-6">
           <div className="grid grid-cols-3 gap-10">
             <div className="flex-col">
@@ -132,6 +132,6 @@ export function PageEdital() {
       <section>
         <StudentDataTable data={students} />
       </section>
-    </>
+    </div>
   );
 }

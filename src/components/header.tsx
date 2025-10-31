@@ -37,8 +37,11 @@ export default function Header() {
 function HeaderStudentLinks() {
   return (
     <>
-      <Link to="." className="hover:text-gray-600 transition">
-        Placeholder
+      <Link to="/student/home" className="hover:text-gray-600 transition">
+        Minhas Inscrições
+      </Link>
+      <Link to="/student/editais" className="hover:text-gray-600 transition">
+        Editais
       </Link>
     </>
   )

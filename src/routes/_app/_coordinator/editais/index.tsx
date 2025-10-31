@@ -45,10 +45,10 @@ export function Editais() {
   );
 
   return (
-    <div className="flex flex-1 flex-col gap-7">
+    <div className="flex flex-1 flex-col gap-7 px-10 py-6">
        <h1 className="font-bold text-2xl">Editais</h1>
 
-      <div className="max-h-fit flex flex-1 px-5">
+      <div className="max-h-fit flex flex-1 ">
         <div className="flex flex-1 gap-5">
           <Input
             placeholder="Buscar edital"
@@ -69,7 +69,7 @@ export function Editais() {
         </div>
       </div>
 
-      <div className="flex flex-col px-5 gap-6">
+      <div className="flex flex-col  gap-6">
         {currentData.length > 0 ? (
           currentData.map((edital) => (
             <Link
@@ -78,6 +78,7 @@ export function Editais() {
               params={{ id: String(edital.id) }}
             >
               <EditalCard
+                id={edital.id}
                 title={edital.title}
                 description={edital.description}
                 lastModification={new Date(edital.updated_at)}

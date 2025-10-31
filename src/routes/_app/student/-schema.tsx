@@ -7,7 +7,7 @@ const requiredString = z.string({
 
 const schemaShape = formData.sections
   .flatMap(section => section.questions)
-  .reduce((acc: Record<string, z.ZodTypeAny>, q) => {
+  .reduce((acc, q) => {
     let fieldSchema: z.ZodTypeAny;
 
     switch (q.type) {
@@ -67,7 +67,7 @@ const schemaShape = formData.sections
 
     acc[q.id] = fieldSchema;
     return acc;
-  }, {});
+  }, {} as Record<string, z.ZodTypeAny>);
 
 
 const beneficiosSchema = z.object({
@@ -81,8 +81,10 @@ export const formSchema = z
     has_daycare_allowance: z.boolean(),
     has_graduation_scholarship: z.boolean(),
   })
+  .extend({
+    ...schemaShape,
+  })
   .merge(beneficiosSchema)
-  .merge(z.object(schemaShape))
   .superRefine((data, ctx) => {
     const requested: string[] = Array.isArray(data.requested_benefits) ? data.requested_benefits as string[] : [];
 

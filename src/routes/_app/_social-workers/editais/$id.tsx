@@ -3,8 +3,9 @@ import RegistrationStatusGraphic from "@/components/registration-status-graphic"
 import { createFileRoute } from "@tanstack/react-router";
 import { editalQueryOptions } from "@/queries/edital";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { studentsRegistrationsQueryOptions } from "@/queries/students-registrations";
-import type { StudentRegistration } from "@/types/student-registration";
+import { noticeRegistrationsQueryOptions } from "@/queries/notice-registrations";
+import type { Registration } from "@/types/students-registration";
+import type { RegistrationItem } from "@/types/notice-registrations";
 
 export const Route = createFileRoute("/_app/_social-workers/editais/$id")({
   loader: ({ context: { queryClient }, params: { id } }) => queryClient.ensureQueryData(editalQueryOptions(Number(id))),
@@ -14,67 +15,52 @@ export const Route = createFileRoute("/_app/_social-workers/editais/$id")({
 export function PageEdital() {
   const { id } = Route.useParams();
   const { data: edital } = useSuspenseQuery(editalQueryOptions(Number(id)));
-  const { data: studentsRegistrations } = useSuspenseQuery(
-    studentsRegistrationsQueryOptions(Number(id))
+  const { data: noticeRegistrations } = useSuspenseQuery(
+    noticeRegistrationsQueryOptions(Number(id))
   );
 
   if (!edital) {
     return <p>Edital não encontrado</p>;
   }
-
-  const statusCounts = studentsRegistrations.registrations.reduce(
-    (acc, registration: StudentRegistration) => {
-      acc[registration.status] = (acc[registration.status] || 0) + 1;
-      return acc;
-    },
-    {} as Record<StudentRegistration["status"], number>
-  );
-
-  const statusMap = {
-    PENDING: { name: "Pendentes", color: "var(--color-gray-500)" },
-    APPROVED: { name: "Deferido", color: "var(--color-green-400)" },
-    REJECTED: { name: "Indeferido", color: "var(--color-red-400)" },
-    CANCELLED: { name: "Cancelados", color: "var(--color-purple-400)" },
-    APPEAL: { name: "Em Recurso", color: "var(--color-purple-400)" },
-    ANALISYS: { name: "Em Análise", color: "var(--color-blue-500)" }
-  };
-
-  const chartData = Object.entries(statusCounts).map(([status, value]) => ({
-    name: statusMap[status as keyof typeof statusMap].name,
-    value,
-    color: statusMap[status as keyof typeof statusMap].color,
-  }));
+  
+  const chartData = [
+    { name: "Pendente", value: noticeRegistrations.pending_count || 100, color: "var(--color-gray-500)" },
+    { name: "Deferido", value: noticeRegistrations.approved_count || 100, color: "var(--color-green-500)" },
+    { name: "Indeferido", value: noticeRegistrations.reject_count || 100, color: "var(--color-red-500)" },
+    { name: "Em Análise", value: noticeRegistrations.review_count || 100, color: "var(--color-yellow-500)" },
+    { name: "Em Recurso", value: noticeRegistrations.appeal_count || 100, color: "var(--color-blue-500)" },
+  ]
 
   const statusTranslation: Record<
-    StudentRegistration["status"],
+    Registration["status"],
     "Pendente" | "Deferido" | "Indeferido" | "Em Recurso" | "Em Análise"
   > = {
     PENDING: "Pendente",
     APPROVED: "Deferido",
     REJECTED: "Indeferido",
     APPEAL: "Em Recurso",
-    ANALISYS: "Em Análise",
+    REVIEW: "Em Análise",
     CANCELLED: "Indeferido"
   };
 
-  const students = studentsRegistrations.registrations.map(
-    (registration: StudentRegistration) => ({
+  const students = noticeRegistrations.registrations.map(
+    (registration: RegistrationItem) => ({
       id: registration.student.id,
       cpf: registration.student.cpf,
       nome: registration.student.full_name,
       matricula: registration.student.registration_number,
-      status: statusTranslation[registration.status],
-      progresso: Math.ceil(Math.random() * 100),
-      documentos: Math.ceil(Math.random() * 10),
-      dataInscricao: registration.registration_date,
+      status: registration.review ? statusTranslation[registration.review.status as Registration["status"]] : "Pendente",
+      progresso: registration.review ? registration.review.progress : 0,
+      documentos: registration.review ? registration.review.qtd_document : 0,
+      dataInscricao: registration.registration_date ? registration.registration_date : new Date().toISOString(),
     })
   );
 
   return (
-    <>
+    <div className="px-10 py-6">
       <title>{edital.title}</title>
       <section className="text-sm font-medium" dir="ltr">
-        <h1 className="font-bold text-2xl">{edital.title}</h1>
+        <h1 className="font-bold text-2xl mb-6">{edital.title}</h1>
         <div className="text-sm font-medium flex items-center justify-between flex-wrap gap-6">
           <div className="grid grid-cols-3 gap-10">
             <div className="flex-col">
@@ -146,6 +132,6 @@ export function PageEdital() {
       <section>
         <StudentDataTable data={students} />
       </section>
-    </>
+    </div>
   );
 }

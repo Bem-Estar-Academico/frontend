@@ -57,7 +57,7 @@ function RouteComponent() {
   }
 
   return (
-   <div className='w-full'>
+   <div className='w-full px-10 py-6'>
     <header className='w-full flex items-center'>
       <h1 className="font-bold text-2xl">Equipe</h1>
     </header>

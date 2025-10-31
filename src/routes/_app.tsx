@@ -19,11 +19,11 @@ export const Route = createFileRoute('/_app')({
 
 function LayoutComponent() {
   return (
-    <>
+    <div className='h-screen flex flex-col'>
       <Header />
-      <main className='px-10 py-6'>
+      <main className="flex-1 overflow-auto bg-gray-50">
         <Outlet />
       </main>
-    </>
+    </div>
   )
 }

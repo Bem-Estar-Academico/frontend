@@ -51,9 +51,9 @@ export function getColumns(masked: boolean): ColumnDef<Student>[] {
       },
       cell: ({ row }) => {
         const value = row.getValue("status") as string
-        const map: Record<string, "approved" | "denied" | "pending" | "appeal" | "review"> = {
+        const map: Record<string, "approved" | "rejected" | "pending" | "appeal" | "review"> = {
           "Deferido": "approved",
-          "Indeferido": "denied",
+          "Indeferido": "rejected",
           "Pendente": "pending",
           "Recurso": "appeal",
           "Em Análise": "review",

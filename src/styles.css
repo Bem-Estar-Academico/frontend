@@ -6,12 +6,21 @@
 
 @custom-variant dark (&:is(.dark *));
 
+html {
+  height: 100%;
+}
+
 body {
+  height: 100%;
   @apply m-0;
   font-family: 'Inter Variable', sans-serif;
   font-optical-sizing: auto;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+} 
+
+#app {
+  height: 100%;
 }
 
 code {

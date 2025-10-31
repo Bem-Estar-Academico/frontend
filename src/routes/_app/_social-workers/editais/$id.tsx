@@ -3,7 +3,7 @@ import RegistrationStatusGraphic from "@/components/registration-status-graphic"
 import { createFileRoute } from "@tanstack/react-router";
 import { editalQueryOptions } from "@/queries/edital";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { studentsRegistrationsQueryOptions } from "@/queries/students-registrations";
+import { studentsRegistrationsByNoticeQueryOptions } from "@/queries/students-registrations-by-notice";
 import type { StudentRegistration } from "@/types/student-registration";
 
 export const Route = createFileRoute("/_app/_social-workers/editais/$id")({
@@ -15,7 +15,7 @@ export function PageEdital() {
   const { id } = Route.useParams();
   const { data: edital } = useSuspenseQuery(editalQueryOptions(Number(id)));
   const { data: studentsRegistrations } = useSuspenseQuery(
-    studentsRegistrationsQueryOptions(Number(id))
+    studentsRegistrationsByNoticeQueryOptions(Number(id))
   );
 
   if (!edital) {
@@ -24,10 +24,10 @@ export function PageEdital() {
 
   const statusCounts = studentsRegistrations.registrations.reduce(
     (acc, registration: StudentRegistration) => {
-      acc[registration.status] = (acc[registration.status] || 0) + 1;
+      acc[registration.review.status] = (acc[registration.review.status] || 0) + 1;
       return acc;
     },
-    {} as Record<StudentRegistration["status"], number>
+    {} as Record<StudentRegistration["review"]["status"], number>
   );
 
   const statusMap = {
@@ -46,7 +46,7 @@ export function PageEdital() {
   }));
 
   const statusTranslation: Record<
-    StudentRegistration["status"],
+    StudentRegistration["review"]["status"],
     "Pendente" | "Deferido" | "Indeferido" | "Em Recurso" | "Em Análise"
   > = {
     PENDING: "Pendente",
@@ -63,7 +63,7 @@ export function PageEdital() {
       cpf: registration.student.cpf,
       nome: registration.student.full_name,
       matricula: registration.student.registration_number,
-      status: statusTranslation[registration.status],
+      status: statusTranslation[registration.review.status],
       progresso: Math.ceil(Math.random() * 100),
       documentos: Math.ceil(Math.random() * 10),
       dataInscricao: registration.registration_date,

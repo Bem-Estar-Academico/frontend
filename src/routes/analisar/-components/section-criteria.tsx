@@ -42,8 +42,7 @@ export const criteriaSchema = z.object({
           ...string[],
         ],
       ),
-    )
-    .min(1, "Selecione ao menos um critério de elegibilidade"),
+    ),
 });
 
 export const nonEligibilityNotice = {

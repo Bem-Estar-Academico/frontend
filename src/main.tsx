@@ -13,7 +13,7 @@ import { ErrorComponent } from './components/error.tsx'
 import { AuthProvider, useAuth } from './contexts/auth.tsx'
 import { Toaster } from './components/ui/sonner.tsx'
 
-const queryClient = new QueryClient()
+export const queryClient = new QueryClient()
 
 export const router = createRouter({
   routeTree,

@@ -1,3 +1,5 @@
+import type { ReviewRegistration } from "./review-response.dto"
+
 export type Student = {
   id: number
   email: string
@@ -19,10 +21,10 @@ export type StudentRegistration = {
   id: number
   student_id: number
   notice_id: number
-  status: "PENDING" | "APPROVED" | "REJECTED" | "APPEAL" | "ANALISYS" | "CANCELLED"
   registration_date: string
   created_at: string
   updated_at: string
   student: Student
   notice: Notice
+  review: ReviewRegistration
 }

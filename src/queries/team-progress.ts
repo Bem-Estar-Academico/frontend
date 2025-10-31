@@ -5,7 +5,7 @@ import { notFound } from "@tanstack/react-router";
 
 export const teamProgressQueryOptions = (editalId?: number) => queryOptions({
     queryKey: ['team', 'progress', editalId],
-    queryFn: () => fetchTeamProgress(editalId as number),
+    queryFn: () => fetchTeamProgress(1 as number),
     enabled: !!editalId,
 })
 

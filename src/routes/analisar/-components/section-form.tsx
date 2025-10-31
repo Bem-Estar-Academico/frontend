@@ -1,7 +1,6 @@
 import { Checkbox } from "@/components/ui/checkbox";
-import { Field, FieldError, FieldGroup, FieldLabel, FieldSet } from "@/components/ui/field";
+import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import formData, { type FormQuestion } from "@/routes/_app/_student/-data";
@@ -31,6 +30,7 @@ export function SectionForm({ control } : {control: Control<any>}) {
                   type={question.type}
                   placeholder={question.placeholder}
                   aria-invalid={fieldState.invalid}
+                  readOnly
                 />
                 {fieldState.invalid && (
                   <FieldError errors={[fieldState.error]} />
@@ -56,6 +56,7 @@ export function SectionForm({ control } : {control: Control<any>}) {
                   id={question.id}
                   placeholder={question.placeholder}
                   aria-invalid={fieldState.invalid}
+                  readOnly
                 />
                 {fieldState.invalid && (
                   <FieldError errors={[fieldState.error]} />
@@ -71,41 +72,27 @@ export function SectionForm({ control } : {control: Control<any>}) {
             control={control}
             name={question.id}
             key={question.id}
-            render={({ field, fieldState }) => (
-              <FieldSet data-invalid={fieldState.invalid}>
-                <FieldLabel>{question.question}</FieldLabel>
-                <FieldGroup data-slot="radio-group">
-                  <RadioGroup
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                    className="flex flex-col space-y-1"
-                  >
-                    {question.options?.map(option => (
-                      <Field
-                        key={option.id}
-                        orientation="horizontal"
-                        data-invalid={fieldState.invalid}
-                      >
-                        <RadioGroupItem
-                          id={`${question.id}-${option.id}`}
-                          value={option.id}
-                          aria-invalid={fieldState.invalid}
-                        />
-                        <FieldLabel
-                          htmlFor={`${question.id}-${option.id}`}
-                          className="font-normal"
-                        >
-                          {option.label}
-                        </FieldLabel>
-                      </Field>
-                    ))}
-                  </RadioGroup>
-                </FieldGroup>
-                {fieldState.invalid && (
-                  <FieldError errors={[fieldState.error]} />
-                )}
-              </FieldSet>
-            )}
+            render={({ field, fieldState }) => {
+              const selectedOption = question.options?.find(
+                option => option.id === field.value
+              );
+              return (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel htmlFor={question.id}>
+                    {question.question}
+                  </FieldLabel>
+                  <Input
+                    id={question.id}
+                    readOnly
+                    value={selectedOption?.label || "N/A"}
+                    aria-invalid={fieldState.invalid}
+                  />
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Field>
+              );
+            }}
           />
         );
 
@@ -117,43 +104,28 @@ export function SectionForm({ control } : {control: Control<any>}) {
             name={question.id}
             render={({ field, fieldState }) => {
               const valueSet = new Set(field.value || []);
+              const selectedLabels =
+                question.options
+                  ?.filter(option => valueSet.has(option.id))
+                  .map(option => option.label)
+                  .join("\n") || "N/A";
+
               return (
-                <FieldSet data-invalid={fieldState.invalid}>
-                  <FieldLabel>{question.question}</FieldLabel>
-                  <FieldGroup data-slot="checkbox-group">
-                    {question.options?.map(option => (
-                      <Field
-                        key={option.id}
-                        orientation="horizontal"
-                        data-invalid={fieldState.invalid}
-                      >
-                        <Checkbox
-                          id={`${question.id}-${option.id}`}
-                          checked={valueSet.has(option.id)}
-                          aria-invalid={fieldState.invalid}
-                          onCheckedChange={(checked) => {
-                            const newValue = new Set(valueSet);
-                            if (checked) {
-                              newValue.add(option.id);
-                            } else {
-                              newValue.delete(option.id);
-                            }
-                            field.onChange(Array.from(newValue));
-                          }}
-                        />
-                        <FieldLabel
-                          htmlFor={`${question.id}-${option.id}`}
-                          className="font-normal"
-                        >
-                          {option.label}
-                        </FieldLabel>
-                      </Field>
-                    ))}
-                  </FieldGroup>
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel htmlFor={question.id}>
+                    {question.question}
+                  </FieldLabel>
+                  <Textarea
+                    id={question.id}
+                    readOnly
+                    className="resize-none"
+                    value={selectedLabels}
+                    aria-invalid={fieldState.invalid}
+                  />
                   {fieldState.invalid && (
                     <FieldError errors={[fieldState.error]} />
                   )}
-                </FieldSet>
+                </Field>
               );
             }}
           />
@@ -174,40 +146,11 @@ export function SectionForm({ control } : {control: Control<any>}) {
                   id={question.id}
                   checked={field.value}
                   aria-invalid={fieldState.invalid}
-                  onCheckedChange={(checked) => field.onChange(!!checked)}
+                  disabled
                 />
                 <FieldLabel htmlFor={question.id} className="font-normal">
                   {question.options?.[0]?.label || question.question}
                 </FieldLabel>
-                {fieldState.invalid && (
-                  <FieldError errors={[fieldState.error]} />
-                )}
-              </Field>
-            )}
-          />
-        );
-
-      case "file":
-        return (
-          <Controller
-            control={control}
-            key={question.id}
-            name={question.id}
-            render={({ field, fieldState }) => (
-              <Field data-invalid={fieldState.invalid}>
-                <FieldLabel htmlFor={question.id}>
-                  {question.question}
-                </FieldLabel>
-                <Input
-                  id={question.id}
-                  type="file"
-                  aria-invalid={fieldState.invalid}
-                  onChange={(e) => {
-                    const file = e.target.files ? e.target.files[0] : null;
-                    field.onChange(file);
-                  }}
-                  accept={question.accept || "application/pdf"}
-                />
                 {fieldState.invalid && (
                   <FieldError errors={[fieldState.error]} />
                 )}

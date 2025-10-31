@@ -1,9 +1,8 @@
 import { createFileRoute, Outlet, redirect} from '@tanstack/react-router'
-import { HeaderStudent } from './_app/student/-components/header'
-import { useAuth } from '@/contexts/auth'
-import type { User } from '@/types/user'
+import { editaisQueryOptions } from '@/queries/editais'
+import Header from '@/components/header'
 
-export const Route = createFileRoute('/student')({
+export const Route = createFileRoute('/_app')({
   beforeLoad: async ({ context, location }) => {
     if (!context.auth?.isAuthenticated) {
       throw redirect({
@@ -14,18 +13,17 @@ export const Route = createFileRoute('/student')({
       })
     }
   },
+  loader: ({context: { queryClient }}) => queryClient.ensureQueryData(editaisQueryOptions),
   component: LayoutComponent,
 })
 
 function LayoutComponent() {
-  const auth = useAuth()
-
-  const user = auth.user as User
-
   return (
     <>
-      <HeaderStudent name={user.full_name} id={user.id} />
-      <Outlet />
+      <Header />
+      <main className='px-10 py-6'>
+        <Outlet />
+      </main>
     </>
   )
 }

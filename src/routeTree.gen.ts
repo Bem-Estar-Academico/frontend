@@ -10,33 +10,29 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as StudentRouteImport } from './routes/student'
-import { Route as SocialWorkersRouteImport } from './routes/_social-workers'
-import { Route as CoordinatorRouteImport } from './routes/_coordinator'
+import { Route as AppRouteImport } from './routes/_app'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthLoginRouteImport } from './routes/_auth/login'
 import { Route as AuthCadastroRouteImport } from './routes/_auth/cadastro'
-import { Route as StudentHomeIndexRouteImport } from './routes/student/home/index'
-import { Route as StudentEditaisIndexRouteImport } from './routes/student/editais/index'
-import { Route as SocialWorkersConsultarIvsIndexRouteImport } from './routes/_social-workers/consultar-ivs/index'
-import { Route as CoordinatorEditaisIndexRouteImport } from './routes/_coordinator/editais/index'
 import { Route as AnalisarInscricaoSubscriptionIdRouteImport } from './routes/analisar.inscricao.$subscriptionId'
-import { Route as SocialWorkersEditaisIdRouteImport } from './routes/_social-workers/editais/$id'
-import { Route as SocialWorkersConsultarIvsIdRouteImport } from './routes/_social-workers/consultar-ivs/$id'
-import { Route as CoordinatorEditaisCriarRouteImport } from './routes/_coordinator/editais/criar'
-import { Route as StudentEditaisIdIndexRouteImport } from './routes/student/editais/$id/index'
-import { Route as StudentEditaisIdInscricaoRouteImport } from './routes/student/editais/$id/inscricao'
+import { Route as AppCoordinatorEquipeRouteImport } from './routes/_app/_coordinator/equipe'
+import { Route as AppStudentHomeIndexRouteImport } from './routes/_app/student/home/index'
+import { Route as AppStudentEditaisIndexRouteImport } from './routes/_app/student/editais/index'
+import { Route as AppSocialWorkersConsultarIvsIndexRouteImport } from './routes/_app/_social-workers/consultar-ivs/index'
+import { Route as AppCoordinatorEditaisIndexRouteImport } from './routes/_app/_coordinator/editais/index'
+import { Route as AppSocialWorkersEditaisIdRouteImport } from './routes/_app/_social-workers/editais/$id'
+import { Route as AppSocialWorkersConsultarIvsIdRouteImport } from './routes/_app/_social-workers/consultar-ivs/$id'
+import { Route as AppCoordinatorEditaisCriarRouteImport } from './routes/_app/_coordinator/editais/criar'
+import { Route as AppStudentEditaisIdIndexRouteImport } from './routes/_app/student/editais/$id/index'
+import { Route as AppStudentEditaisIdInscricaoRouteImport } from './routes/_app/student/editais/$id/inscricao'
 
 const StudentRoute = StudentRouteImport.update({
   id: '/student',
   path: '/student',
   getParentRoute: () => rootRouteImport,
 } as any)
-const SocialWorkersRoute = SocialWorkersRouteImport.update({
-  id: '/_social-workers',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const CoordinatorRoute = CoordinatorRouteImport.update({
-  id: '/_coordinator',
+const AppRoute = AppRouteImport.update({
+  id: '/_app',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -54,111 +50,122 @@ const AuthCadastroRoute = AuthCadastroRouteImport.update({
   path: '/cadastro',
   getParentRoute: () => rootRouteImport,
 } as any)
-const StudentHomeIndexRoute = StudentHomeIndexRouteImport.update({
-  id: '/home/',
-  path: '/home/',
-  getParentRoute: () => StudentRoute,
-} as any)
-const StudentEditaisIndexRoute = StudentEditaisIndexRouteImport.update({
-  id: '/editais/',
-  path: '/editais/',
-  getParentRoute: () => StudentRoute,
-} as any)
-const SocialWorkersConsultarIvsIndexRoute =
-  SocialWorkersConsultarIvsIndexRouteImport.update({
-    id: '/consultar-ivs/',
-    path: '/consultar-ivs/',
-    getParentRoute: () => SocialWorkersRoute,
-  } as any)
-const CoordinatorEditaisIndexRoute = CoordinatorEditaisIndexRouteImport.update({
-  id: '/editais/',
-  path: '/editais/',
-  getParentRoute: () => CoordinatorRoute,
-} as any)
 const AnalisarInscricaoSubscriptionIdRoute =
   AnalisarInscricaoSubscriptionIdRouteImport.update({
     id: '/analisar/inscricao/$subscriptionId',
     path: '/analisar/inscricao/$subscriptionId',
     getParentRoute: () => rootRouteImport,
   } as any)
-const SocialWorkersEditaisIdRoute = SocialWorkersEditaisIdRouteImport.update({
-  id: '/editais/$id',
-  path: '/editais/$id',
-  getParentRoute: () => SocialWorkersRoute,
+const AppCoordinatorEquipeRoute = AppCoordinatorEquipeRouteImport.update({
+  id: '/_coordinator/equipe',
+  path: '/equipe',
+  getParentRoute: () => AppRoute,
 } as any)
-const SocialWorkersConsultarIvsIdRoute =
-  SocialWorkersConsultarIvsIdRouteImport.update({
-    id: '/consultar-ivs/$id',
-    path: '/consultar-ivs/$id',
-    getParentRoute: () => SocialWorkersRoute,
+const AppStudentHomeIndexRoute = AppStudentHomeIndexRouteImport.update({
+  id: '/student/home/',
+  path: '/student/home/',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppStudentEditaisIndexRoute = AppStudentEditaisIndexRouteImport.update({
+  id: '/student/editais/',
+  path: '/student/editais/',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppSocialWorkersConsultarIvsIndexRoute =
+  AppSocialWorkersConsultarIvsIndexRouteImport.update({
+    id: '/_social-workers/consultar-ivs/',
+    path: '/consultar-ivs/',
+    getParentRoute: () => AppRoute,
   } as any)
-const CoordinatorEditaisCriarRoute = CoordinatorEditaisCriarRouteImport.update({
-  id: '/editais/criar',
-  path: '/editais/criar',
-  getParentRoute: () => CoordinatorRoute,
-} as any)
-const StudentEditaisIdIndexRoute = StudentEditaisIdIndexRouteImport.update({
-  id: '/editais/$id/',
-  path: '/editais/$id/',
-  getParentRoute: () => StudentRoute,
-} as any)
-const StudentEditaisIdInscricaoRoute =
-  StudentEditaisIdInscricaoRouteImport.update({
-    id: '/editais/$id/inscricao',
-    path: '/editais/$id/inscricao',
-    getParentRoute: () => StudentRoute,
+const AppCoordinatorEditaisIndexRoute =
+  AppCoordinatorEditaisIndexRouteImport.update({
+    id: '/_coordinator/editais/',
+    path: '/editais/',
+    getParentRoute: () => AppRoute,
+  } as any)
+const AppSocialWorkersEditaisIdRoute =
+  AppSocialWorkersEditaisIdRouteImport.update({
+    id: '/_social-workers/editais/$id',
+    path: '/editais/$id',
+    getParentRoute: () => AppRoute,
+  } as any)
+const AppSocialWorkersConsultarIvsIdRoute =
+  AppSocialWorkersConsultarIvsIdRouteImport.update({
+    id: '/_social-workers/consultar-ivs/$id',
+    path: '/consultar-ivs/$id',
+    getParentRoute: () => AppRoute,
+  } as any)
+const AppCoordinatorEditaisCriarRoute =
+  AppCoordinatorEditaisCriarRouteImport.update({
+    id: '/_coordinator/editais/criar',
+    path: '/editais/criar',
+    getParentRoute: () => AppRoute,
+  } as any)
+const AppStudentEditaisIdIndexRoute =
+  AppStudentEditaisIdIndexRouteImport.update({
+    id: '/student/editais/$id/',
+    path: '/student/editais/$id/',
+    getParentRoute: () => AppRoute,
+  } as any)
+const AppStudentEditaisIdInscricaoRoute =
+  AppStudentEditaisIdInscricaoRouteImport.update({
+    id: '/student/editais/$id/inscricao',
+    path: '/student/editais/$id/inscricao',
+    getParentRoute: () => AppRoute,
   } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/student': typeof StudentRouteWithChildren
+  '/student': typeof StudentRoute
   '/cadastro': typeof AuthCadastroRoute
   '/login': typeof AuthLoginRoute
-  '/editais/criar': typeof CoordinatorEditaisCriarRoute
-  '/consultar-ivs/$id': typeof SocialWorkersConsultarIvsIdRoute
-  '/editais/$id': typeof SocialWorkersEditaisIdRoute
+  '/equipe': typeof AppCoordinatorEquipeRoute
   '/analisar/inscricao/$subscriptionId': typeof AnalisarInscricaoSubscriptionIdRoute
-  '/editais': typeof CoordinatorEditaisIndexRoute
-  '/consultar-ivs': typeof SocialWorkersConsultarIvsIndexRoute
-  '/student/editais': typeof StudentEditaisIndexRoute
-  '/student/home': typeof StudentHomeIndexRoute
-  '/student/editais/$id/inscricao': typeof StudentEditaisIdInscricaoRoute
-  '/student/editais/$id': typeof StudentEditaisIdIndexRoute
+  '/editais/criar': typeof AppCoordinatorEditaisCriarRoute
+  '/consultar-ivs/$id': typeof AppSocialWorkersConsultarIvsIdRoute
+  '/editais/$id': typeof AppSocialWorkersEditaisIdRoute
+  '/editais': typeof AppCoordinatorEditaisIndexRoute
+  '/consultar-ivs': typeof AppSocialWorkersConsultarIvsIndexRoute
+  '/student/editais': typeof AppStudentEditaisIndexRoute
+  '/student/home': typeof AppStudentHomeIndexRoute
+  '/student/editais/$id/inscricao': typeof AppStudentEditaisIdInscricaoRoute
+  '/student/editais/$id': typeof AppStudentEditaisIdIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/student': typeof StudentRouteWithChildren
+  '/student': typeof StudentRoute
   '/cadastro': typeof AuthCadastroRoute
   '/login': typeof AuthLoginRoute
-  '/editais/criar': typeof CoordinatorEditaisCriarRoute
-  '/consultar-ivs/$id': typeof SocialWorkersConsultarIvsIdRoute
-  '/editais/$id': typeof SocialWorkersEditaisIdRoute
+  '/equipe': typeof AppCoordinatorEquipeRoute
   '/analisar/inscricao/$subscriptionId': typeof AnalisarInscricaoSubscriptionIdRoute
-  '/editais': typeof CoordinatorEditaisIndexRoute
-  '/consultar-ivs': typeof SocialWorkersConsultarIvsIndexRoute
-  '/student/editais': typeof StudentEditaisIndexRoute
-  '/student/home': typeof StudentHomeIndexRoute
-  '/student/editais/$id/inscricao': typeof StudentEditaisIdInscricaoRoute
-  '/student/editais/$id': typeof StudentEditaisIdIndexRoute
+  '/editais/criar': typeof AppCoordinatorEditaisCriarRoute
+  '/consultar-ivs/$id': typeof AppSocialWorkersConsultarIvsIdRoute
+  '/editais/$id': typeof AppSocialWorkersEditaisIdRoute
+  '/editais': typeof AppCoordinatorEditaisIndexRoute
+  '/consultar-ivs': typeof AppSocialWorkersConsultarIvsIndexRoute
+  '/student/editais': typeof AppStudentEditaisIndexRoute
+  '/student/home': typeof AppStudentHomeIndexRoute
+  '/student/editais/$id/inscricao': typeof AppStudentEditaisIdInscricaoRoute
+  '/student/editais/$id': typeof AppStudentEditaisIdIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/_coordinator': typeof CoordinatorRouteWithChildren
-  '/_social-workers': typeof SocialWorkersRouteWithChildren
-  '/student': typeof StudentRouteWithChildren
+  '/_app': typeof AppRouteWithChildren
+  '/student': typeof StudentRoute
   '/_auth/cadastro': typeof AuthCadastroRoute
   '/_auth/login': typeof AuthLoginRoute
-  '/_coordinator/editais/criar': typeof CoordinatorEditaisCriarRoute
-  '/_social-workers/consultar-ivs/$id': typeof SocialWorkersConsultarIvsIdRoute
-  '/_social-workers/editais/$id': typeof SocialWorkersEditaisIdRoute
+  '/_app/_coordinator/equipe': typeof AppCoordinatorEquipeRoute
   '/analisar/inscricao/$subscriptionId': typeof AnalisarInscricaoSubscriptionIdRoute
-  '/_coordinator/editais/': typeof CoordinatorEditaisIndexRoute
-  '/_social-workers/consultar-ivs/': typeof SocialWorkersConsultarIvsIndexRoute
-  '/student/editais/': typeof StudentEditaisIndexRoute
-  '/student/home/': typeof StudentHomeIndexRoute
-  '/student/editais/$id/inscricao': typeof StudentEditaisIdInscricaoRoute
-  '/student/editais/$id/': typeof StudentEditaisIdIndexRoute
+  '/_app/_coordinator/editais/criar': typeof AppCoordinatorEditaisCriarRoute
+  '/_app/_social-workers/consultar-ivs/$id': typeof AppSocialWorkersConsultarIvsIdRoute
+  '/_app/_social-workers/editais/$id': typeof AppSocialWorkersEditaisIdRoute
+  '/_app/_coordinator/editais/': typeof AppCoordinatorEditaisIndexRoute
+  '/_app/_social-workers/consultar-ivs/': typeof AppSocialWorkersConsultarIvsIndexRoute
+  '/_app/student/editais/': typeof AppStudentEditaisIndexRoute
+  '/_app/student/home/': typeof AppStudentHomeIndexRoute
+  '/_app/student/editais/$id/inscricao': typeof AppStudentEditaisIdInscricaoRoute
+  '/_app/student/editais/$id/': typeof AppStudentEditaisIdIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -167,10 +174,11 @@ export interface FileRouteTypes {
     | '/student'
     | '/cadastro'
     | '/login'
+    | '/equipe'
+    | '/analisar/inscricao/$subscriptionId'
     | '/editais/criar'
     | '/consultar-ivs/$id'
     | '/editais/$id'
-    | '/analisar/inscricao/$subscriptionId'
     | '/editais'
     | '/consultar-ivs'
     | '/student/editais'
@@ -183,10 +191,11 @@ export interface FileRouteTypes {
     | '/student'
     | '/cadastro'
     | '/login'
+    | '/equipe'
+    | '/analisar/inscricao/$subscriptionId'
     | '/editais/criar'
     | '/consultar-ivs/$id'
     | '/editais/$id'
-    | '/analisar/inscricao/$subscriptionId'
     | '/editais'
     | '/consultar-ivs'
     | '/student/editais'
@@ -196,28 +205,27 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
-    | '/_coordinator'
-    | '/_social-workers'
+    | '/_app'
     | '/student'
     | '/_auth/cadastro'
     | '/_auth/login'
-    | '/_coordinator/editais/criar'
-    | '/_social-workers/consultar-ivs/$id'
-    | '/_social-workers/editais/$id'
+    | '/_app/_coordinator/equipe'
     | '/analisar/inscricao/$subscriptionId'
-    | '/_coordinator/editais/'
-    | '/_social-workers/consultar-ivs/'
-    | '/student/editais/'
-    | '/student/home/'
-    | '/student/editais/$id/inscricao'
-    | '/student/editais/$id/'
+    | '/_app/_coordinator/editais/criar'
+    | '/_app/_social-workers/consultar-ivs/$id'
+    | '/_app/_social-workers/editais/$id'
+    | '/_app/_coordinator/editais/'
+    | '/_app/_social-workers/consultar-ivs/'
+    | '/_app/student/editais/'
+    | '/_app/student/home/'
+    | '/_app/student/editais/$id/inscricao'
+    | '/_app/student/editais/$id/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  CoordinatorRoute: typeof CoordinatorRouteWithChildren
-  SocialWorkersRoute: typeof SocialWorkersRouteWithChildren
-  StudentRoute: typeof StudentRouteWithChildren
+  AppRoute: typeof AppRouteWithChildren
+  StudentRoute: typeof StudentRoute
   AuthCadastroRoute: typeof AuthCadastroRoute
   AuthLoginRoute: typeof AuthLoginRoute
   AnalisarInscricaoSubscriptionIdRoute: typeof AnalisarInscricaoSubscriptionIdRoute
@@ -232,18 +240,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof StudentRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_social-workers': {
-      id: '/_social-workers'
+    '/_app': {
+      id: '/_app'
       path: ''
       fullPath: ''
-      preLoaderRoute: typeof SocialWorkersRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/_coordinator': {
-      id: '/_coordinator'
-      path: ''
-      fullPath: ''
-      preLoaderRoute: typeof CoordinatorRouteImport
+      preLoaderRoute: typeof AppRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -267,34 +268,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthCadastroRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/student/home/': {
-      id: '/student/home/'
-      path: '/home'
-      fullPath: '/student/home'
-      preLoaderRoute: typeof StudentHomeIndexRouteImport
-      parentRoute: typeof StudentRoute
-    }
-    '/student/editais/': {
-      id: '/student/editais/'
-      path: '/editais'
-      fullPath: '/student/editais'
-      preLoaderRoute: typeof StudentEditaisIndexRouteImport
-      parentRoute: typeof StudentRoute
-    }
-    '/_social-workers/consultar-ivs/': {
-      id: '/_social-workers/consultar-ivs/'
-      path: '/consultar-ivs'
-      fullPath: '/consultar-ivs'
-      preLoaderRoute: typeof SocialWorkersConsultarIvsIndexRouteImport
-      parentRoute: typeof SocialWorkersRoute
-    }
-    '/_coordinator/editais/': {
-      id: '/_coordinator/editais/'
-      path: '/editais'
-      fullPath: '/editais'
-      preLoaderRoute: typeof CoordinatorEditaisIndexRouteImport
-      parentRoute: typeof CoordinatorRoute
-    }
     '/analisar/inscricao/$subscriptionId': {
       id: '/analisar/inscricao/$subscriptionId'
       path: '/analisar/inscricao/$subscriptionId'
@@ -302,96 +275,112 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AnalisarInscricaoSubscriptionIdRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_social-workers/editais/$id': {
-      id: '/_social-workers/editais/$id'
+    '/_app/_coordinator/equipe': {
+      id: '/_app/_coordinator/equipe'
+      path: '/equipe'
+      fullPath: '/equipe'
+      preLoaderRoute: typeof AppCoordinatorEquipeRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/student/home/': {
+      id: '/_app/student/home/'
+      path: '/student/home'
+      fullPath: '/student/home'
+      preLoaderRoute: typeof AppStudentHomeIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/student/editais/': {
+      id: '/_app/student/editais/'
+      path: '/student/editais'
+      fullPath: '/student/editais'
+      preLoaderRoute: typeof AppStudentEditaisIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/_social-workers/consultar-ivs/': {
+      id: '/_app/_social-workers/consultar-ivs/'
+      path: '/consultar-ivs'
+      fullPath: '/consultar-ivs'
+      preLoaderRoute: typeof AppSocialWorkersConsultarIvsIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/_coordinator/editais/': {
+      id: '/_app/_coordinator/editais/'
+      path: '/editais'
+      fullPath: '/editais'
+      preLoaderRoute: typeof AppCoordinatorEditaisIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/_social-workers/editais/$id': {
+      id: '/_app/_social-workers/editais/$id'
       path: '/editais/$id'
       fullPath: '/editais/$id'
-      preLoaderRoute: typeof SocialWorkersEditaisIdRouteImport
-      parentRoute: typeof SocialWorkersRoute
+      preLoaderRoute: typeof AppSocialWorkersEditaisIdRouteImport
+      parentRoute: typeof AppRoute
     }
-    '/_social-workers/consultar-ivs/$id': {
-      id: '/_social-workers/consultar-ivs/$id'
+    '/_app/_social-workers/consultar-ivs/$id': {
+      id: '/_app/_social-workers/consultar-ivs/$id'
       path: '/consultar-ivs/$id'
       fullPath: '/consultar-ivs/$id'
-      preLoaderRoute: typeof SocialWorkersConsultarIvsIdRouteImport
-      parentRoute: typeof SocialWorkersRoute
+      preLoaderRoute: typeof AppSocialWorkersConsultarIvsIdRouteImport
+      parentRoute: typeof AppRoute
     }
-    '/_coordinator/editais/criar': {
-      id: '/_coordinator/editais/criar'
+    '/_app/_coordinator/editais/criar': {
+      id: '/_app/_coordinator/editais/criar'
       path: '/editais/criar'
       fullPath: '/editais/criar'
-      preLoaderRoute: typeof CoordinatorEditaisCriarRouteImport
-      parentRoute: typeof CoordinatorRoute
+      preLoaderRoute: typeof AppCoordinatorEditaisCriarRouteImport
+      parentRoute: typeof AppRoute
     }
-    '/student/editais/$id/': {
-      id: '/student/editais/$id/'
-      path: '/editais/$id'
+    '/_app/student/editais/$id/': {
+      id: '/_app/student/editais/$id/'
+      path: '/student/editais/$id'
       fullPath: '/student/editais/$id'
-      preLoaderRoute: typeof StudentEditaisIdIndexRouteImport
-      parentRoute: typeof StudentRoute
+      preLoaderRoute: typeof AppStudentEditaisIdIndexRouteImport
+      parentRoute: typeof AppRoute
     }
-    '/student/editais/$id/inscricao': {
-      id: '/student/editais/$id/inscricao'
-      path: '/editais/$id/inscricao'
+    '/_app/student/editais/$id/inscricao': {
+      id: '/_app/student/editais/$id/inscricao'
+      path: '/student/editais/$id/inscricao'
       fullPath: '/student/editais/$id/inscricao'
-      preLoaderRoute: typeof StudentEditaisIdInscricaoRouteImport
-      parentRoute: typeof StudentRoute
+      preLoaderRoute: typeof AppStudentEditaisIdInscricaoRouteImport
+      parentRoute: typeof AppRoute
     }
   }
 }
 
-interface CoordinatorRouteChildren {
-  CoordinatorEditaisCriarRoute: typeof CoordinatorEditaisCriarRoute
-  CoordinatorEditaisIndexRoute: typeof CoordinatorEditaisIndexRoute
+interface AppRouteChildren {
+  AppCoordinatorEquipeRoute: typeof AppCoordinatorEquipeRoute
+  AppCoordinatorEditaisCriarRoute: typeof AppCoordinatorEditaisCriarRoute
+  AppSocialWorkersConsultarIvsIdRoute: typeof AppSocialWorkersConsultarIvsIdRoute
+  AppSocialWorkersEditaisIdRoute: typeof AppSocialWorkersEditaisIdRoute
+  AppCoordinatorEditaisIndexRoute: typeof AppCoordinatorEditaisIndexRoute
+  AppSocialWorkersConsultarIvsIndexRoute: typeof AppSocialWorkersConsultarIvsIndexRoute
+  AppStudentEditaisIndexRoute: typeof AppStudentEditaisIndexRoute
+  AppStudentHomeIndexRoute: typeof AppStudentHomeIndexRoute
+  AppStudentEditaisIdInscricaoRoute: typeof AppStudentEditaisIdInscricaoRoute
+  AppStudentEditaisIdIndexRoute: typeof AppStudentEditaisIdIndexRoute
 }
 
-const CoordinatorRouteChildren: CoordinatorRouteChildren = {
-  CoordinatorEditaisCriarRoute: CoordinatorEditaisCriarRoute,
-  CoordinatorEditaisIndexRoute: CoordinatorEditaisIndexRoute,
+const AppRouteChildren: AppRouteChildren = {
+  AppCoordinatorEquipeRoute: AppCoordinatorEquipeRoute,
+  AppCoordinatorEditaisCriarRoute: AppCoordinatorEditaisCriarRoute,
+  AppSocialWorkersConsultarIvsIdRoute: AppSocialWorkersConsultarIvsIdRoute,
+  AppSocialWorkersEditaisIdRoute: AppSocialWorkersEditaisIdRoute,
+  AppCoordinatorEditaisIndexRoute: AppCoordinatorEditaisIndexRoute,
+  AppSocialWorkersConsultarIvsIndexRoute:
+    AppSocialWorkersConsultarIvsIndexRoute,
+  AppStudentEditaisIndexRoute: AppStudentEditaisIndexRoute,
+  AppStudentHomeIndexRoute: AppStudentHomeIndexRoute,
+  AppStudentEditaisIdInscricaoRoute: AppStudentEditaisIdInscricaoRoute,
+  AppStudentEditaisIdIndexRoute: AppStudentEditaisIdIndexRoute,
 }
 
-const CoordinatorRouteWithChildren = CoordinatorRoute._addFileChildren(
-  CoordinatorRouteChildren,
-)
-
-interface SocialWorkersRouteChildren {
-  SocialWorkersConsultarIvsIdRoute: typeof SocialWorkersConsultarIvsIdRoute
-  SocialWorkersEditaisIdRoute: typeof SocialWorkersEditaisIdRoute
-  SocialWorkersConsultarIvsIndexRoute: typeof SocialWorkersConsultarIvsIndexRoute
-}
-
-const SocialWorkersRouteChildren: SocialWorkersRouteChildren = {
-  SocialWorkersConsultarIvsIdRoute: SocialWorkersConsultarIvsIdRoute,
-  SocialWorkersEditaisIdRoute: SocialWorkersEditaisIdRoute,
-  SocialWorkersConsultarIvsIndexRoute: SocialWorkersConsultarIvsIndexRoute,
-}
-
-const SocialWorkersRouteWithChildren = SocialWorkersRoute._addFileChildren(
-  SocialWorkersRouteChildren,
-)
-
-interface StudentRouteChildren {
-  StudentEditaisIndexRoute: typeof StudentEditaisIndexRoute
-  StudentHomeIndexRoute: typeof StudentHomeIndexRoute
-  StudentEditaisIdInscricaoRoute: typeof StudentEditaisIdInscricaoRoute
-  StudentEditaisIdIndexRoute: typeof StudentEditaisIdIndexRoute
-}
-
-const StudentRouteChildren: StudentRouteChildren = {
-  StudentEditaisIndexRoute: StudentEditaisIndexRoute,
-  StudentHomeIndexRoute: StudentHomeIndexRoute,
-  StudentEditaisIdInscricaoRoute: StudentEditaisIdInscricaoRoute,
-  StudentEditaisIdIndexRoute: StudentEditaisIdIndexRoute,
-}
-
-const StudentRouteWithChildren =
-  StudentRoute._addFileChildren(StudentRouteChildren)
+const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  CoordinatorRoute: CoordinatorRouteWithChildren,
-  SocialWorkersRoute: SocialWorkersRouteWithChildren,
-  StudentRoute: StudentRouteWithChildren,
+  AppRoute: AppRouteWithChildren,
+  StudentRoute: StudentRoute,
   AuthCadastroRoute: AuthCadastroRoute,
   AuthLoginRoute: AuthLoginRoute,
   AnalisarInscricaoSubscriptionIdRoute: AnalisarInscricaoSubscriptionIdRoute,

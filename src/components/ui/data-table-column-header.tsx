@@ -26,11 +26,13 @@ export function DataTableColumnHeader<TData, TValue>({
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
             {title}
-            <span className={`ml-2 transform transition-transform duration-300`}>
-             {column.getIsSorted() === "desc" && <IconArrowDown />}
-             {column.getIsSorted() === "asc" && <IconArrowUp />}
-             {!column.getIsSorted() && <IconArrowsUpDown />}
-            </span>
+            { column.getCanSort() &&
+              <span   className={`ml-2 transform transition-transform duration-300`}>
+                {column.getIsSorted() === "desc" && <IconArrowDown />}
+                {column.getIsSorted() === "asc" && <IconArrowUp />}
+                {!column.getIsSorted() && <IconArrowsUpDown />}
+              </span>
+            }
         </Button>
     </div>
     )

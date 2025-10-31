@@ -3,7 +3,12 @@ import CreateStudentForm from "./-components/create-student-form";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_auth/cadastro")({
-  component: CreateStudentPage,
+  component: () => (
+    <>
+      <title>Cadastro | BEA</title>
+      <CreateStudentPage/>
+    </>
+  ),
 });
 
 

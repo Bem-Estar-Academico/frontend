@@ -3,6 +3,10 @@
 @import 'tw-animate-css';
 
 @import '@fontsource-variable/inter'; 
+@import '@fontsource/poppins/700.css';
+@import '@fontsource/raleway/700.css';
+
+
 
 @custom-variant dark (&:is(.dark *));
 
@@ -91,6 +95,8 @@ code {
 }
 
 @theme inline {
+  --font-display: "Poppins", sans-serif;
+  /* --font-display: "Raleway", sans-serif; */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);

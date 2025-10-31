@@ -97,7 +97,12 @@ const editalSchema = z.object({
 type EditalFormData = z.infer<typeof editalSchema>
 
 export const Route = createFileRoute("/_app/_coordinator/editais/criar")({
-  component: CreateEdital,
+  component: () => (
+    <>
+      <title>Criar Edital | BEA</title>
+      <CreateEdital/>
+    </>
+  ),
 })
 
 function CreateEdital() {
@@ -161,7 +166,6 @@ function CreateEdital() {
   return (
       <div className="flex flex-col w-full h-full max-w-full">
         <h1 className="font-bold text-2xl mb-6">Editais</h1>
-
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="w-full flex flex-col gap-6">
             {/* Seção 1: Informações do Edital */}

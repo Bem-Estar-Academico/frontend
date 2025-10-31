@@ -20,7 +20,12 @@ import { editaisQueryOptions } from '@/queries/editais'
 import { teamProgressQueryOptions } from '@/queries/team-progress'
 
 export const Route = createFileRoute('/_app/_coordinator/equipe')({
-  component: RouteComponent,
+    component: () => (
+      <>
+        <title>Equipe | BEA</title>
+        <RouteComponent/>
+      </>
+    ),
 })
 
 type OrderByOption = 'highestProgress' | 'lowestProgress' | 'lastAnalysis'
@@ -52,7 +57,7 @@ function RouteComponent() {
   }
 
   return (
-   <div className='w-full'>
+   <div className='w-full px-10 py-6'>
     <header className='w-full flex items-center'>
       <h1 className="font-bold text-2xl">Equipe</h1>
     </header>

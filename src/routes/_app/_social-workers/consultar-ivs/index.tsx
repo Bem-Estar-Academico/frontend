@@ -7,7 +7,12 @@ import { ivsQueryOptions } from "@/queries/ivs";
 import { useSuspenseQuery } from "@tanstack/react-query";
 
 export const Route = createFileRoute("/_app/_social-workers/consultar-ivs/")({
-  component: IVS,
+    component: () => (
+    <>
+      <title>Consultar IVS | BEA</title>
+      <IVS/>
+    </>
+  ),
 });
 
 export function IVS() {
@@ -26,7 +31,7 @@ export function IVS() {
   }));
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 px-10 py-6">
       <h2 className="font-bold text-2xl">Consultar IVS</h2>
       <div className='grid grid-cols-1 md:grid-cols-3 gap-4 mb-4 '>
         <ChartMeanIVS />

@@ -3,7 +3,12 @@ import { SignupForm } from "./-components/signup-form";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_auth/cadastro")({
-  component: SignupPage,
+  component: () => (
+    <>
+      <title>Cadastro | BEA</title>
+      <CreateStudentPage/>
+    </>
+  ),
 });
 
 export default function SignupPage() {

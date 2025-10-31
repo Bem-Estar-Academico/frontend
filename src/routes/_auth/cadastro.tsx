@@ -6,7 +6,7 @@ export const Route = createFileRoute("/_auth/cadastro")({
   component: () => (
     <>
       <title>Cadastro | BEA</title>
-      <CreateStudentPage/>
+      <SignupPage/>
     </>
   ),
 });

@@ -9,7 +9,12 @@ import { Pagination } from "@/components/ui/pagination";
 import { editaisQueryOptions } from "@/queries/editais";
 
 export const Route = createFileRoute("/_app/_coordinator/editais/")({
-  component: Editais,
+  component: () => (
+    <>
+      <title>Editais | BEA</title>
+      <Editais/>
+    </>
+  ),
 });
 
 export function Editais() {

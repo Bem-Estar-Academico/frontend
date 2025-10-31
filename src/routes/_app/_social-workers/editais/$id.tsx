@@ -7,8 +7,8 @@ import { studentsRegistrationsQueryOptions } from "@/queries/students-registrati
 import type { StudentRegistration } from "@/types/student-registration";
 
 export const Route = createFileRoute("/_app/_social-workers/editais/$id")({
+  loader: ({ context: { queryClient }, params: { id } }) => queryClient.ensureQueryData(editalQueryOptions(Number(id))),
   component: PageEdital,
-  loader: ({ context: { queryClient }, params: { id } }) => queryClient.ensureQueryData(editalQueryOptions(Number(id)))
 });
 
 export function PageEdital() {
@@ -72,6 +72,7 @@ export function PageEdital() {
 
   return (
     <>
+      <title>{edital.title}</title>
       <section className="text-sm font-medium" dir="ltr">
         <h1 className="font-bold text-2xl">{edital.title}</h1>
         <div className="text-sm font-medium flex items-center justify-between flex-wrap gap-6">

@@ -13,6 +13,7 @@ import { z } from "zod"
 import { Spinner } from "@/components/ui/spinner"
 import { Link } from "@tanstack/react-router"
 import { useAuth } from "@/contexts/auth"
+import { isAxiosError } from "axios"
 
 
 const formSchema = z.object({
@@ -52,20 +53,34 @@ export function LoginForm({
             onSuccess?.();
         } catch (error: any) {
             console.error("Erro ao fazer login:", error);
-            let message = "Credenciais inválidas. Verifique seu email e senha.";
+            let message = "Não foi possível fazer login. Por favor, tente novamente.";
+            
             if (error instanceof Error && error.message) {
                 message = error.message;
             }
+
+            if (isAxiosError(error) && error.response?.data.detail){
+                message = error.response.data.detail;
+            }
+
+            if (isAxiosError(error) && error.response?.status === 500) {
+                message = "Erro no servidor. Por favor, tente novamente mais tarde.";
+            }
+
+            if (isAxiosError(error) && error.response?.status === 401) {
+                message = "Email ou senha inválidos.";
+            }
+
             setError("root", {
                 type: "manual",
-                message: error?.response?.data?.detail || message,
+                message: message,
             });
         }
     }
 
     return (
         <form
-        className={cn("flex flex-col gap-6", className)}
+        className={cn("flex flex-col gap-4", className)}
         onSubmit={handleSubmit(onSubmit)}
         {...props}
         >
@@ -80,7 +95,7 @@ export function LoginForm({
             <div className="flex flex-col gap-x-6 gap-y-4">
             {errors.root && (
                 <div className="bg-red-50 border border-red-200 rounded-md p-3">
-                <p className="text-sm text-red-600">{errors.root.message}</p>
+                    <p className="text-sm text-red-600">{errors.root.message}</p>
                 </div>
             )}
 

@@ -10,12 +10,15 @@ export default function Header() {
 
   if (!user) {
     return null;
-  }
+  } 
 
   return (
     <header className="text-sm font-medium w-full h-16 bg-gray-100 shadow flex items-center justify-between px-6">
-      <div className="flex items-center gap-6">
-        <img src="/logo-bea-noback.png" alt="BEA" className="h-10 w-auto" />
+      <div className="flex items-center gap-4">
+        <div className="h-full flex items-center">
+          <img src="/logo-bea-notext.png" alt="BEA" className="h-16 object-contain" />
+          <h1 className='sr-only'>BEA - Bem Estar Acadêmico</h1>
+        </div>
         <nav className="flex items-center gap-6 text-gray-800 px-6">
           {user.user_type === 'STUDENT' && <HeaderStudentLinks />}
           {user.user_type === 'SOCIAL_WORKER' && <HeaderSocialWorkerLinks />}

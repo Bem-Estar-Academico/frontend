@@ -39,7 +39,7 @@ export function SectionResult({control}: {control: Control<FormFields>}) {
   return (
    <Card className="w-full col-span-2">
     <CardHeader>
-      <CardTitle>Resultado da Análise</CardTitle>
+      <CardTitle className="text-xl">Resultado da Análise</CardTitle>
     </CardHeader>
     <CardContent>
        <div className="grid grid-cols-2 gap-8 w-full h-full">
@@ -295,9 +295,6 @@ export function SectionResult({control}: {control: Control<FormFields>}) {
               </Field>
             )}
           />
-        </div>
-        <div className="col-span-2 h-fit flex justify-end">
-          <Button className="w-full max-w-xs mt-4">Finalizar</Button>
         </div>
       </div>
     </CardContent>

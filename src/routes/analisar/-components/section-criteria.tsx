@@ -61,11 +61,9 @@ export function SectionCriteria({
     <>
       <Card>
         <CardHeader>
-          <CardTitle>Critérios de Elegibilidade</CardTitle>
-
+          <CardTitle className="text-xl">Critérios de Elegibilidade</CardTitle>
         </CardHeader>
-      
-
+        
         <CardContent>
           <div className="space-y-3">
             <Controller

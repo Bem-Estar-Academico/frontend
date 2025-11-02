@@ -171,7 +171,7 @@ export function SectionForm({ control } : {control: Control<any>}) {
     <Card>
       <Tabs className="h-full" value={activeTab} onValueChange={setActiveTab}>
         <CardHeader className="flex justify-between items-center">
-          <CardTitle>
+          <CardTitle className="text-xl">
             Formulário de Inscrição
           </CardTitle>
   

@@ -13,10 +13,6 @@ import { Button } from "@/components/ui/button";
 import { useForm } from "react-hook-form";
 import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { TabsContent } from "@radix-ui/react-tabs";
-import DocumentViewer from "@/components/document-viewer";
-import { useState } from "react";
 import { resultSchema, SectionResult } from "./-components/section-result";
 import { SectionForm } from "./-components/section-form";
 import { criteriaSchema, SectionCriteria } from "./-components/section-criteria";
@@ -28,6 +24,7 @@ import { updateReviewMutationOptions } from "@/mutations/update-review";
 import { queryClient } from "@/main";
 import { studentRegistrationQueryOptions } from "@/queries/student-registration";
 import { Badge } from "@/components/ui/badge";
+import { studentRegistrationDocumentsQueryOptions } from "@/queries/student-documents";
 
 export const Route = createFileRoute("/analisar/inscricao/$subscriptionId")({
   component: ReviewSubscription,
@@ -36,6 +33,7 @@ export const Route = createFileRoute("/analisar/inscricao/$subscriptionId")({
     await Promise.all([
       queryClient.ensureQueryData(editalQueryOptions(Number.parseInt(subscriptionId))),
       queryClient.ensureQueryData(studentRegistrationReviewQueryOptions(Number.parseInt(subscriptionId))),
+      queryClient.ensureQueryData(studentRegistrationDocumentsQueryOptions(Number.parseInt(subscriptionId))),
     ]);
   }
 });
@@ -141,7 +139,7 @@ const simpleMockData: DocumentsSidebarProps["data"] = [
     ],
   },
 ]
-
+  
 const schema = z.object({
   status: z.string().nonempty("Status é obrigatório"),
   notes: z.string().optional(),
@@ -175,6 +173,7 @@ export function ReviewSubscription() {
 
   const { data: studentRegistration } = useSuspenseQuery(studentRegistrationQueryOptions(Number.parseInt(studentRegistrationId)))
   const { data: review } = useSuspenseQuery(studentRegistrationReviewQueryOptions(Number.parseInt(studentRegistrationId)))
+  const { data: {documents, total} } = useSuspenseQuery(studentRegistrationDocumentsQueryOptions(Number.parseInt(studentRegistrationId)))
   const { mutate: updateReview } = useMutation(updateReviewMutationOptions);
 
   const form = useForm<FormFields>({
@@ -184,11 +183,6 @@ export function ReviewSubscription() {
       criteria: [],
     },
   });
-
-  // const [selectedDocumentId, setSelectedDocumentId] = useState<string | undefined>(undefined);
-  // const selectedDocument = simpleMockData
-  //   .flatMap((section) => section.items)
-  //   .find((doc) => doc.id === selectedDocumentId);
 
   const onSubmit = async (values: FormFields) => {
     console.log("Form submitted ", values);
@@ -239,9 +233,20 @@ export function ReviewSubscription() {
     toast.error("Por favor, verifique os erros no formulário.");
   }
 
+  const documentsData = [
+    {
+      title: "Documentos do Estudante",
+      items: documents.map((doc) => ({
+        title: doc.description,
+        id: `document-${doc.id}`,
+        url: doc.file_url,
+      })),
+    }
+  ]
+
    return (
     <SidebarProvider>
-        <DocumentsSidebar  data={simpleMockData} />
+        <DocumentsSidebar  data={documentsData} />
         {/* activeDocumentId={selectedDocumentId} data={simpleMockData} onDocumentSelect={setSelectedDocumentId} */}
         <SidebarInset className="flex flex-col overflow-auto">
           <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
@@ -293,11 +298,13 @@ export function ReviewSubscription() {
             </div>
           </header>
           <Separator />
-          <form className="h-full grid grid-cols-2 grid-rows-[auto,1fr] gap-12 flex-1 overflow-hidden p-6" onSubmit={form.handleSubmit(onSubmit, onError)}>
+          <form className="bg-gray-100 h-full grid grid-cols-2 grid-rows-[auto,1fr] gap-6 flex-1 overflow-hidden p-6" onSubmit={form.handleSubmit(onSubmit, onError)}>
             <SectionForm control={form.control} />
             <SectionCriteria control={form.control} />
             <SectionResult control={form.control} />
-            
+            <div className="col-span-2 h-fit flex justify-end">
+              <Button className="w-full max-w-xs mt-4">Finalizar</Button>
+            </div>
             {/* <div className="grid auto-rows-min gap-4 md:grid-cols-3">
               <div className="bg-muted/50 aspect-video rounded-xl" />
               <div className="bg-muted/50 aspect-video rounded-xl" />

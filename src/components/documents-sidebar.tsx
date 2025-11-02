@@ -17,6 +17,8 @@ import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, Di
 import { Label } from "./ui/label"
 import { Input } from "./ui/input"
 import { Button } from "./ui/button"
+import { useState } from "react"
+import DocumentViewer from "./document-viewer"
 
 type Document = {
   id: string
@@ -31,13 +33,21 @@ export interface DocumentsSidebarProps {
     title: string;
     items: Document[]
   }>
-   onDocumentSelect?: (id: string) => void
 }
 
-export function DocumentsSidebar({data, activeDocumentId, onDocumentSelect}: Readonly<DocumentsSidebarProps>) {
+export function DocumentsSidebar({data, activeDocumentId}: Readonly<DocumentsSidebarProps>) {
+  const [selectedDocumentId, setSelectedDocumentId] = useState<string | undefined>(undefined);
+  const selectedDocument = data
+    .flatMap((section) => section.items)
+    .find((doc) => doc.id === selectedDocumentId);
+
+  const onDocumentSelect = (id: string) => {
+    setSelectedDocumentId(id);
+  }
+  
   return (
     <Sidebar>
-      <Dialog>
+      <Dialog open={!!selectedDocumentId} onOpenChange={() => setSelectedDocumentId(undefined)}>
         <SidebarHeader>
           <SidebarMenu>
             <SidebarMenuItem>
@@ -86,29 +96,17 @@ export function DocumentsSidebar({data, activeDocumentId, onDocumentSelect}: Rea
             </SidebarGroupContent>
           </SidebarGroup>
         </SidebarContent>
-         <DialogContent className="sm:max-w-[425px]">
+        <DialogContent  className="px-6 sm:max-w-screen-md xl:max-w-screen-xl">
           <DialogHeader>
-            <DialogTitle>Edit profile</DialogTitle>
-            <DialogDescription>
-              Make changes to your profile here. Click save when you&apos;re
-              done.
-            </DialogDescription>
+            <DialogTitle>{selectedDocument?.title}</DialogTitle>
           </DialogHeader>
-          <div className="grid gap-4">
-            <div className="grid gap-3">
-              <Label htmlFor="name-1">Name</Label>
-              <Input id="name-1" name="name" defaultValue="Pedro Duarte" />
-            </div>
-            <div className="grid gap-3">
-              <Label htmlFor="username-1">Username</Label>
-              <Input id="username-1" name="username" defaultValue="@peduarte" />
-            </div>
+          <div className="h-[600px]">
+           <DocumentViewer url={selectedDocument?.url || null} />
           </div>
           <DialogFooter>
             <DialogClose asChild>
-              <Button variant="outline">Cancel</Button>
+              <Button variant="outline">Close</Button>
             </DialogClose>
-            <Button type="submit">Save changes</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

@@ -184,12 +184,11 @@ export function ReviewSubscription() {
       criteria: [],
     },
   });
-  const [selectedTab, setSelectedTab] = useState("result");
 
-  const [selectedDocumentId, setSelectedDocumentId] = useState<string | undefined>(undefined);
-  const selectedDocument = simpleMockData
-    .flatMap((section) => section.items)
-    .find((doc) => doc.id === selectedDocumentId);
+  // const [selectedDocumentId, setSelectedDocumentId] = useState<string | undefined>(undefined);
+  // const selectedDocument = simpleMockData
+  //   .flatMap((section) => section.items)
+  //   .find((doc) => doc.id === selectedDocumentId);
 
   const onSubmit = async (values: FormFields) => {
     console.log("Form submitted ", values);
@@ -242,7 +241,8 @@ export function ReviewSubscription() {
 
    return (
     <SidebarProvider>
-        <DocumentsSidebar activeDocumentId={selectedDocumentId} data={simpleMockData} onDocumentSelect={setSelectedDocumentId} />
+        <DocumentsSidebar  data={simpleMockData} />
+        {/* activeDocumentId={selectedDocumentId} data={simpleMockData} onDocumentSelect={setSelectedDocumentId} */}
         <SidebarInset className="flex flex-col overflow-auto">
           <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
             <div className="flex items-center gap-2 px-4">
@@ -294,14 +294,6 @@ export function ReviewSubscription() {
           </header>
           <Separator />
           <form className="h-full grid grid-cols-2 grid-rows-[auto,1fr] gap-12 flex-1 overflow-hidden p-6" onSubmit={form.handleSubmit(onSubmit, onError)}>
-              {
-                selectedTab !== 'result' && (
-                <div className="h-full ">
-                  <DocumentViewer url={selectedDocument?.url || null} />
-                </div>
-                )
-              }
-
             <SectionForm control={form.control} />
             <SectionCriteria control={form.control} />
             <SectionResult control={form.control} />

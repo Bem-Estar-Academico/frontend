@@ -1,139 +1,146 @@
-import { cn } from "@/lib/utils"
+import * as React from "react"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { Controller, useForm } from "react-hook-form"
+import { toast } from "sonner"
+import * as z from "zod"
+
 import { Button } from "@/components/ui/button"
 import {
   Field,
   FieldDescription,
+  FieldError,
   FieldGroup,
   FieldLabel,
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
-import { useForm } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { z } from "zod"
 import { Spinner } from "@/components/ui/spinner"
 import { Link } from "@tanstack/react-router"
 import { useAuth } from "@/contexts/auth"
-import { isAxiosError } from "axios"
-
 
 const formSchema = z.object({
-    email: z.string().email({
-        message: "Por favor, insira um endereço de email válido.",
-    }),
-    password: z.string().min(1, {
-        message: "A senha é obrigatória.",
-    }),
-});
+  email: z.string().email("Por favor, insira um endereço de email válido."),
+  password: z.string().min(1, "A senha é obrigatória."),
+})
 
 export function LoginForm({
   className,
   onSuccess,
   ...props
 }: React.ComponentProps<"form"> & { onSuccess?: () => void }) {
-    const { login } = useAuth();
-    
-    const form = useForm<z.infer<typeof formSchema>>({
-        resolver: zodResolver(formSchema),
-        defaultValues: {
-            email: "",
-            password: "",
-        },
-    });
+  const { login } = useAuth()
 
-    const {
-        register,
-        handleSubmit,
-        formState: { errors, isSubmitting },
-        setError,
-    } = form
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+  })
 
-    async function onSubmit(values: z.infer<typeof formSchema>) {
-        try {
-            await login(values.email, values.password);
-            onSuccess?.();
-        } catch (error: any) {
-            console.error("Erro ao fazer login:", error);
-            let message = "Não foi possível fazer login. Por favor, tente novamente.";
-            
-            if (error instanceof Error && error.message) {
-                message = error.message;
-            }
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    try {
+      await login(values.email, values.password)
+      onSuccess?.()
+    } catch (error: any) {
+      console.error("Erro ao fazer login:", error)
 
-            if (isAxiosError(error) && error.response?.data.detail){
-                message = error.response.data.detail;
-            }
+      let message = "Não foi possível fazer login. Tente novamente."
 
-            if (isAxiosError(error) && error.response?.status === 500) {
-                message = "Erro no servidor. Por favor, tente novamente mais tarde.";
-            }
+      if (error.response?.data?.detail) {
+        message = error.response.data.detail
+      }
 
-            if (isAxiosError(error) && error.response?.status === 401) {
-                message = "Email ou senha inválidos.";
-            }
+      if (error.response?.status === 401) {
+        message = "Email ou senha inválidos."
+      }
 
-            setError("root", {
-                type: "manual",
-                message: message,
-            });
-        }
+      if (error.response?.status === 500) {
+        message = "Erro no servidor. Tente novamente mais tarde."
+      }
+
+      toast.error(message)
     }
+  }
 
-    return (
+  return (
+    <div className="flex w-full max-w-sm flex-col gap-6 mx-auto">
+        <div className="flex flex-col items-center gap-1 text-center">
+          <h1 className="text-2xl font-bold">Crie sua conta</h1>
+          <p className="text-muted-foreground text-sm text-balance">
+            Preencha o formulário abaixo para criar sua conta.
+          </p>
+        </div>
         <form
-        className={cn("flex flex-col gap-4", className)}
-        onSubmit={handleSubmit(onSubmit)}
-        {...props}
+          id="login-form"
+          onSubmit={form.handleSubmit(onSubmit)}
+          className={className}
+          {...props}
         >
-        <FieldGroup>
-            <div className="flex flex-col items-center gap-1 text-center">
-                <h1 className="text-2xl font-bold">Acesse sua conta</h1>
-                <p className="text-muted-foreground text-sm text-balance">
-                    Informe seus dados de login para entrar na plataforma.
-                </p>
-            </div>
-            
-            <div className="flex flex-col gap-x-6 gap-y-4">
-            {errors.root && (
-                <div className="bg-red-50 border border-red-200 rounded-md p-3">
-                    <p className="text-sm text-red-600">{errors.root.message}</p>
-                </div>
-            )}
+          <FieldGroup>
+            <Controller
+              name="email"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel htmlFor="login-email">Email</FieldLabel>
+                  <Input
+                    {...field}
+                    id="login-email"
+                    type="email"
+                    placeholder="Insira seu email"
+                    autoComplete="email"
+                    disabled={form.formState.isSubmitting}
+                    aria-invalid={fieldState.invalid}
+                  />
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Field>
+              )}
+            />
 
-            <Field>
-                <FieldLabel htmlFor="email">Email</FieldLabel>
-                <Input id="email" type="email" placeholder="Email" disabled={isSubmitting} {...register("email")} />
-                <div className="min-h-[20px] mt-1">
-                {errors.email && (
-                    <p className="text-xs text-red-500">{errors.email.message}</p>
-                )}
-                </div>
-            </Field>
+            <Controller
+              name="password"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel htmlFor="login-password">Senha</FieldLabel>
+                  <Input
+                    {...field}
+                    id="login-password"
+                    type="password"
+                    placeholder="Insira sua senha"
+                    autoComplete="current-password"
+                    disabled={form.formState.isSubmitting}
+                    aria-invalid={fieldState.invalid}
+                  />
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Field>
+              )}
+            />
+          </FieldGroup>
+        </form>
 
-            <Field>
-                <FieldLabel htmlFor="password">Senha</FieldLabel>
-                <Input id="password" type="password" placeholder="Mínimo 8 caracteres" disabled={isSubmitting} {...register("password")} />
-                <div className="min-h-[20px] mt-1">
-                {errors.password && (
-                    <p className="text-xs text-red-500">{errors.password.message}</p>
-                )}
-                </div>
-            </Field>
-            </div>
-
-            <Field className="mt-4">
+        <div className="flex flex-col gap-4">
             <Button
                 type="submit"
-                disabled={isSubmitting}
-                className="justify-center w-full"
+                form="login-form"
+                disabled={form.formState.isSubmitting}
+                className="w-full justify-center"
             >
-                {isSubmitting && <Spinner />}
-                {isSubmitting ? "Entrando..." : "Entrar"}
+                {form.formState.isSubmitting && <Spinner />}
+                {form.formState.isSubmitting ? "Entrando..." : "Entrar"}
             </Button>
-            <FieldDescription className="px-6 text-center mt-2">
-                Não possui uma conta? <Link to="/cadastro" className="underline hover:text-primary">Cadastre-se</Link>
+
+            <FieldDescription className="text-center">
+                Não possui uma conta?{" "}
+                <Link to="/cadastro" className="underline hover:text-primary">
+                    Cadastre-se
+                </Link>
             </FieldDescription>
-            </Field>
-        </FieldGroup>
-        </form>
-    )
+        </div>
+    </div>
+  )
 }

@@ -1,43 +1,42 @@
-import { cn, cpfMask } from "@/lib/utils"
+import * as React from "react"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { Controller, useForm } from "react-hook-form"
+import { toast } from "sonner"
+import * as z from "zod"
+
 import { Button } from "@/components/ui/button"
 import {
   Field,
   FieldDescription,
+  FieldError,
   FieldGroup,
   FieldLabel,
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
-import { useForm } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { z } from "zod"
 import { Spinner } from "@/components/ui/spinner"
+import { Link } from "@tanstack/react-router"
 import { useMutation } from "@tanstack/react-query"
 import { createStudentMutationOptions } from "@/mutations/create-student"
-import { Link } from "@tanstack/react-router"
-import { toast } from "sonner"
-
+import { cpfMask } from "@/lib/utils"
 
 const formSchema = z
   .object({
-    name: z.string().min(1, { message: "O nome é obrigatório." }),
+    name: z.string().min(1, "O nome é obrigatório."),
     student_registration: z
       .string()
-      .min(8, { message: "A matrícula deve ter no mínimo 8 dígitos." })
-      .regex(/^\d+$/, {
-        message: "A matrícula deve conter apenas números.",
-      }),
+      .min(8, "A matrícula deve ter no mínimo 8 dígitos.")
+      .regex(/^\d+$/, "A matrícula deve conter apenas números."),
     cpf: z
       .string()
-      .min(11, { message: "O CPF deve ter pelo menos 11 caracteres." }),
-    email: z.string().email({ message: "Email inválido." }),
-    password: z.string().min(8, { message: "A senha deve ter pelo menos 8 caracteres." }),
-    confirmPassword: z.string().min(8, { message: "A confirmação de senha deve ter pelo menos 8 caracteres." }),
+      .min(11, "O CPF deve ter pelo menos 11 caracteres."),
+    email: z.string().email("Email inválido."),
+    password: z.string().min(8, "A senha deve ter pelo menos 8 caracteres."),
+    confirmPassword: z.string().min(8, "A confirmação de senha deve ter pelo menos 8 caracteres."),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "As senhas não coincidem.",
     path: ["confirmPassword"],
   })
-
 
 export function SignupForm({
   className,
@@ -58,13 +57,6 @@ export function SignupForm({
     },
   })
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors, isSubmitting },
-  } = form
-
-
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
       await createStudentMutation.mutateAsync({
@@ -79,120 +71,196 @@ export function SignupForm({
       onSuccess?.()
     } catch (error: any) {
       console.error("Erro ao criar estudante:", error)
-      let message = "Erro ao criar conta."
-      if (error instanceof Error && error.message) {
-        message = error.message
+
+      let message = "Não foi possível criar a conta. Tente novamente."
+
+      if (error.response?.data?.detail) {
+        message = error.response.data.detail
       }
-      toast.error(error?.response?.data?.detail || message)
+
+      if (error.response?.status === 400) {
+        message = "Email já cadastrado."
+      }
+
+      if (error.response?.status === 500) {
+        message = "Erro no servidor. Tente novamente mais tarde."
+      }
+
+      toast.error(message)
     }
   }
 
   return (
-    <form
-      className={cn("flex flex-col gap-6", className)}
-      onSubmit={handleSubmit(onSubmit)}
-      {...props}
-    >
-      <FieldGroup>
-        <div className="flex flex-col items-center gap-1 text-center">
-          <h1 className="text-2xl font-bold">Crie sua conta</h1>
-          <p className="text-muted-foreground text-sm text-balance">
-            Preencha o formulário abaixo para criar sua conta.
-          </p>
-        </div>
-        
-        <div className="grid grid-cols-2 gap-x-6 gap-y-4">
-          <Field>
-            <FieldLabel htmlFor="name">Nome</FieldLabel>
-            <Input id="name" type="text" placeholder="Insira seu nome" {...register("name")} />
-            <div className="min-h-[8px] mt-1">
-              {errors.name && (
-                <p className="text-xs text-red-500">{errors.name.message}</p>
+    <div className="flex w-full max-w-2xl flex-col gap-6 mx-auto">
+      <div className="flex flex-col items-center gap-1 text-center">
+        <h1 className="text-2xl font-bold">Crie sua conta</h1>
+        <p className="text-muted-foreground text-sm text-balance">
+          Preencha o formulário abaixo para criar sua conta.
+        </p>
+      </div>
+      
+      <form
+        id="signup-form"
+        onSubmit={form.handleSubmit(onSubmit)}
+        className={className}
+        {...props}
+      >
+        <FieldGroup>
+          <div className="grid grid-cols-2 gap-x-6 gap-y-4">
+            <Controller
+              name="name"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel htmlFor="signup-name">Nome</FieldLabel>
+                  <Input
+                    {...field}
+                    id="signup-name"
+                    type="text"
+                    placeholder="Insira seu nome"
+                    disabled={form.formState.isSubmitting}
+                    aria-invalid={fieldState.invalid}
+                  />
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Field>
               )}
-            </div>
-          </Field>
-
-          <Field>
-            <FieldLabel htmlFor="email">Email</FieldLabel>
-            <Input id="email" type="email" placeholder="Insira seu email" {...register("email")} />
-            <div className="min-h-[8px] mt-1">
-              {errors.email && (
-                <p className="text-xs text-red-500">{errors.email.message}</p>
-              )}
-            </div>
-          </Field>
-
-          <Field>
-            <FieldLabel htmlFor="student_registration">Matrícula</FieldLabel>
-            <Input
-              id="student_registration"
-              type="text"
-              placeholder="Insira sua matrícula"
-              {...register("student_registration")}
             />
-            <div className="min-h-[8px] mt-1">
-              {errors.student_registration && (
-                <p className="text-xs text-red-500">{errors.student_registration.message}</p>
-              )}
-            </div>
-          </Field>
 
-          <Field>
-            <FieldLabel htmlFor="password">Senha</FieldLabel>
-            <Input id="password" type="password" placeholder="Mínimo 8 caracteres" {...register("password")} />
-            <div className="min-h-[8px] mt-1">
-              {errors.password && (
-                <p className="text-xs text-red-500">{errors.password.message}</p>
+            <Controller
+              name="email"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel htmlFor="signup-email">Email</FieldLabel>
+                  <Input
+                    {...field}
+                    id="signup-email"
+                    type="email"
+                    placeholder="Insira seu email"
+                    autoComplete="email"
+                    disabled={form.formState.isSubmitting}
+                    aria-invalid={fieldState.invalid}
+                  />
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Field>
               )}
-            </div>
-          </Field>
-
-          <Field>
-            <FieldLabel htmlFor="cpf">CPF</FieldLabel>
-            <Input
-              id="cpf"
-              type="text"
-              placeholder="123.456.789-00"
-              {...register("cpf", {
-                onChange: (e) => {
-                  const masked = cpfMask(e.target.value);
-                  e.target.value = masked;
-                },
-              })}
             />
-            <div className="min-h-[8px] mt-1">
-              {errors.cpf && (
-                <p className="text-xs text-red-500">{errors.cpf.message}</p>
+
+            <Controller
+              name="student_registration"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel htmlFor="signup-registration">Matrícula</FieldLabel>
+                  <Input
+                    {...field}
+                    id="signup-registration"
+                    type="text"
+                    placeholder="Insira sua matrícula"
+                    disabled={form.formState.isSubmitting}
+                    aria-invalid={fieldState.invalid}
+                  />
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Field>
               )}
-            </div>
-          </Field>
+            />
 
-
-          <Field>
-            <FieldLabel htmlFor="confirmPassword">Confirme sua senha</FieldLabel>
-            <Input id="confirmPassword" type="password" placeholder="Repita a senha" {...register("confirmPassword")} />
-            <div className="min-h-[8px] mt-1">
-              {errors.confirmPassword && (
-                <p className="text-xs text-red-500">{errors.confirmPassword.message}</p>
+            <Controller
+              name="password"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel htmlFor="signup-password">Senha</FieldLabel>
+                  <Input
+                    {...field}
+                    id="signup-password"
+                    type="password"
+                    placeholder="Insira sua senha"
+                    autoComplete="new-password"
+                    disabled={form.formState.isSubmitting}
+                    aria-invalid={fieldState.invalid}
+                  />
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Field>
               )}
-            </div>
-          </Field>
-        </div>
+            />
 
-        <Field className="mt-4">
-          <Button
-            type="submit"
-            disabled={isSubmitting}
-            className="justify-center w-full"
-          >
-            {isSubmitting && <Spinner />}
-            {isSubmitting ? "Cadastrando..." : "Criar conta"}
-          </Button>
-          <FieldDescription className="px-6 text-center mt-2">
-            Já possui uma conta? <Link to="/login" search={{ redirect: "/" }} className="underline hover:text-primary">Login</Link>
-          </FieldDescription>
-        </Field>
-      </FieldGroup>
-    </form>
+            <Controller
+              name="cpf"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel htmlFor="signup-cpf">CPF</FieldLabel>
+                  <Input
+                    {...field}
+                    id="signup-cpf"
+                    type="text"
+                    placeholder="123.456.789-00"
+                    disabled={form.formState.isSubmitting}
+                    aria-invalid={fieldState.invalid}
+                    onChange={(e) => {
+                      const masked = cpfMask(e.target.value)
+                      field.onChange(masked)
+                    }}
+                  />
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Field>
+              )}
+            />
+
+            <Controller
+              name="confirmPassword"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel htmlFor="signup-confirm-password">Confirme sua senha</FieldLabel>
+                  <Input
+                    {...field}
+                    id="signup-confirm-password"
+                    type="password"
+                    placeholder="Repita a senha"
+                    autoComplete="new-password"
+                    disabled={form.formState.isSubmitting}
+                    aria-invalid={fieldState.invalid}
+                  />
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Field>
+              )}
+            />
+          </div>
+        </FieldGroup>
+      </form>
+
+      <div className="flex flex-col gap-4">
+        <Button
+          type="submit"
+          form="signup-form"
+          disabled={form.formState.isSubmitting}
+          className="w-full justify-center"
+        >
+          {form.formState.isSubmitting && <Spinner />}
+          {form.formState.isSubmitting ? "Cadastrando..." : "Criar conta"}
+        </Button>
+
+        <FieldDescription className="text-center">
+          Já possui uma conta?{" "}
+          <Link to="/login" search={{ redirect: "/" }} className="underline hover:text-primary">
+            Login
+          </Link>
+        </FieldDescription>
+      </div>
+    </div>
   )
 }

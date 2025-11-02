@@ -26,11 +26,11 @@ export default function LogoCard() {
 
             <p className="text-sm font-medium text-black/70">
                 Desenvolvido por:{" "}
-                <button
+                <span
                     className="text-blue-600 hover:underline underline-offset-2 transition-colors"
                 >
                     Team BEA
-                </button>
+                </span>
             </p>
         </div>
     )

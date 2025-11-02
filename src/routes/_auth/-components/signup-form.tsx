@@ -79,7 +79,11 @@ export function SignupForm({
       onSuccess?.()
     } catch (error: any) {
       console.error("Erro ao criar estudante:", error)
-      toast.error(error?.response?.data?.detail || "Erro ao criar conta.")
+      let message = "Erro ao criar conta."
+      if (error instanceof Error && error.message) {
+        message = error.message
+      }
+      toast.error(error?.response?.data?.detail || message)
     }
   }
 

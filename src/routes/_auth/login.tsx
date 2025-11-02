@@ -18,7 +18,7 @@ export default function LoginPage() {
   const navigate = useNavigate();
 
   const onSuccess = () => {
-    navigate({ to: "/", search: { redirect: "/"} });
+    navigate({ to: "/" });
   }
 
   return (

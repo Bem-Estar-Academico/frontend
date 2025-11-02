@@ -52,9 +52,13 @@ export function LoginForm({
             onSuccess?.();
         } catch (error: any) {
             console.error("Erro ao fazer login:", error);
+            let message = "Credenciais inválidas. Verifique seu email e senha.";
+            if (error instanceof Error && error.message) {
+                message = error.message;
+            }
             setError("root", {
                 type: "manual",
-                message: error?.response?.data?.detail || "Erro ao fazer login",
+                message: error?.response?.data?.detail || message,
             });
         }
     }

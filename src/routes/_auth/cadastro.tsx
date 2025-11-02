@@ -29,7 +29,7 @@ export default function SignupPage() {
           </div>
         </div>
       </div>
-      <div className="hidden lg:flex flex-col items-center justify-between bg-gradient-to-r from-green-100 via-cyan-200 to-blue-400 py-24">
+      <div className="hidden lg:flex flex-col items-center justify-center gap-8 bg-gradient-to-r from-green-100 via-cyan-200 to-blue-400 py-24">
         <div>
           {/* <h1 className="text-3xl font-bold mb-2">Bem Estar Acadêmico</h1> */}
           <p className="text-start font-medium text-black/60 max-w-md">

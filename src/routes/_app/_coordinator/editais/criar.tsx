@@ -16,14 +16,6 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form"
-// import {
-//   Breadcrumb,
-//   BreadcrumbItem,
-//   BreadcrumbLink,
-//   BreadcrumbList,
-//   BreadcrumbPage,
-//   BreadcrumbSeparator,
-// } from "@/components/ui/breadcrumb"
 import { DatePicker } from "@/components/ui/date-picker"
 import { Label } from "@/components/ui/label"
 import { createNoticeMutationOptions } from "@/mutations/create-notice"
@@ -165,7 +157,7 @@ function CreateEdital() {
 
   return (
       <div className="flex flex-col w-full h-full max-w-full">
-        <h1 className="font-bold text-2xl mb-6">Editais</h1>
+        <h1 className="font-bold text-2xl mb-6">Criar Edital</h1>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="w-full flex flex-col gap-6">
             {/* Seção 1: Informações do Edital */}

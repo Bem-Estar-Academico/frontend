@@ -1,5 +1,4 @@
 import { useAuth } from '@/contexts/auth'
-import { IconBellFilled } from '@tabler/icons-react';
 import { EditaisMenu } from '@/routes/_app/_social-workers/-components/editais-menu';
 import { Link } from '@tanstack/react-router'
 import { UserMenu } from './user-menu';

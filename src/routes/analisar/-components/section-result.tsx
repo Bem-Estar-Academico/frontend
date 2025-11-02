@@ -7,6 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import z from "zod";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export const resultSchema = z.object({
     approved_food_allowance: z.string().optional(),
@@ -36,73 +37,29 @@ export function SectionResult({control}: {control: Control<FormFields>}) {
   });
   
   return (
-    <div className="grid grid-cols-2  w-full h-full">
-      <div>
-        <div className="flex flex-col gap-4">
-          <div className="my-4 flex items-center gap-4">
-            Índice de Vulnerabilidade Socioeconômico: <Badge variant={'outline'} className="text-md">45.6</Badge>
-          </div>
-          <FieldGroup className="items-center">
-            <Controller
-              name="status"
-              control={control}
-              render={({ field, fieldState }) => (
-                <Field
-                  orientation={"horizontal"}
-                  data-invalid={fieldState.invalid}
-                >
-                  <FieldContent className="flex-0">
-                    <FieldLabel htmlFor="form-rhf-select-language">
-                      Status
-                    </FieldLabel>
-                  
-                    {fieldState.invalid && (
-                      <FieldError errors={[fieldState.error]} />
-                    )}
-                  </FieldContent>
-                  <Select
-                    name={field.name}
-                    value={field.value}
-                    onValueChange={field.onChange}
-                  >
-                    <SelectTrigger
-                      id="form-rhf-select-language"
-                      aria-invalid={fieldState.invalid}
-                      className="min-w-[120px]"
-                    >
-                      <SelectValue placeholder="Selecione o status" />
-                    </SelectTrigger>
-                    <SelectContent position="item-aligned">
-                      {ivsStatus.map((s) => (
-                        <SelectItem key={s.value} value={s.value}>
-                          {s.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </Field>
-              )}
-            />
-          </FieldGroup>
-        </div>
-              
-        {selectedStatus === "APPROVED" &&
-        <>
-         
-          <div className="mt-14">
-            <h5 className="mb-4 font-semibold">Auxílios</h5>
-            <FieldGroup>
+   <Card className="w-full col-span-2">
+    <CardHeader>
+      <CardTitle>Resultado da Análise</CardTitle>
+    </CardHeader>
+    <CardContent>
+       <div className="grid grid-cols-2 gap-8 w-full h-full">
+        <div>
+          <div className="flex flex-col gap-4">
+            <div className="flex items-center gap-4">
+              Índice de Vulnerabilidade Socioeconômico: <Badge variant={'outline'} className="text-md">45.6</Badge>
+            </div>
+            <FieldGroup className="items-center">
               <Controller
-                name="approved_graduation_scholarship"
+                name="status"
                 control={control}
                 render={({ field, fieldState }) => (
                   <Field
                     orientation={"horizontal"}
                     data-invalid={fieldState.invalid}
                   >
-                    <FieldContent>
-                      <FieldLabel>
-                        Bolsa Pró-Graduando
+                    <FieldContent className="flex-0">
+                      <FieldLabel htmlFor="form-rhf-select-language">
+                        Status
                       </FieldLabel>
                     
                       {fieldState.invalid && (
@@ -119,130 +76,10 @@ export function SectionResult({control}: {control: Control<FormFields>}) {
                         aria-invalid={fieldState.invalid}
                         className="min-w-[120px]"
                       >
-                        <SelectValue placeholder="Selecione" />
+                        <SelectValue placeholder="Selecione o status" />
                       </SelectTrigger>
                       <SelectContent position="item-aligned">
-                        {allowanceStatus.map((s) => (
-                          <SelectItem key={s.value} value={s.value}>
-                            {s.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </Field>
-                )}
-              />
-                <Controller
-                name="approved_food_allowance"
-                control={control}
-                render={({ field, fieldState }) => (
-                  <Field
-                    orientation={"horizontal"}
-                    data-invalid={fieldState.invalid}
-                  >
-                    <FieldContent>
-                      <FieldLabel>
-                        Auxílio Alimentação
-                      </FieldLabel>
-                    
-                      {fieldState.invalid && (
-                        <FieldError errors={[fieldState.error]} />
-                      )}
-                    </FieldContent>
-                    <Select
-                      name={field.name}
-                      value={field.value}
-                      onValueChange={field.onChange}
-                    >
-                      <SelectTrigger
-                        id="form-rhf-select-language"
-                        aria-invalid={fieldState.invalid}
-                        className="min-w-[120px]"
-                      >
-                        <SelectValue placeholder="Selecione" />
-                      </SelectTrigger>
-                      <SelectContent position="item-aligned">
-                        {allowanceStatus.map((s) => (
-                          <SelectItem key={s.value} value={s.value}>
-                            {s.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </Field>
-                )}
-              />
-                <Controller
-                name="approved_housing_allowance"
-                control={control}
-                render={({ field, fieldState }) => (
-                  <Field
-                    orientation={"horizontal"}
-                    data-invalid={fieldState.invalid}
-                  >
-                    <FieldContent>
-                      <FieldLabel>
-                        Auxílio Moradia
-                      </FieldLabel>
-                    
-                      {fieldState.invalid && (
-                        <FieldError errors={[fieldState.error]} />
-                      )}
-                    </FieldContent>
-                    <Select
-                      name={field.name}
-                      value={field.value}
-                      onValueChange={field.onChange}
-                    >
-                      <SelectTrigger
-                        id="form-rhf-select-language"
-                        aria-invalid={fieldState.invalid}
-                        className="min-w-[120px]"
-                      >
-                        <SelectValue placeholder="Selecione" />
-                      </SelectTrigger>
-                      <SelectContent position="item-aligned">
-                        {allowanceStatus.map((s) => (
-                          <SelectItem key={s.value} value={s.value}>
-                            {s.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </Field>
-                )}
-              />
-                <Controller
-                name="approved_daycare_allowance"
-                control={control}
-                render={({ field, fieldState }) => (
-                  <Field
-                    orientation={"horizontal"}
-                    data-invalid={fieldState.invalid}
-                  >
-                    <FieldContent>
-                      <FieldLabel>
-                        Auxílio Creche
-                      </FieldLabel>
-                    
-                      {fieldState.invalid && (
-                        <FieldError errors={[fieldState.error]} />
-                      )}
-                    </FieldContent>
-                    <Select
-                      name={field.name}
-                      value={field.value}
-                      onValueChange={field.onChange}
-                    >
-                      <SelectTrigger
-                        id="form-rhf-select-language"
-                        aria-invalid={fieldState.invalid}
-                        className="min-w-[120px]"
-                      >
-                        <SelectValue placeholder="Selecione" />
-                      </SelectTrigger>
-                      <SelectContent position="item-aligned">
-                        {allowanceStatus.map((s) => (
+                        {ivsStatus.map((s) => (
                           <SelectItem key={s.value} value={s.value}>
                             {s.label}
                           </SelectItem>
@@ -254,46 +91,217 @@ export function SectionResult({control}: {control: Control<FormFields>}) {
               />
             </FieldGroup>
           </div>
-        </>
-        }
-        { selectedStatus === 'APPEAL' && 
+                
+          {selectedStatus === "APPROVED" &&
           <>
-     
-              <AppealSection control={control} />
+          
+            <div className="mt-14">
+              <h5 className="mb-4 font-semibold">Auxílios</h5>
+              <FieldGroup>
+                <Controller
+                  name="approved_graduation_scholarship"
+                  control={control}
+                  render={({ field, fieldState }) => (
+                    <Field
+                      orientation={"horizontal"}
+                      data-invalid={fieldState.invalid}
+                    >
+                      <FieldContent>
+                        <FieldLabel>
+                          Bolsa Pró-Graduando
+                        </FieldLabel>
+                      
+                        {fieldState.invalid && (
+                          <FieldError errors={[fieldState.error]} />
+                        )}
+                      </FieldContent>
+                      <Select
+                        name={field.name}
+                        value={field.value}
+                        onValueChange={field.onChange}
+                      >
+                        <SelectTrigger
+                          id="form-rhf-select-language"
+                          aria-invalid={fieldState.invalid}
+                          className="min-w-[120px]"
+                        >
+                          <SelectValue placeholder="Selecione" />
+                        </SelectTrigger>
+                        <SelectContent position="item-aligned">
+                          {allowanceStatus.map((s) => (
+                            <SelectItem key={s.value} value={s.value}>
+                              {s.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </Field>
+                  )}
+                />
+                  <Controller
+                  name="approved_food_allowance"
+                  control={control}
+                  render={({ field, fieldState }) => (
+                    <Field
+                      orientation={"horizontal"}
+                      data-invalid={fieldState.invalid}
+                    >
+                      <FieldContent>
+                        <FieldLabel>
+                          Auxílio Alimentação
+                        </FieldLabel>
+                      
+                        {fieldState.invalid && (
+                          <FieldError errors={[fieldState.error]} />
+                        )}
+                      </FieldContent>
+                      <Select
+                        name={field.name}
+                        value={field.value}
+                        onValueChange={field.onChange}
+                      >
+                        <SelectTrigger
+                          id="form-rhf-select-language"
+                          aria-invalid={fieldState.invalid}
+                          className="min-w-[120px]"
+                        >
+                          <SelectValue placeholder="Selecione" />
+                        </SelectTrigger>
+                        <SelectContent position="item-aligned">
+                          {allowanceStatus.map((s) => (
+                            <SelectItem key={s.value} value={s.value}>
+                              {s.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </Field>
+                  )}
+                />
+                  <Controller
+                  name="approved_housing_allowance"
+                  control={control}
+                  render={({ field, fieldState }) => (
+                    <Field
+                      orientation={"horizontal"}
+                      data-invalid={fieldState.invalid}
+                    >
+                      <FieldContent>
+                        <FieldLabel>
+                          Auxílio Moradia
+                        </FieldLabel>
+                      
+                        {fieldState.invalid && (
+                          <FieldError errors={[fieldState.error]} />
+                        )}
+                      </FieldContent>
+                      <Select
+                        name={field.name}
+                        value={field.value}
+                        onValueChange={field.onChange}
+                      >
+                        <SelectTrigger
+                          id="form-rhf-select-language"
+                          aria-invalid={fieldState.invalid}
+                          className="min-w-[120px]"
+                        >
+                          <SelectValue placeholder="Selecione" />
+                        </SelectTrigger>
+                        <SelectContent position="item-aligned">
+                          {allowanceStatus.map((s) => (
+                            <SelectItem key={s.value} value={s.value}>
+                              {s.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </Field>
+                  )}
+                />
+                  <Controller
+                  name="approved_daycare_allowance"
+                  control={control}
+                  render={({ field, fieldState }) => (
+                    <Field
+                      orientation={"horizontal"}
+                      data-invalid={fieldState.invalid}
+                    >
+                      <FieldContent>
+                        <FieldLabel>
+                          Auxílio Creche
+                        </FieldLabel>
+                      
+                        {fieldState.invalid && (
+                          <FieldError errors={[fieldState.error]} />
+                        )}
+                      </FieldContent>
+                      <Select
+                        name={field.name}
+                        value={field.value}
+                        onValueChange={field.onChange}
+                      >
+                        <SelectTrigger
+                          id="form-rhf-select-language"
+                          aria-invalid={fieldState.invalid}
+                          className="min-w-[120px]"
+                        >
+                          <SelectValue placeholder="Selecione" />
+                        </SelectTrigger>
+                        <SelectContent position="item-aligned">
+                          {allowanceStatus.map((s) => (
+                            <SelectItem key={s.value} value={s.value}>
+                              {s.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </Field>
+                  )}
+                />
+              </FieldGroup>
+            </div>
           </>
-        }
+          }
+          { selectedStatus === 'APPEAL' && 
+            <>
+      
+                <AppealSection control={control} />
+            </>
+          }
+        </div>
+        <div className="">
+          <Controller
+            name="notes"
+            control={control}
+            render={({ field, fieldState }) => (
+              <Field  data-invalid={fieldState.invalid}>
+                <FieldLabel htmlFor="form-rhf-textarea-about">
+                  Observações
+                </FieldLabel>
+                <Textarea
+                  {...field}
+                  id="form-rhf-textarea-about"
+                  aria-invalid={fieldState.invalid}
+                  placeholder="Insira suas observações aqui"
+                  className="min-h-[120px] resize-none"
+                />
+                {/* <FieldDescription>
+                  Tell us more about yourself. This will be used to help us
+                  personalize your experience.
+                </FieldDescription> */}
+                {fieldState.invalid && (
+                  <FieldError errors={[fieldState.error]} />
+                )}
+              </Field>
+            )}
+          />
+        </div>
+        <div className="col-span-2 h-fit flex justify-end">
+          <Button className="w-full max-w-xs mt-4">Finalizar</Button>
+        </div>
       </div>
-      <div className="">
-        <Controller
-          name="notes"
-          control={control}
-          render={({ field, fieldState }) => (
-            <Field className="mt-4" data-invalid={fieldState.invalid}>
-              <FieldLabel htmlFor="form-rhf-textarea-about">
-                Observações
-              </FieldLabel>
-              <Textarea
-                {...field}
-                id="form-rhf-textarea-about"
-                aria-invalid={fieldState.invalid}
-                placeholder="Insira suas observações aqui"
-                className="min-h-[120px] resize-none"
-              />
-              {/* <FieldDescription>
-                Tell us more about yourself. This will be used to help us
-                personalize your experience.
-              </FieldDescription> */}
-              {fieldState.invalid && (
-                <FieldError errors={[fieldState.error]} />
-              )}
-            </Field>
-          )}
-        />
-      </div>
-      <div className="col-span-2 h-fit flex justify-end">
-        <Button className="w-full max-w-xs mt-4">Finalizar</Button>
-      </div>
-    </div>
+    </CardContent>
+   </Card>
   )
 }
 
@@ -347,7 +355,7 @@ function AppealSection({ control }: { control: Control<FormFields> }) {
                         )}
                     />
                 ))}
-            </FieldGroup>
+            </FieldGroup> 
         </div>
     )
 }

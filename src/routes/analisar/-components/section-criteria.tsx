@@ -4,6 +4,10 @@ import { Field, FieldError, FieldGroup, FieldLabel, FieldSet } from "@/component
 import { Controller, type Control } from "react-hook-form";
 import z from "zod";
 import type { FormFields } from "../inscricao.$subscriptionId";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import * as CheckboxPrimitive from "@radix-ui/react-checkbox"
+import { CircleCheck } from "lucide-react";
+import { Label } from "@/components/ui/label";
 
 export const eligibilityCriteria = [
   { id: "rede-publica", label: "Egresso da rede pública de educação básica" },
@@ -55,56 +59,56 @@ export function SectionCriteria({
 }: Readonly<{control: Control<FormFields> }>) {
   return (
     <>
-      <h3 className="mb-8 text-2xl font-bold text-gray-800">
-        Critérios de Elegibilidade
-      </h3>
+      <Card>
+        <CardHeader>
+          <CardTitle>Critérios de Elegibilidade</CardTitle>
 
-      <div className="space-y-3">
-         <Controller
-              name="criteria"
-              control={control}
-              render={({ field, fieldState }) => (
-                <FieldSet data-invalid={fieldState.invalid}>
-                  <FieldGroup data-slot="checkbox-group">
-                    {eligibilityCriteria.map((criterion) => (
-                      <Field
-                        key={criterion.id}
-                        orientation="horizontal"
-                        data-invalid={fieldState.invalid}
-                      >
-                        <Checkbox
-                          id={`form-rhf-checkbox-${criterion.id}`}
-                          name={field.name}
-                          aria-invalid={fieldState.invalid}
-                          checked={field.value.includes(criterion.id)}
-                          onCheckedChange={(checked) => {
-                            const newValue = checked
-                              ? [...field.value, criterion.id]
-                              : field.value.filter((value: string) => value !== criterion.id)
-                            field.onChange(newValue)
-                          }}
-                        />
-                        <FieldLabel
-                          htmlFor={`form-rhf-checkbox-${criterion.id}`}
-                          className="font-normal"
+        </CardHeader>
+      
+
+        <CardContent>
+          <div className="space-y-3">
+            <Controller
+                name="criteria"
+                control={control}
+                render={({ field, fieldState }) => (
+                  <FieldSet data-invalid={fieldState.invalid}>
+                    <FieldGroup data-slot="checkbox-group" className="grid gap-2 ">
+                      {eligibilityCriteria.map((criterion) => (
+                        <Field
+                          key={criterion.id}
+                          orientation="horizontal"
+                          data-invalid={fieldState.invalid}
                         >
-                          {criterion.label}
-                        </FieldLabel>
-                      </Field>
-                    ))}
-                  
-                  </FieldGroup>
-                  {fieldState.invalid && (
-                    <FieldError errors={[fieldState.error]} />
-                  )}
-                </FieldSet>
-              )}
-            />
-      </div>
-
-      <Button variant={"ghost"} className="mt-4 text-center text-sm font-medium text-red-600 hover:bg-red-50 hover:text-red-700">
-        Estudante não atende a nenhum critério de elegibilidade
-      </Button>
+                          <Label className="w-full min-h-[60px] hover:bg-accent/50 flex items-start gap-3 rounded-lg border p-3 has-[[aria-checked=true]]:border-blue-600 has-[[aria-checked=true]]:bg-blue-50 dark:has-[[aria-checked=true]]:border-blue-900 dark:has-[[aria-checked=true]]:bg-blue-950">
+                              <Checkbox
+                                id="toggle-2"
+                                checked={field.value.includes(criterion.id)}
+                                onCheckedChange={(checked) => {
+                                  const newValue = checked
+                                    ? [...field.value, criterion.id]
+                                    : field.value.filter((value: string) => value !== criterion.id)
+                                  field.onChange(newValue)
+                                }}
+                                className="data-[state=checked]:border-blue-600 data-[state=checked]:bg-blue-600 data-[state=checked]:text-white dark:data-[state=checked]:border-blue-700 dark:data-[state=checked]:bg-blue-700"
+                              />
+                              <div className="grid gap-1.5 font-normal text-md">
+                                 {criterion.label}
+                              </div>
+                            </Label>
+                        </Field>
+                      ))}
+                    
+                    </FieldGroup>
+                    {fieldState.invalid && (
+                      <FieldError errors={[fieldState.error]} />
+                    )}
+                  </FieldSet>
+                )}
+              />
+          </div>
+        </CardContent>
+      </Card>
     </>
   );
 }

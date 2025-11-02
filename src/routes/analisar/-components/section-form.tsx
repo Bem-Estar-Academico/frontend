@@ -1,6 +1,9 @@
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import formData, { type FormQuestion } from "@/routes/_app/_student/-data";
@@ -165,62 +168,81 @@ export function SectionForm({ control } : {control: Control<any>}) {
   }, [control]);
 
   return (
-     <Tabs className="h-full" value={activeTab} onValueChange={setActiveTab}>
-      <TabsList className="mb-6">
-        {formData.sections.map(section => (
-          <TabsTrigger key={section.id} value={section.id}>
-            {section.title}
-          </TabsTrigger>
-        ))}
-      </TabsList>
-      {formData.sections.map((section, sectionIdx) => (
-        <TabsContent value={section.id} className="mb-6 h-full overflow-scroll" key={section.id}>
-          {/* Title */}
-          <div className="p-4 border-b">
-            <p className="text-md  font-medium">{section.title}</p>
-          </div>
-
-          {/* Description */}
-          {section.description && (
-            <div className="p-4">
-              <p className="text-xs font-[400] text-gray-500">
-                {section.description}
-              </p>
-            </div>
-          )}
+    <Card>
+      <Tabs className="h-full" value={activeTab} onValueChange={setActiveTab}>
+        <CardHeader className="flex justify-between items-center">
+          <CardTitle>
+            Formulário de Inscrição
+          </CardTitle>
+  
+          <Select value={activeTab} onValueChange={setActiveTab} >
+            <SelectTrigger className="">
+              <SelectValue placeholder="Selecione a seção"  />
+            </SelectTrigger>
+            <SelectContent>
+              {formData.sections.map(section => (
+                <SelectItem 
+                  key={section.id} 
+                  value={section.id}
+                  onClick={() => setActiveTab(section.id)}
+                >
+                  {section.title}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          {/* <CardDescription>
+            {formData.sections.find(section => section.id === activeTab)?.description}
+          </CardDescription> */}
         
-          {/* Form Content */}
-          <div className="overflow-auto max-h-full grid grid-cols-2 px-8 py-4 gap-8">
-            {/* Alert */}
-            {section.alert && (
-              <div className={`col-span-2 ${
-                section.alert.type === 'warning' 
-                ? 'bg-red-50 border-red-200'
-                : 'bg-blue-50 border-blue-200'
-              } border p-3 rounded-md`}>
-                <p className={`text-sm font-medium ${
-                  section.alert.type === 'warning' 
-                    ? 'text-red-800' 
-                    : 'text-blue-800'
-                }`}>
-                  {section.alert.title}
-                </p>
-                <p className={`text-xs ${
-                  section.alert.type === 'warning' 
-                    ? 'text-red-700' 
-                    : 'text-blue-700'
-                }`}>
-                  {section.alert.message}
-                </p>
-              </div>
-            )}
+        </CardHeader>
+        <CardContent className="mt-4">
+          {formData.sections.map((section, sectionIdx) => (
+            <TabsContent value={section.id} className="mb-6 h-full overflow-auto" key={section.id}>
 
-            {/* Questions */}
-            {section.questions.map((question) => renderQuestion(question))}
-     
-          </div>
-        </TabsContent>
-      ))}
-    </Tabs>
-  )
+              {/* Description */}
+              {/* {section.description && (
+                <div className="p-4">
+                  <p className="text-xs font-[400] text-gray-500">
+                    {section.description}
+                  </p>
+                </div>
+              )} */}
+            
+              {/* Form Content */}
+              <div className="overflow-auto max-h-full grid grid-cols-2 gap-8">
+                {/* Alert */}
+                {section.alert && (
+                  <div className={`col-span-2 ${
+                    section.alert.type === 'warning' 
+                    ? 'bg-red-50 border-red-200'
+                    : 'bg-blue-50 border-blue-200'
+                  } border p-3 rounded-md`}>
+                    <p className={`text-sm font-medium ${
+                      section.alert.type === 'warning' 
+                        ? 'text-red-800' 
+                        : 'text-blue-800'
+                    }`}>
+                      {section.alert.title}
+                    </p>
+                    <p className={`text-xs ${
+                      section.alert.type === 'warning' 
+                        ? 'text-red-700' 
+                        : 'text-blue-700'
+                    }`}>
+                      {section.alert.message}
+                    </p>
+                  </div>
+                )}
+
+                {/* Questions */}
+                {section.questions.map((question) => renderQuestion(question))}
+        
+              </div>
+            </TabsContent>
+          ))}
+        </CardContent>
+      </Tabs>
+    </Card>
+  );
 }

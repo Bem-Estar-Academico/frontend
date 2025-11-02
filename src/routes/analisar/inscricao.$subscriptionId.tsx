@@ -243,7 +243,7 @@ export function ReviewSubscription() {
    return (
     <SidebarProvider>
         <DocumentsSidebar activeDocumentId={selectedDocumentId} data={simpleMockData} onDocumentSelect={setSelectedDocumentId} />
-        <SidebarInset className="flex flex-col h-screen overflow-hidden">
+        <SidebarInset className="flex flex-col overflow-auto">
           <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
             <div className="flex items-center gap-2 px-4">
               <SidebarTrigger className="-ml-1" />
@@ -257,8 +257,8 @@ export function ReviewSubscription() {
                 <Button  variant={'ghost'}  asChild>
                   <Link to="/editais"> <IconArrowLeft size={18} /> Voltar</Link>
                 </Button>
-            
-                <Badge className="ml-12 font-semibold">Inscrição #{studentRegistration.id}</Badge>
+                <h2 className="text-lg font-semibold">Análisar Inscrição</h2>
+                <Badge className="ml-8 font-semibold">Inscrição #{studentRegistration.id}</Badge>
                 <Separator orientation="vertical" className="data-[orientation=vertical]:h-6" />
                 <div className="flex gap-12 items-center">
                   <span>{studentRegistration.student.full_name}</span>
@@ -293,42 +293,27 @@ export function ReviewSubscription() {
             </div>
           </header>
           <Separator />
-          <Tabs className="p-6 flex flex-col box-border h-full pb-10" value={selectedTab} onValueChange={(value) => setSelectedTab(value)}>
-            <TabsList className="h-[64px]">
-              <TabsTrigger value="form">Formulário</TabsTrigger>
-              <TabsTrigger value="criteria">Critérios de Elegibilidade</TabsTrigger>
-              <TabsTrigger value="result">Resultado</TabsTrigger>
-            </TabsList>
+          <form className="h-full grid grid-cols-2 grid-rows-[auto,1fr] gap-12 flex-1 overflow-hidden p-6" onSubmit={form.handleSubmit(onSubmit, onError)}>
+              {
+                selectedTab !== 'result' && (
+                <div className="h-full ">
+                  <DocumentViewer url={selectedDocument?.url || null} />
+                </div>
+                )
+              }
 
-            <form className="h-full grid grid-cols-2 gap-12 flex-1 overflow-hidden" onSubmit={form.handleSubmit(onSubmit, onError)}>
-               {
-                 selectedTab !== 'result' && (
-                  <div className="h-full ">
-                    <DocumentViewer url={selectedDocument?.url || null} />
-                  </div>
-                 )
-               }
-              <TabsContent value="form" className="h-full overflow-auto mt-0">
-                <SectionForm control={form.control} />
-              </TabsContent>  
-             <TabsContent value="criteria">
-               <SectionCriteria control={form.control} />
-              </TabsContent>
-              <TabsContent className="col-span-2" value="result">
-                <SectionResult control={form.control} />
-              </TabsContent>
+            <SectionForm control={form.control} />
+            <SectionCriteria control={form.control} />
+            <SectionResult control={form.control} />
             
-              
-              {/* <div className="grid auto-rows-min gap-4 md:grid-cols-3">
-                <div className="bg-muted/50 aspect-video rounded-xl" />
-                <div className="bg-muted/50 aspect-video rounded-xl" />
-                <div className="bg-muted/50 aspect-video rounded-xl" />
-              </div>
-              <div className="bg-muted/50 min-h-[100vh] flex-1 rounded-xl md:min-h-min" /> */}
-            </form>
-          </Tabs>
+            {/* <div className="grid auto-rows-min gap-4 md:grid-cols-3">
+              <div className="bg-muted/50 aspect-video rounded-xl" />
+              <div className="bg-muted/50 aspect-video rounded-xl" />
+              <div className="bg-muted/50 aspect-video rounded-xl" />
+            </div>
+            <div className="bg-muted/50 min-h-[100vh] flex-1 rounded-xl md:min-h-min" /> */}
+          </form>
         </SidebarInset>
-     
     </SidebarProvider>
   )
 }

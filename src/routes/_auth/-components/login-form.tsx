@@ -54,7 +54,7 @@ export function LoginForm({
             console.error("Erro ao fazer login:", error);
             setError("root", {
                 type: "manual",
-                message: error?.message || "Credenciais inválidas. Verifique seu email e senha.",
+                message: error?.response?.data?.detail || "Erro ao fazer login",
             });
         }
     }

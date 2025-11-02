@@ -1,4 +1,4 @@
-import { cn } from "@/lib/utils"
+import { cn, cpfMask } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import {
   Field,
@@ -14,6 +14,7 @@ import { Spinner } from "@/components/ui/spinner"
 import { useMutation } from "@tanstack/react-query"
 import { createStudentMutationOptions } from "@/mutations/create-student"
 import { Link } from "@tanstack/react-router"
+import { toast } from "sonner"
 
 
 const formSchema = z
@@ -76,8 +77,9 @@ export function SignupForm({
         user_type: "STUDENT",
       })
       onSuccess?.()
-    } catch (error) {
+    } catch (error: any) {
       console.error("Erro ao criar estudante:", error)
+      toast.error(error?.response?.data?.detail || "Erro ao criar conta.")
     }
   }
 
@@ -98,7 +100,7 @@ export function SignupForm({
         <div className="grid grid-cols-2 gap-x-6 gap-y-4">
           <Field>
             <FieldLabel htmlFor="name">Nome</FieldLabel>
-            <Input id="name" type="text" placeholder="Nome" {...register("name")} />
+            <Input id="name" type="text" placeholder="Insira seu nome" {...register("name")} />
             <div className="min-h-[8px] mt-1">
               {errors.name && (
                 <p className="text-xs text-red-500">{errors.name.message}</p>
@@ -108,7 +110,7 @@ export function SignupForm({
 
           <Field>
             <FieldLabel htmlFor="email">Email</FieldLabel>
-            <Input id="email" type="email" placeholder="Email" {...register("email")} />
+            <Input id="email" type="email" placeholder="Insira seu email" {...register("email")} />
             <div className="min-h-[8px] mt-1">
               {errors.email && (
                 <p className="text-xs text-red-500">{errors.email.message}</p>
@@ -121,7 +123,7 @@ export function SignupForm({
             <Input
               id="student_registration"
               type="text"
-              placeholder="12345678"
+              placeholder="Insira sua matrícula"
               {...register("student_registration")}
             />
             <div className="min-h-[8px] mt-1">
@@ -143,13 +145,24 @@ export function SignupForm({
 
           <Field>
             <FieldLabel htmlFor="cpf">CPF</FieldLabel>
-            <Input id="cpf" type="text" placeholder="12345678900" {...register("cpf")} />
+            <Input
+              id="cpf"
+              type="text"
+              placeholder="123.456.789-00"
+              {...register("cpf", {
+                onChange: (e) => {
+                  const masked = cpfMask(e.target.value);
+                  e.target.value = masked;
+                },
+              })}
+            />
             <div className="min-h-[8px] mt-1">
               {errors.cpf && (
                 <p className="text-xs text-red-500">{errors.cpf.message}</p>
               )}
             </div>
           </Field>
+
 
           <Field>
             <FieldLabel htmlFor="confirmPassword">Confirme sua senha</FieldLabel>

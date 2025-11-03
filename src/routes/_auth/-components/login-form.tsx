@@ -65,9 +65,9 @@ export function LoginForm({
   return (
     <div className="flex w-full max-w-sm flex-col gap-6 mx-auto">
         <div className="flex flex-col items-center gap-1 text-center">
-          <h1 className="text-2xl font-bold">Crie sua conta</h1>
+          <h1 className="text-2xl font-bold">Entre na sua conta</h1>
           <p className="text-muted-foreground text-sm text-balance">
-            Preencha o formulário abaixo para criar sua conta.
+            Informe seus dados de acesso para continuar.
           </p>
         </div>
         <form

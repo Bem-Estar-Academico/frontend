@@ -5,6 +5,7 @@ import { profileQueryOptions } from "@/queries/profile"
 import type { User } from "@/types/user"
 import { useMutation, useQuery } from "@tanstack/react-query"
 import { useEffect, useState, createContext, useContext } from "react"
+import { toast } from "sonner"
 
 export interface AuthState {
   isAuthenticated: boolean
@@ -33,7 +34,7 @@ export function AuthProvider({ children }: Readonly<AuthProviderProps>) {
   }, [token])
 
   const { data: user, isLoading } = useQuery({
-    ...profileQueryOptions, 
+    ...profileQueryOptions(token || undefined), 
     enabled: !!token,
     retry: 1,
   })
@@ -43,7 +44,8 @@ export function AuthProvider({ children }: Readonly<AuthProviderProps>) {
     localStorage.removeItem('auth-token')
     setToken(null)  
     queryClient.clear()
-    router.invalidate()
+    toast.success('Usuario deslogado com sucesso!')
+    router.navigate({to: '/login', search: { redirect: '/'}})
   }
 
   const login = async (email: string, password: string) => {
@@ -62,7 +64,6 @@ export function AuthProvider({ children }: Readonly<AuthProviderProps>) {
     return roles.includes(user.user_type)
   }
 
-
   if (isLoading && token) {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -72,7 +73,7 @@ export function AuthProvider({ children }: Readonly<AuthProviderProps>) {
   }
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated: !!user, isLoading, user: user || null, login, logout, hasRole, hasAnyRole }}>
+    <AuthContext.Provider value={{ isAuthenticated: !!user && !!token, isLoading, user: user || null, login, logout, hasRole, hasAnyRole }}>
       {children}
     </AuthContext.Provider>
   )}

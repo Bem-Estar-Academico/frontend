@@ -2,9 +2,10 @@ import { api } from "@/api";
 import type { User } from "@/types/user"
 import { queryOptions } from "@tanstack/react-query";
 
-export const profileQueryOptions = queryOptions({
+export const profileQueryOptions = (token?: string) => queryOptions({
     queryKey: ['profile'],
-    queryFn: fetchProfile
+    queryFn: fetchProfile,
+    enabled: !!token    
 })
 
 export async function fetchProfile() {

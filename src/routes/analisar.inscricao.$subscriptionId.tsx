@@ -3,16 +3,21 @@ import {
   type DocumentsSidebarProps,
 } from "@/components/documents-sidebar";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, notFound } from "@tanstack/react-router";
 import { IconArrowLeft } from "@tabler/icons-react";
 
 export const Route = createFileRoute("/analisar/inscricao/$subscriptionId")({
-    component: () => (
+  component: () => (
     <>
       <title>Analisar Inscrição | BEA</title>
       <ReviewSubscription/>
     </>
   ),
+  beforeLoad: async ({ context }) => {
+    if (!context.auth?.hasAnyRole(['SOCIAL_WORKER', 'COORDINATOR'])) {
+      throw notFound();
+    }
+  }
 });
 
 const mockData: DocumentsSidebarProps["data"] = [

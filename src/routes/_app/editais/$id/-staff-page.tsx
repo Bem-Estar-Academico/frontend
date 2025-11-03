@@ -1,18 +1,13 @@
 import { StudentDataTable } from "@/components/students/student-table";
 import RegistrationStatusGraphic from "@/components/registration-status-graphic";
-import { createFileRoute } from "@tanstack/react-router";
 import { editalQueryOptions } from "@/queries/edital";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { noticeRegistrationsQueryOptions } from "@/queries/notice-registrations";
 import type { Registration } from "@/types/students-registration";
 import type { RegistrationItem } from "@/types/notice-registrations";
+import { Route } from ".";
 
-export const Route = createFileRoute("/_app/_social-workers/editais/$id")({
-  loader: ({ context: { queryClient }, params: { id } }) => queryClient.ensureQueryData(editalQueryOptions(Number(id))),
-  component: PageEdital,
-});
-
-export function PageEdital() {
+export function StaffEditaisComponent() {
   const { id } = Route.useParams();
   const { data: edital } = useSuspenseQuery(editalQueryOptions(Number(id)));
   const { data: noticeRegistrations } = useSuspenseQuery(

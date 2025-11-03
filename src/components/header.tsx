@@ -1,5 +1,5 @@
 import { useAuth } from '@/contexts/auth'
-import { EditaisMenu } from '@/routes/_app/_social-workers/-components/editais-menu';
+import { EditaisMenu } from '@/routes/_app/_staff/_social-workers/-components/editais-menu';
 import { Link } from '@tanstack/react-router'
 import { UserMenu } from './user-menu';
 import { editaisQueryOptions } from '@/queries/editais';
@@ -36,10 +36,10 @@ export default function Header() {
 function HeaderStudentLinks() {
   return (
     <>
-      <Link to="/student/home" className="hover:text-gray-600 transition">
+      <Link to="/" className="hover:text-gray-600 transition">
         Minhas Inscrições
       </Link>
-      <Link to="/student/editais" className="hover:text-gray-600 transition">
+      <Link to="/editais" className="hover:text-gray-600 transition">
         Editais
       </Link>
     </>

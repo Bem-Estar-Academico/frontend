@@ -13,7 +13,7 @@ import { ErrorComponent } from './components/error.tsx'
 import { AuthProvider, useAuth } from './contexts/auth.tsx'
 import { Toaster } from './components/ui/sonner.tsx'
 
-const queryClient = new QueryClient()
+export const queryClient = new QueryClient()
 
 export const router = createRouter({
   routeTree,
@@ -40,7 +40,7 @@ declare module '@tanstack/react-router' {
 
 function InnerApp() {
   const auth = useAuth()
-
+  console.log("InnerApp rendering, auth.isAuthenticated:", auth.isAuthenticated)
   return (
       <RouterProvider router={router} context={{ auth }} />
   )

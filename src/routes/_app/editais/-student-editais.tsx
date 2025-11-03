@@ -3,7 +3,7 @@ import { Input } from '@/components/ui/input';
 import { Pagination } from '@/components/ui/pagination';
 import { editaisQueryOptions } from '@/queries/editais';
 import { useQuery } from '@tanstack/react-query';
-import { createFileRoute, Link } from '@tanstack/react-router'
+import { Link } from '@tanstack/react-router'
 import { useState, useMemo } from 'react';
 import { Button } from '@/components/ui/button';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
@@ -13,12 +13,8 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { studentRegistrationsQueryOptions } from '@/queries/student-registrations';
 import type { EditalResponseDTO } from '@/types/edital-response-dto';
 
-export const Route = createFileRoute('/_app/student/editais/')({
-  component: EditaisList,
-})
 
-function EditaisList() {
-
+export function StudentEditaisList() {
   const { data: editais, isLoading, isError } = useQuery(editaisQueryOptions);
 
   const { data: studentRegistrations } = useQuery(studentRegistrationsQueryOptions());
@@ -139,7 +135,7 @@ function EditaisList() {
             return (
               <Link
                 key={edital.id}
-                to={"/student/editais/$id"}
+                to={"/editais/$id"}
                 params={{id: String(edital.id)}}
               >
                 <EditalCard

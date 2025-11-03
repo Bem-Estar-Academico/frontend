@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router"
+import { Link } from "@tanstack/react-router"
 import {
   Card,
   CardContent,
@@ -21,10 +21,6 @@ import { useQuery } from "@tanstack/react-query"
 import { studentRegistrationsQueryOptions } from "@/queries/student-registrations"
 import type { StudentRegistrationsDTO } from "@/types/student-registration"
 
-export const Route = createFileRoute("/_app/student/home/")({
-  component: StudentDashboard,
-})
-
 function getStatusMessage(status: keyof typeof variantText) {
   if (status === "pending") return "Sua documentação foi recebida, porém as informações e arquivos não foram analisados pela equipe responsável."
   if (status === "appeal") return "Sua documentação foi recebida porém na análise houveram inconsistências ou documentos inválidos."
@@ -36,7 +32,7 @@ function getStatusMessage(status: keyof typeof variantText) {
 }
   
 
-export function StudentDashboard() {    
+export function StudentHome() {    
   const { data: studentRegistrations, isLoading, error } = useQuery(studentRegistrationsQueryOptions());
 
   const currentRegistration = studentRegistrations?.filter(reg => 
@@ -130,7 +126,7 @@ function CurrentRegistrationCard({ registration }: CurrentRegistrationCardProps)
         <CardTitle>Inscrição #{registration.review.id}</CardTitle>
         <CardDescription>
           Acompanhe o status da sua inscrição no{" "}
-          <Link className="underline" to={"/student/editais/$id"} params={{ id: String(registration.notice.id) }}>
+          <Link className="underline" to={"/editais/$id"} params={{ id: String(registration.notice.id) }}>
             {registration.notice.title}
           </Link>
         </CardDescription>
@@ -181,7 +177,7 @@ function PastRegistrationCard({ registration }: PastRegistrationCardProps) {
       <CardHeader className="border-b">
         <CardTitle>Inscrição #{registration.review.id}</CardTitle>
         <CardDescription>
-          <Link className="underline" to={"/student/editais/$id"} params={{ id: String(registration.notice.id) }}>
+          <Link className="underline" to={"/editais/$id"} params={{ id: String(registration.notice.id) }}>
             {registration.notice.title}
           </Link>
         </CardDescription>

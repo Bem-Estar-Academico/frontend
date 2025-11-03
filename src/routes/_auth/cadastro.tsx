@@ -1,9 +1,14 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
 import { SignupForm } from "./-components/signup-form";
 import { toast } from "sonner";
 import LogoCard from "./-components/logo-card";
 
 export const Route = createFileRoute("/_auth/cadastro")({
+  beforeLoad: async ({ context }) => {  
+    if (context.auth?.isAuthenticated) {
+      throw redirect({ to: '/' })
+    }
+  },
   component: () => (
     <>
       <title>Cadastro | BEA</title>

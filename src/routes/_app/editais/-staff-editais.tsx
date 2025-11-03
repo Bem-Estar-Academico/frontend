@@ -2,24 +2,17 @@ import EditalCard from "@/components/edital-card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { IconPlus } from "@tabler/icons-react";
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 import { Pagination } from "@/components/ui/pagination";
 import { editaisQueryOptions } from "@/queries/editais";
 import type { EditalResponseDTO } from "@/types/edital-response-dto";
+import { useAuth } from "@/contexts/auth";
 
-export const Route = createFileRoute("/_app/_coordinator/editais/")({
-  component: () => (
-    <>
-      <title>Editais | BEA</title>
-      <Editais/>
-    </>
-  ),
-});
-
-export function Editais() {
+export function StaffEditais() {
   const { data: editais, isLoading, isError } = useQuery(editaisQueryOptions);
+  const { user } = useAuth();
 
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
@@ -66,14 +59,18 @@ export function Editais() {
             }}
           />
         </div>
-        <div className="flex flex-1 justify-end gap-5">
-          <Link to="/editais/criar">
-            <Button variant="default">
-              <IconPlus />
-              Criar Edital
-            </Button>
-          </Link>
-        </div>
+        {
+          user?.user_type === "COORDINATOR" && (
+             <div className="flex flex-1 justify-end gap-5">
+              <Link to="/editais/criar">
+                <Button variant="default">
+                  <IconPlus />
+                  Criar Edital
+                </Button>
+              </Link>
+            </div>
+          )
+        }
       </div>
 
       <div className="flex flex-col  gap-6">

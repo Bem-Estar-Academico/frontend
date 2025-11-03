@@ -6,8 +6,8 @@ import { IVSDataTable, type StudentIVS } from "@/components/students/ivs-table";
 import { ivsQueryOptions } from "@/queries/ivs";
 import { useSuspenseQuery } from "@tanstack/react-query";
 
-export const Route = createFileRoute("/_app/_social-workers/consultar-ivs/")({
-    component: () => (
+export const Route = createFileRoute("/_app/_staff/_social-workers/consultar-ivs/")({
+  component: () => (
     <>
       <title>Consultar IVS | BEA</title>
       <IVS/>

@@ -1,5 +1,5 @@
 import { createFileRoute, Outlet, redirect} from '@tanstack/react-router'
-import { HeaderStudent } from './_app/student/-components/header'
+import { HeaderStudent } from './_app/_student/-components/header'
 import { useAuth } from '@/contexts/auth'
 import type { User } from '@/types/user'
 

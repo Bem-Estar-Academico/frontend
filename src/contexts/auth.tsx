@@ -11,6 +11,8 @@ export interface AuthState {
   isLoading: boolean
   login: (email: string, password: string) => Promise<void>
   logout: () => void
+  hasRole: (role: string) => boolean
+  hasAnyRole: (roles: string[]) => boolean
 }
 
 const AuthContext = createContext<AuthState | undefined>(undefined)
@@ -60,6 +62,16 @@ export function AuthProvider({ children }: Readonly<AuthProviderProps>) {
     })
   }
 
+  const hasRole = (role: string) => {
+    if (!user) return false
+    return user.user_type === role
+  }
+
+  const hasAnyRole = (roles: string[]) => {
+    if (!user) return false
+    return roles.includes(user.user_type)
+  }
+
   // Restore auth state on app load
   useEffect(() => {
     const token = localStorage.getItem('auth-token')
@@ -84,7 +96,7 @@ export function AuthProvider({ children }: Readonly<AuthProviderProps>) {
   }
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, isLoading, user, login, logout }}>
+    <AuthContext.Provider value={{ isAuthenticated, isLoading, user, login, logout, hasRole, hasAnyRole }}>
       {children}
     </AuthContext.Provider>
   )}

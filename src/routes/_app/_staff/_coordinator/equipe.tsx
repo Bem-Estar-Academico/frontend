@@ -19,7 +19,7 @@ import { useSuspenseQuery } from '@tanstack/react-query'
 import { editaisQueryOptions } from '@/queries/editais'
 import { teamProgressQueryOptions } from '@/queries/team-progress'
 
-export const Route = createFileRoute('/_app/_coordinator/equipe')({
+export const Route = createFileRoute('/_app/_staff/_coordinator/equipe')({
     component: () => (
       <>
         <title>Equipe | BEA</title>

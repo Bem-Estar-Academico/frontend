@@ -1,7 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm, type Control, type ControllerRenderProps } from "react-hook-form"
 import { z } from "zod"
-import { createFileRoute, useNavigate } from "@tanstack/react-router"
+import { createFileRoute, notFound, useNavigate } from "@tanstack/react-router"
 import { useMutation, useQuery } from "@tanstack/react-query"
 
 import { UsersList } from "@/components/users-list"
@@ -88,13 +88,18 @@ const editalSchema = z.object({
 
 type EditalFormData = z.infer<typeof editalSchema>
 
-export const Route = createFileRoute("/_app/_coordinator/editais/criar")({
+export const Route = createFileRoute("/_app/editais/criar")({
   component: () => (
     <>
       <title>Criar Edital | BEA</title>
       <CreateEdital/>
     </>
   ),
+  beforeLoad: async ({context: { auth }}) => {
+    if (!auth?.hasRole("COORDINATOR")) {
+      throw notFound()
+    }
+  }
 })
 
 function CreateEdital() {
@@ -156,7 +161,7 @@ function CreateEdital() {
   })) || []
 
   return (
-      <div className="flex flex-col w-full h-full max-w-full">
+      <div className="flex flex-col w-full h-full max-w-full px-10 py-6">
         <h1 className="font-bold text-2xl mb-6">Criar Edital</h1>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="w-full flex flex-col gap-6">
@@ -259,7 +264,7 @@ function CreateEdital() {
               </div>
             </div>
            
-            <Button type="submit" className="self-end w-3xs" disabled={form.formState.isSubmitting}>
+            <Button type="submit" className="self-end w-3xs mb-12" disabled={form.formState.isSubmitting}>
               {form.formState.isSubmitting && <Spinner />}
               {form.formState.isSubmitting ? "Criando Edital..." : "Criar Edital"}
             </Button>     
@@ -269,21 +274,6 @@ function CreateEdital() {
    
   )
 }
-
-  {/* <div className="p-4 border-b">
-        <Breadcrumb>
-          <BreadcrumbList>
-            <BreadcrumbItem>
-              <BreadcrumbLink href="/editais">Editais</BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbPage>Criar</BreadcrumbPage>
-            </BreadcrumbItem>
-          </BreadcrumbList>
-        </Breadcrumb>
-      </div> */}
-
 
 function DatePickerField({ control, name, title, isRequired }: Readonly<{ control: Control<EditalFormData>; name: 
   | "applicationStart"

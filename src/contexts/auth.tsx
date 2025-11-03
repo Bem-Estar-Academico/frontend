@@ -32,7 +32,7 @@ export function AuthProvider({ children }: Readonly<AuthProviderProps>) {
     }
   }, [token])
 
-  const { data: user, isLoading, refetch} = useQuery({
+  const { data: user, isLoading } = useQuery({
     ...profileQueryOptions, 
     enabled: !!token,
     retry: 1,
@@ -44,7 +44,6 @@ export function AuthProvider({ children }: Readonly<AuthProviderProps>) {
     setToken(null)  
     queryClient.clear()
     router.invalidate()
-    // queryClient.invalidateQueries(profileQueryOptions)
   }
 
   const login = async (email: string, password: string) => {
@@ -63,8 +62,7 @@ export function AuthProvider({ children }: Readonly<AuthProviderProps>) {
     return roles.includes(user.user_type)
   }
 
-  console.log("AuthProvider rendering, isAuthenticated:", !!user, "isLoading:", isLoading)
-  // Show loading state while checking auth
+
   if (isLoading && token) {
     return (
       <div className="flex items-center justify-center min-h-screen">

@@ -54,7 +54,7 @@ export default function EditalCard({
                     ) : (
                     <Button variant={"outline"} asChild>
                         <Link
-                        to={"/student/editais/$id/inscricao"}
+                        to={"/editais/$id/inscricao"}
                         params={{ id: String(id) }}
                         >
                         <ClipboardPen/>

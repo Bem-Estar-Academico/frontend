@@ -4,6 +4,7 @@ import Header from '@/components/header'
 
 export const Route = createFileRoute('/_app')({
   beforeLoad: async ({ context, location }) => {
+    console.log("Checking authentication in /_app beforeLoad", context.auth)
     if (!context.auth?.isAuthenticated) {
       throw redirect({
         to: '/login',

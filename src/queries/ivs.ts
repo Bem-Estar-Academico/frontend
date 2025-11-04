@@ -1,5 +1,5 @@
 import { api } from "@/api";
-import type { IVSResponseDTO } from "@/types/ivs-response.dto";
+import type { IVSResponseDTO } from "@/types/ivs-response-dto";
 import { queryOptions } from "@tanstack/react-query";
 import { notFound } from "@tanstack/react-router";
 

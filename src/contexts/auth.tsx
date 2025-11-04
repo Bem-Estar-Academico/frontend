@@ -1,9 +1,11 @@
 import { api } from "@/api"
-import { router } from "@/main"
+import { queryClient, router } from "@/main"
 import { loginMutationOptions } from "@/mutations/login"
+import { profileQueryOptions } from "@/queries/profile"
 import type { User } from "@/types/user"
-import { useMutation } from "@tanstack/react-query"
+import { useMutation, useQuery } from "@tanstack/react-query"
 import { useEffect, useState, createContext, useContext } from "react"
+import { toast } from "sonner"
 
 export interface AuthState {
   isAuthenticated: boolean
@@ -11,6 +13,8 @@ export interface AuthState {
   isLoading: boolean
   login: (email: string, password: string) => Promise<void>
   logout: () => void
+  hasRole: (role: string) => boolean
+  hasAnyRole: (roles: string[]) => boolean
 }
 
 const AuthContext = createContext<AuthState | undefined>(undefined)
@@ -20,62 +24,47 @@ interface AuthProviderProps {
 }
 
 export function AuthProvider({ children }: Readonly<AuthProviderProps>) {
-  const [user, setUser] = useState<User | null>(null)
-  const [isAuthenticated, setIsAuthenticated] = useState(false)
-  const [isLoading, setIsLoading] = useState(true)
-  const {mutateAsync: loginMutateAsync} = useMutation(loginMutationOptions);
+  const [token, setToken] = useState<string | null>(localStorage.getItem('auth-token'))
+  useEffect(() => {
+    if (token) {
+      api.defaults.headers.common['Authorization'] = `Bearer ${token}`
+    } else {
+      delete api.defaults.headers.common['Authorization']
+    }
+  }, [token])
 
-  const loadProfile = async (token: string) => {
-    return api.get<User>('/auth/me', {
-      headers: { Authorization: `Bearer ${token}` },
-    })
-      .then((response) => {
-        if (response.status === 200) {
-          setUser(response.data)
-          setIsAuthenticated(true)
-          router.invalidate()
-        } else {
-          localStorage.removeItem('auth-token')
-        }
-      })
-      .catch(() => {
-        localStorage.removeItem('auth-token')
-      })
-      .finally(() => {
-        setIsLoading(false)
-      })
-  }
+  const { data: user, isLoading } = useQuery({
+    ...profileQueryOptions(token || undefined), 
+    enabled: !!token,
+    retry: 1,
+  })
+  const { mutateAsync: loginMutateAsync } = useMutation(loginMutationOptions);
 
-  const logout = () => {
-    setUser(null)
-    setIsAuthenticated(false)
+  const logout = () => {   
     localStorage.removeItem('auth-token')
+    setToken(null)  
+    queryClient.clear()
+    toast.success('Usuario deslogado com sucesso!')
+    router.navigate({to: '/login', search: { redirect: '/'}})
   }
 
   const login = async (email: string, password: string) => {
-    return loginMutateAsync({ email, password }).then(async (data) => {
-      localStorage.setItem('auth-token', data.access_token)
-      api.defaults.headers.common['Authorization'] = `Bearer ${data.access_token}`
-      loadProfile(data.access_token)
-    })
+    const data = await loginMutateAsync({ email, password });
+    localStorage.setItem('auth-token', data.access_token)
+    setToken(data.access_token)
   }
 
-  // Restore auth state on app load
-  useEffect(() => {
-    const token = localStorage.getItem('auth-token')
-    if (token) {
-      loadProfile(token)
-    } else {
-      setIsLoading(false)
-    }
-  }, [])
+  const hasRole = (role: string) => {
+    if (!user) return false
+    return user.user_type === role
+  }
 
-  useEffect(() => {
-      router.invalidate()
-  }, [user, isAuthenticated])
+  const hasAnyRole = (roles: string[]) => {
+    if (!user) return false
+    return roles.includes(user.user_type)
+  }
 
-  // Show loading state while checking auth
-  if (isLoading) {
+  if (isLoading && token) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         Loading...
@@ -84,7 +73,7 @@ export function AuthProvider({ children }: Readonly<AuthProviderProps>) {
   }
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, isLoading, user, login, logout }}>
+    <AuthContext.Provider value={{ isAuthenticated: !!user && !!token, isLoading, user: user || null, login, logout, hasRole, hasAnyRole }}>
       {children}
     </AuthContext.Provider>
   )}

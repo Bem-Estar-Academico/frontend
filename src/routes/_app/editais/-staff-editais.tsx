@@ -1,0 +1,101 @@
+import EditalCard from "@/components/edital-card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { IconPlus } from "@tabler/icons-react";
+import { Link } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
+import { useMemo, useState } from "react";
+import { Pagination } from "@/components/ui/pagination";
+import { editaisQueryOptions } from "@/queries/editais";
+import type { EditalResponseDTO } from "@/types/edital-response-dto";
+import { useAuth } from "@/contexts/auth";
+
+export function StaffEditais() {
+  const { data: editais, isLoading, isError } = useQuery(editaisQueryOptions);
+  const { user } = useAuth();
+
+  const [search, setSearch] = useState("");
+  const [page, setPage] = useState(1);
+  const pageSize = 5;
+
+  const filteredEditais = useMemo(() => {
+    if (!editais) return [];
+    return editais.filter((edital) => {
+      const matchesSearch =
+        edital.title.toLowerCase().includes(search.toLowerCase()) ||
+        edital.description.toLowerCase().includes(search.toLowerCase());
+
+      return matchesSearch;
+    });
+  }, [editais, search]);
+
+  if (isLoading) return <p>Carregando editais...</p>;
+  if (isError) return <p>Erro ao carregar editais.</p>;
+
+  const totalPages = Math.ceil(filteredEditais.length / pageSize);
+  const currentData = filteredEditais.slice(
+    (page - 1) * pageSize,
+    page * pageSize
+  );
+
+  const isEditalOpen = (edital: EditalResponseDTO) => {
+    const now = new Date();
+    const registrationEndDate = new Date(edital.registration_end_date);
+    return !edital.registration_end_date || registrationEndDate >= now;
+  };
+
+  return (
+    <div className="flex flex-1 flex-col gap-7 px-10 py-6">
+       <h1 className="font-bold text-2xl">Editais</h1>
+
+      <div className="max-h-fit flex flex-1 ">
+        <div className="flex flex-1 gap-5">
+          <Input
+            placeholder="Buscar edital"
+            value={search}
+            onChange={(e) => {
+              setSearch(e.target.value);
+              setPage(1);
+            }}
+          />
+        </div>
+        {
+          user?.user_type === "COORDINATOR" && (
+             <div className="flex flex-1 justify-end gap-5">
+              <Link to="/editais/criar">
+                <Button variant="default">
+                  <IconPlus />
+                  Criar Edital
+                </Button>
+              </Link>
+            </div>
+          )
+        }
+      </div>
+
+      <div className="flex flex-col  gap-6">
+        {currentData.length > 0 ? (
+          currentData.map((edital) => (
+            <Link
+              key={edital.id}
+              to={"/editais/$id"}
+              params={{ id: String(edital.id) }}
+            >
+              <EditalCard
+                id={edital.id}
+                title={edital.title}
+                description={edital.description}
+                lastModification={new Date(edital.updated_at)}
+                isOpen={isEditalOpen(edital)}
+              />
+            </Link>
+          ))
+        ) : (
+          <p className="text-gray-500 italic">Nenhum edital encontrado</p>
+        )}
+      </div>
+
+      <Pagination page={page} totalPages={totalPages} onPageChange={setPage} />
+    </div>
+  );
+}

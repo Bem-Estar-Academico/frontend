@@ -19,7 +19,7 @@ import { Alert, AlertTitle } from "@/components/ui/alert"
 import { AlertCircleIcon } from "lucide-react"
 import { useQuery } from "@tanstack/react-query"
 import { studentRegistrationsQueryOptions } from "@/queries/student-registrations"
-import type { StudentRegistrationsDTO } from "@/types/student-registration"
+import type { StudentRegistrationDTO } from "@/types/student-registration"
 
 function getStatusMessage(status: keyof typeof variantText) {
   if (status === "pending") return "Sua documentação foi recebida, porém as informações e arquivos não foram analisados pela equipe responsável."
@@ -30,7 +30,7 @@ function getStatusMessage(status: keyof typeof variantText) {
 
   console.error("Status inválido: ", status)
 }
-  
+
 
 export function StudentHome() {    
   const { data: studentRegistrations, isLoading, error } = useQuery(studentRegistrationsQueryOptions());
@@ -113,7 +113,7 @@ export function StudentHome() {
 }
 
 interface CurrentRegistrationCardProps {
-  registration: StudentRegistrationsDTO[0]
+  registration: StudentRegistrationDTO
 }
 
 function CurrentRegistrationCard({ registration }: CurrentRegistrationCardProps) {
@@ -166,7 +166,7 @@ function CurrentRegistrationCard({ registration }: CurrentRegistrationCardProps)
 }
 
 interface PastRegistrationCardProps {
-  registration: StudentRegistrationsDTO[0]
+  registration: StudentRegistrationDTO
 }
 
 function PastRegistrationCard({ registration }: PastRegistrationCardProps) {

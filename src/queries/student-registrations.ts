@@ -1,5 +1,5 @@
 import { api } from "@/api";
-import type { StudentRegistrationsDTO } from "@/types/student-registration";
+import type { StudentRegistrationDTO } from "@/types/student-registration";
 import { queryOptions } from "@tanstack/react-query";
 
 export const studentRegistrationsQueryOptions = () => queryOptions({
@@ -8,7 +8,7 @@ export const studentRegistrationsQueryOptions = () => queryOptions({
 })
 
 export async function fetchStudentRegistrations() {
-    const { data } = await api.get<StudentRegistrationsDTO>("/student-registrations/me");
+    const { data } = await api.get<StudentRegistrationDTO[]>("/student-registrations/me");
     return data;
 }
 

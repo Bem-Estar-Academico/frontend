@@ -15,7 +15,7 @@ export type Notice = {
   preliminary_result_date: string
 }
 
-export type StudentRegistrationsDTO = [{
+export type StudentRegistrationDTO = {
   notice: Notice,
   review: Review,
-}]
+}

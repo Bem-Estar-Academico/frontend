@@ -24,7 +24,7 @@ export function UserMenu({ name }: Readonly<UserMenuProps>) {
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" className="relative flex items-center h-fit gap-4 text-gray-800 hover:text-gray-600 transition">
           <Avatar>
-            <AvatarImage src={'/avatar-image.png'} alt={name} />
+            <AvatarImage alt={name} />
             <AvatarFallback className="bg-gray-30 0">{name[0]}</AvatarFallback>
           </Avatar> 
           <div className="flex gap-2 items-center">

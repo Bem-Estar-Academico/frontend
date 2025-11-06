@@ -6,6 +6,8 @@ import { noticeRegistrationsQueryOptions } from "@/queries/notice-registrations"
 import type { Registration } from "@/types/students-registration";
 import type { RegistrationItem } from "@/types/notice-registrations";
 import { Route } from ".";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 
 export function StaffEditaisComponent() {
   const { id } = Route.useParams();
@@ -17,6 +19,15 @@ export function StaffEditaisComponent() {
   if (!edital) {
     return <p>Edital não encontrado</p>;
   }
+
+  const beneficios = [
+    { label: 'Auxílio Alimentação', enabled: edital.food_allowance },
+    { label: 'Auxílio Moradia', enabled: edital.housing_allowance },
+    { label: 'Auxílio Creche', enabled: edital.daycare_allowance },
+    { label: 'Bolsa de Graduação', enabled: edital.graduation_scholarship },
+  ];
+
+  const beneficiosOfertados = beneficios.filter(b => b.enabled);
   
   const chartData = [
     { name: "Pendente", value: noticeRegistrations.pending_count || 100, color: "var(--color-gray-500)" },
@@ -51,82 +62,116 @@ export function StaffEditaisComponent() {
     })
   );
 
+  const formatDate = (date: string | null) => {
+    if (!date) return "A decidir";
+    return new Date(date).toLocaleDateString("pt-BR", { 
+        day: '2-digit', 
+        month: 'long', 
+        year: 'numeric' 
+    });
+  };  
+
   return (
-    <div className="px-10 py-6">
-      <title>{edital.title}</title>
-      <section className="text-sm font-medium" dir="ltr">
-        <h1 className="font-bold text-2xl mb-6">{edital.title}</h1>
-        <div className="text-sm font-medium flex items-center justify-between flex-wrap gap-6">
-          <div className="grid grid-cols-3 gap-10">
-            <div className="flex-col">
-              <div>Início das Inscrições</div>
-              <div className="text-xs font-light">
-                {edital.registration_start_date === null
-                  ? "--/--/----"
-                  : new Date(
-                      edital.registration_start_date
-                    ).toLocaleDateString("pt-BR")}
+    <div className="min-h-screen">
+      <div className="max-w-7xl mx-auto p-6 space-y-6">
+        <Card>
+          <CardHeader>
+            <div className="flex items-center justify-between gap-6 flex-wrap">
+              <div className="flex-1 space-y-4">
+                <CardTitle className="text-xl">
+                  {edital.title}
+                </CardTitle>
+                <CardDescription className="text-sm">
+                  {edital.description}
+                </CardDescription>
+                {beneficiosOfertados.length > 0 && (
+                  <div className="flex flex-wrap gap-2">
+                    {beneficiosOfertados.map((beneficio) => (
+                      <Badge 
+                        key={beneficio.label}
+                        variant="outline" 
+                        className="px-3 py-1 text-sm font-medium"
+                      >
+                        {beneficio.label}
+                      </Badge>
+                    ))}
+                  </div>
+                )}
+              </div>
+              <div className="flex items-center content-center justify-center">
+                <RegistrationStatusGraphic dataRegistration={chartData} />
               </div>
             </div>
-            <div className="flex-col">
-              <div>Término das Inscrições</div>
-              <div className="text-xs font-light">
-                {edital.registration_end_date === null
-                  ? "--/--/----"
-                  : new Date(edital.registration_end_date).toLocaleDateString(
-                      "pt-BR"
-                    )}
+          </CardHeader>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-lg">Cronograma</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="space-y-1">
+                <div className="text-sm font-semibold">
+                  Início das Inscrições
+                </div>
+                <div className="text-sm">
+                  {formatDate(edital.registration_start_date)}
+                </div>
+              </div>
+
+              <div className="space-y-1">
+                <div className="text-sm font-semibold">
+                  Término das Inscrições
+                </div>
+                <div className="text-sm">
+                  {formatDate(edital.registration_end_date)}
+                </div>
+              </div>
+
+              <div className="space-y-1">
+                <div className="text-sm font-semibold">
+                  Resultado Preliminar
+                </div>
+                <div className="text-sm">
+                  {formatDate(edital.preliminary_result_date)}
+                </div>
+              </div>
+
+              <div className="space-y-1">
+                <div className="text-sm font-semibold">
+                  Início dos Recursos
+                </div>
+                <div className="text-sm">
+                  {formatDate(edital.appeal_start_date)}
+                </div>
+              </div>
+
+              <div className="space-y-1">
+                <div className="text-sm font-semibold">
+                  Término dos Recursos
+                </div>
+                <div className="text-sm">
+                  {formatDate(edital.appeal_end_date)}
+                </div>
+              </div>
+
+              <div className="space-y-1">
+                <div className="text-sm font-semibold">
+                  Resultado Final
+                </div>
+                <div className="text-sm">
+                  {formatDate(edital.final_result_date)}
+                </div>
               </div>
             </div>
-            <div className="flex-col">
-              <div>Divulgação do Resultado Preliminar</div>
-              <div className="text-xs font-light">
-                {edital.preliminary_result_date === null
-                  ? "--/--/----"
-                  : new Date(
-                      edital.preliminary_result_date
-                    ).toLocaleDateString("pt-BR")}
-              </div>
-            </div>
-            <div className="flex-col">
-              <div>Início da Fase de Recursos</div>
-              <div className="text-xs font-light">
-                {edital.appeal_start_date === null
-                  ? "--/--/----"
-                  : new Date(edital.appeal_start_date).toLocaleDateString(
-                      "pt-BR"
-                    )}
-              </div>
-            </div>
-            <div className="flex-col">
-              <div>Término da Fase de Recursos</div>
-              <div className="text-xs font-light">
-                {edital.appeal_end_date === null
-                  ? "--/--/----"
-                  : new Date(edital.appeal_end_date).toLocaleDateString(
-                      "pt-BR"
-                    )}
-              </div>
-            </div>
-            <div className="flex-col">
-              <div>Divulgação do Resultado Final</div>
-              <div className="text-xs font-light">
-                {edital.final_result_date === null
-                  ? "--/--/----"
-                  : new Date(edital.final_result_date).toLocaleDateString(
-                      "pt-BR"
-                    )}
-              </div>
-            </div>
-          </div>
-          <div className="flex items-center content-center justify-center">
-            <RegistrationStatusGraphic dataRegistration={chartData} />
-          </div>
-        </div>
-      </section>
-      <section>
-        <StudentDataTable data={students} />
-      </section>
+          </CardContent>
+        </Card>
+
+        <section>
+          <StudentDataTable data={students} />
+        </section>
+      </div>
     </div>
   );
 }

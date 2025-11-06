@@ -63,55 +63,58 @@ function RouteComponent() {
     </header>
 
    
-    <section className='mt-4'>
-      <div className="grid grid-cols-[minmax(0,600px)_1fr]">
-        <ChartProgress totalPercent={50} editalTitle={lastNotice.title} />
-        
-        <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
-          <StatsCard title='Total' value={800} />
-          <StatsCard title='Assistentes Sociais' value={15} />
-          <StatsCard title='Análises Realizadas' value={1200} />
-          <StatsCard title='Análises Pendentes' value={800} />
+    <section className="mt-4">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <ChartProgress totalPercent={33} editalTitle={lastNotice.title} />
+
+        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-2 gap-4 lg:col-span-2">
+          <StatsCard title="Total" value={800} />
+          <StatsCard title="Assistentes Sociais" value={15} />
+          <StatsCard title="Análises Realizadas" value={1200} />
+          <StatsCard title="Análises Pendentes" value={800} />
         </div>
       </div>
 
+      {/* resto da seção (Tabs etc) permanece igual */}
       <Tabs className="mt-8" defaultValue="card">
-        <div className='flex items-center justify-between'>
-          <div className='flex items-center gap-4'>
-              Ordenar por:
-              <Select onValueChange={(value: OrderByOption) => setOrderBy(value)} defaultValue='highestProgress'>
-                <SelectTrigger className="w-[180px]">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    <SelectLabel>Ordem</SelectLabel>
-                    <SelectItem value="highestProgress">Maior progresso</SelectItem>
-                    <SelectItem value="lowestProgress">Menor progresso</SelectItem>
-                    <SelectItem value="lastAnalysis">Análise mais recente</SelectItem>
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-            </div>
-             <TabsList>
-              <TabsTrigger value="card"><LayoutGrid/></TabsTrigger>
-              <TabsTrigger value="list"><List/></TabsTrigger>
-            </TabsList>
-        </div>
-       <TabsContent value="card">
-        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-5 gap-4">
-          {sortedData.map((worker) => (
-            <CardSocialWorker key={worker.email} data={worker} />
-          ))}
-        </div>
-         
-       </TabsContent>
-       <TabsContent value="list">
-        <SocialWorkerProgressDataTable data={sortedData} />
-       </TabsContent>
-      </Tabs>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            Ordenar por:
+            <Select onValueChange={(value: OrderByOption) => setOrderBy(value)} defaultValue="highestProgress">
+              <SelectTrigger className="w-[180px]">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectLabel>Ordem</SelectLabel>
+                  <SelectItem value="highestProgress">Maior progresso</SelectItem>
+                  <SelectItem value="lowestProgress">Menor progresso</SelectItem>
+                  <SelectItem value="lastAnalysis">Análise mais recente</SelectItem>
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          </div>
 
+          <TabsList>
+            <TabsTrigger value="card"><LayoutGrid /></TabsTrigger>
+            <TabsTrigger value="list"><List /></TabsTrigger>
+          </TabsList>
+        </div>
+
+        <TabsContent value="card">
+          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-5 gap-4">
+            {sortedData.map((worker) => (
+              <CardSocialWorker key={worker.email} data={worker} />
+            ))}
+          </div>
+        </TabsContent>
+
+        <TabsContent value="list">
+          <SocialWorkerProgressDataTable data={sortedData} />
+        </TabsContent>
+      </Tabs>
     </section>
+
    
    </div>
   )

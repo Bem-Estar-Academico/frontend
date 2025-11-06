@@ -8,6 +8,7 @@ import {
 } from "recharts"
 
 import {
+  Card,
   CardContent,
   CardDescription,
   CardFooter,
@@ -36,13 +37,13 @@ export function ChartProgress({ totalPercent, editalTitle }: ChartProgressProps)
   const chartData = [{ totalPercent, fill: "var(--color-totalPercent)" }]
 
   return (
-    <div className="flex flex-col p-4">
-      <CardHeader className="items-center pb-0">
+    <Card>
+      <CardHeader>
         <CardTitle>Progresso</CardTitle>
         <CardDescription>{editalTitle}</CardDescription>
       </CardHeader>
       
-      <CardContent className="flex-1 pb-0">
+      <CardContent>
         <ChartContainer
           config={chartConfig}
           className="mx-auto aspect-square max-h-[250px]"
@@ -104,6 +105,6 @@ export function ChartProgress({ totalPercent, editalTitle }: ChartProgressProps)
           Mostrando o total de inscrições finalizadas no edital.
         </div>
       </CardFooter>
-    </div>
+    </Card>
   )
 }

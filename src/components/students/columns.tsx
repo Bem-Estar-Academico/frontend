@@ -1,5 +1,5 @@
 import type { ColumnDef } from "@tanstack/react-table";
-import type { Student } from "./student-table";
+import type { Row } from "./student-table";
 import { Button } from "@/components/ui/button";
 import { StatusBadge } from "../ui/status-badge";
 import { Files, MoreHorizontal } from "lucide-react";
@@ -7,9 +7,20 @@ import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuIte
 import { Link } from "@tanstack/react-router";
 import { DataTableColumnHeader } from "../ui/data-table-column-header";
 
-const MASK = "******"
+const MASK = "*****"
 
-export function getColumns(masked: boolean): ColumnDef<Student>[] {
+function maskCPF(cpf: string): string {
+  const cleanCPF = cpf.replace(/\D/g, '');
+  
+  // quero o formato XXX.XXX.***-XX
+  const visiblePart = cleanCPF.slice(0, 6);
+  const hiddenPart = '***';
+  const lastPart = cleanCPF.slice(9, 11);
+
+  return `${visiblePart.slice(0, 3)}.${visiblePart.slice(3, 6)}.${hiddenPart}-${lastPart}`;
+}
+
+export function getColumns(masked: boolean): ColumnDef<Row>[] {
   return [
     {
       accessorKey: "cpf",
@@ -19,7 +30,7 @@ export function getColumns(masked: boolean): ColumnDef<Student>[] {
         const value = row.getValue("cpf") as string
         return (
           <div className="text-center">
-            {masked ? MASK : value}
+            {masked ? maskCPF(value) : value}
           </div>
         )
       },
@@ -66,31 +77,14 @@ export function getColumns(masked: boolean): ColumnDef<Student>[] {
       },
     },
     {
-      accessorKey: "progresso",
+      accessorKey: "assistenteSocial",
+      header: ({ column }) => <DataTableColumnHeader title="Assistente Social" column={column} />,
       enableGlobalFilter: false,
-      header: ({ column }) => <DataTableColumnHeader title="Progresso" column={column} />,
-      cell: ({ row }) => {
-        const progress = row.getValue("progresso") as number
-        let progressColor = "bg-gray-400"
-        if (progress > 0 && progress < 50) progressColor = "bg-yellow-400"
-        if (progress >= 50 && progress < 100) progressColor = "bg-green-400"
-        if (progress === 100) {
-          const status = row.getValue("status") as string
-          progressColor = status === "Deferido" ? "bg-green-500" : "bg-red-500"
-        }
-
-        return (
-          <div className="flex items-center justify-center gap-2 min-w-[120px]">
-            <div className="h-1 w-[50%] rounded-full bg-gray-200 dark:bg-gray-700">
-              <div
-                style={{ width: `${progress}%` }}
-                className={`h-1 rounded-full ${progressColor}`}
-              />
-            </div>
-            <span className="text-xs text-gray-500">{`${progress}%`}</span>
-          </div>
-        )
-      },
+      cell: ({ row }) => (
+        <div className="text-center">
+          {row.getValue("assistenteSocial")}
+        </div>
+      ),
     },
     {
       accessorKey: "documentos",
@@ -127,29 +121,27 @@ export function getColumns(masked: boolean): ColumnDef<Student>[] {
       cell: ({ row }) => {
         const student = row.original
         return (
- 
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="h-8 w-8 p-0 cursor-pointer">
-                  <span className="sr-only">Abrir menu</span>
-                  <MoreHorizontal className="h-4 w-4" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem className="cursor-pointer">
-                  <Link to={`/analisar/inscricao/$subscriptionId`} params={{ subscriptionId: String(student.id) }}>
-                    Analisar
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  className="cursor-pointer"
-                  disabled
-                >
-                  Ver informações
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-         
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="h-8 w-8 p-0 cursor-pointer">
+                <span className="sr-only">Abrir menu</span>
+                <MoreHorizontal className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem className="cursor-pointer">
+                <Link to={`/analisar/inscricao/$subscriptionId`} params={{ subscriptionId: String(student.id) }}>
+                  Analisar
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                className="cursor-pointer"
+                disabled
+              >
+                Ver informações
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         )
       },
       enableHiding: false,

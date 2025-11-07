@@ -13,6 +13,7 @@ import {
   type VisibilityState,
 } from "@tanstack/react-table"
 import {
+  Eye,
   EyeOff,
 } from "lucide-react"
 
@@ -66,13 +67,13 @@ const statusOptions = [
   },
 ]
 
-export type Student = {
+export type Row = {
   id: number
   cpf: string
   nome: string
   matricula: string
   status: "Pendente" | "Em Análise" | "Em Recurso" | "Deferido" | "Indeferido"
-  progresso: number
+  assistenteSocial: string
   documentos: number
   dataInscricao: string
 }
@@ -80,7 +81,7 @@ export type Student = {
 export interface StudentDataTableProps {
   initialState?: InitialTableState;
   pageSizeOptions?: number[];
-  data: Student[];
+  data: Row[];
   isLoading?: boolean;
 }
 
@@ -112,7 +113,7 @@ export function StudentDataTable({ data, initialState, pageSizeOptions = DEFAULT
     [isLoading, columns]
   );
 
-  const table = useReactTable<Student>({
+  const table = useReactTable<Row>({
     data: tableData,
     columns: tableColumns,
     onSortingChange: setSorting,
@@ -152,7 +153,7 @@ export function StudentDataTable({ data, initialState, pageSizeOptions = DEFAULT
 
         <div className="flex items-center gap-2">
           <Button variant="secondary" className="cursor-pointer" onClick={() => setMaskPersonal((v) => !v)}>
-            <EyeOff className="size-[16px]" />
+            {maskPersonal ? <Eye className="size-4" /> : <EyeOff className="size-4" />}
           </Button>
           <Button variant="secondary" className="cursor-pointer">Exportar</Button>
         </div>

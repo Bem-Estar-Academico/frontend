@@ -5,24 +5,19 @@ import { editaisQueryOptions } from '@/queries/editais';
 import { useQuery } from '@tanstack/react-query';
 import { Link } from '@tanstack/react-router'
 import { useState, useMemo } from 'react';
-import { Button } from '@/components/ui/button';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Filter } from 'lucide-react';
-import { Label } from '@/components/ui/label';
-import { Checkbox } from '@/components/ui/checkbox';
 import { studentRegistrationsQueryOptions } from '@/queries/student-registrations';
 import type { EditalResponseDTO } from '@/types/edital-response-dto';
-
+import { EditalFilter } from '@/components/edital-filter';
+import { CheckCircle2, XCircle, Utensils, Home, Baby, GraduationCap } from 'lucide-react';
 
 export function StudentEditaisList() {
   const { data: editais, isLoading, isError } = useQuery(editaisQueryOptions);
-
   const { data: studentRegistrations } = useQuery(studentRegistrationsQueryOptions());
 
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
-  const [showOpen, setShowOpen] = useState(true);
-  const [showClosed, setShowClosed] = useState(true);
+  const [statusFilter, setStatusFilter] = useState<Set<string>>(new Set());
+  const [benefitsFilter, setBenefitsFilter] = useState<Set<string>>(new Set());
   const pageSize = 5;
 
   const isEditalOpen = (edital: EditalResponseDTO) => {
@@ -31,20 +26,40 @@ export function StudentEditaisList() {
     return !edital.registration_end_date || registrationEndDate >= now;
   };
 
+  const statusOptions = [
+    { label: 'Aberto', value: 'open', icon: <CheckCircle2 className="h-4 w-4 text-green-600" /> },
+    { label: 'Fechado', value: 'closed', icon: <XCircle className="h-4 w-4 text-red-600" /> },
+  ];
+
+  const benefitsOptions = [
+    { label: 'Auxílio Alimentação', value: 'food_allowance', icon: <Utensils className="h-4 w-4" /> },
+    { label: 'Auxílio Moradia', value: 'housing_allowance', icon: <Home className="h-4 w-4" /> },
+    { label: 'Auxílio Creche', value: 'daycare_allowance', icon: <Baby className="h-4 w-4" /> },
+    { label: 'Bolsa Graduação', value: 'graduation_scholarship', icon: <GraduationCap className="h-4 w-4" /> },
+  ];
+
   const filteredEditais = useMemo(() => {
     if (!editais) return [];
     return editais.filter((edital) => {
       const matchesSearch =
         edital.title.toLowerCase().includes(search.toLowerCase()) ||
         edital.description.toLowerCase().includes(search.toLowerCase());
-      const isOpen = isEditalOpen(edital);
-      const matchesStatus = 
-        (showOpen && isOpen) || 
-        (showClosed && !isOpen);
 
-      return matchesSearch && matchesStatus;
+      const isOpen = isEditalOpen(edital);
+      const matchesStatus =
+        statusFilter.size === 0 ||
+        (statusFilter.has('open') && isOpen) ||
+        (statusFilter.has('closed') && !isOpen);
+
+      const matchesBenefits =
+        benefitsFilter.size === 0 ||
+        Array.from(benefitsFilter).every((benefit) => 
+          edital[benefit as keyof EditalResponseDTO] === true
+        );
+
+      return matchesSearch && matchesStatus && matchesBenefits;
     });
-  }, [editais, search, showOpen, showClosed]);
+  }, [editais, search, statusFilter, benefitsFilter]);
 
   if (isLoading) return <p>Carregando editais...</p>;
   if (isError) return <p>Erro ao carregar editais.</p>;
@@ -55,13 +70,11 @@ export function StudentEditaisList() {
     page * pageSize
   );
 
-  const activeFiltersCount = [!showOpen, !showClosed].filter(Boolean).length;
-
   return (
     <div className="flex flex-1 flex-col gap-7 px-10 py-6">
       <h2 className="font-bold text-2xl">Editais</h2>
 
-      <div className="max-h-fit flex gap-3">
+      <div className="flex gap-3 items-center">
         <Input
           placeholder="Buscar edital"
           value={search}
@@ -72,60 +85,25 @@ export function StudentEditaisList() {
           className="max-w-sm"
         />
         
-        <Popover>
-          <PopoverTrigger asChild>
-            <Button variant="outline" className="gap-2">
-              <Filter className="h-4 w-4" />
-              Filtros
-              {activeFiltersCount > 0 && (
-                <span className="ml-1 rounded-full bg-primary px-2 py-0.5 text-xs text-primary-foreground">
-                  {activeFiltersCount}
-                </span>
-              )}
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent className="w-64" align="start">
-            <div className="space-y-4">
-              <div className="space-y-3">
-                <h4 className="font-medium text-sm">Status do Edital</h4>
-                
-                <div className="flex items-center space-x-2">
-                  <Checkbox 
-                    id="abertos" 
-                    checked={showOpen}
-                    onCheckedChange={(checked) => {
-                      setShowOpen(!!checked);
-                      setPage(1);
-                    }}
-                  />
-                  <Label 
-                    htmlFor="abertos" 
-                    className="cursor-pointer text-sm font-normal"
-                  >
-                    Abertos
-                  </Label>
-                </div>
+        <EditalFilter
+          title="Status"
+          options={statusOptions}
+          selectedValues={statusFilter}
+          onChange={(newValues) => {
+            setStatusFilter(newValues);
+            setPage(1);
+          }}
+        />
 
-                <div className="flex items-center space-x-2">
-                  <Checkbox 
-                    id="fechados" 
-                    checked={showClosed}
-                    onCheckedChange={(checked) => {
-                      setShowClosed(!!checked);
-                      setPage(1);
-                    }}
-                  />
-                  <Label 
-                    htmlFor="fechados" 
-                    className="cursor-pointer text-sm font-normal"
-                  >
-                    Fechados
-                  </Label>
-                </div>
-              </div>
-            </div>
-          </PopoverContent>
-        </Popover>
+        <EditalFilter
+          title="Benefícios"
+          options={benefitsOptions}
+          selectedValues={benefitsFilter}
+          onChange={(newValues) => {
+            setBenefitsFilter(newValues);
+            setPage(1);
+          }}
+        />
       </div>
 
       <div className="flex flex-col gap-6">
@@ -158,5 +136,4 @@ export function StudentEditaisList() {
       <Pagination page={page} totalPages={totalPages} onPageChange={setPage} />
     </div>
   )
-  
 }

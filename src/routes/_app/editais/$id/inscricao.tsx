@@ -39,7 +39,7 @@ export function StudentRegistrationForm() {
   const navigate = useNavigate()
 
 
-  const [activeTab, setActiveTab] = useState("1");
+  const [activeTab, setActiveTab] = useState("beneficios");
 
   const beneficiosSection = useMemo(() => {
     if (!edital) return undefined;

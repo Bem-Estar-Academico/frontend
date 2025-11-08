@@ -242,7 +242,8 @@ export function ReviewSubscription() {
       })
     } else {
       const requestedAppealDocuments = Object.entries(values.appeal_documents || {}).filter(([_, v]) => v === "required").map(([k, _]) => k);
-      // console.log("Appeal documents: ", appeal);
+      
+
       updateReview({
           studentRegistrationId: Number.parseInt(studentRegistrationId),
           reviewId: review.id,
@@ -252,9 +253,10 @@ export function ReviewSubscription() {
             review: {
               notes: values.notes,
             },
-            appeal: requestedAppealDocuments.length > 0 ? {
-              requested_documents: requestedAppealDocuments,
-            } : {},
+            appeal: requestedAppealDocuments.length > 0 ? requestedAppealDocuments.reduce((acc, doc) => {
+              acc[doc] = "Por favor, envie o documento solicitado.";
+              return acc;
+            }, {} as Record<string, string>) : {},
             approved_food_allowance: values.approved_food_allowance === "true",
             approved_housing_allowance: values.approved_housing_allowance === "true",
             approved_daycare_allowance: values.approved_daycare_allowance === "true",

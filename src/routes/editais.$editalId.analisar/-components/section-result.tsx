@@ -51,7 +51,7 @@ export function SectionResult({control, offeredAllowances, requestedAllowances}:
   });
   
   return (
-   <Card className="w-full col-span-2">
+   <Card className="w-full md:col-span-2">
     <CardHeader>
       <CardTitle className="text-xl">Resultado da Análise</CardTitle>
     </CardHeader>

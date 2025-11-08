@@ -29,7 +29,7 @@ import { SectionEvaluationForm } from "./-components/section-evaluation-form";
 import { scoresSchema } from "./-components/section-scores-form";
 import { useEffect } from "react";
 
-export const Route = createFileRoute("/editais/$editalId/analisar/inscricao/$subscriptionId")({
+export const Route = createFileRoute("/editais/$editalId/analisar/inscricao_/$subscriptionId")({
   component: () => (
     <>
       <title>Análise da Inscrição</title>
@@ -325,12 +325,12 @@ export function ReviewSubscription() {
           </header>
 
           <Separator />
-          
-          <form className="bg-gray-100 h-full grid grid-cols-2 grid-rows-[auto,1fr] gap-6 flex-1 overflow-hidden p-6" onSubmit={form.handleSubmit(onSubmit, onError)}>
+
+          <form className="bg-gray-100 h-full grid grid-cols-1 md:grid-cols-2 md:grid-rows-[auto,1fr] gap-6 flex-1 overflow-hidden p-6" onSubmit={form.handleSubmit(onSubmit, onError)}>
             <SectionForm control={form.control} />
             <SectionEvaluationForm control={form.control} />
             <SectionResult control={form.control} offeredAllowances={offeredAllowances} requestedAllowances={requestedAllowances} />
-            <div className="col-span-2 h-fit flex justify-end">
+            <div className="md:col-span-2 h-fit flex justify-end">
               <Button className="w-full max-w-xs mt-4">Finalizar</Button>
             </div>
           </form>

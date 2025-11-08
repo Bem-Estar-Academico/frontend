@@ -15,13 +15,13 @@ export function SectionEvaluationForm({ control } : {control: Control<any>}) {
   return (
     <Card>
       <Tabs className="h-full" value={activeTab}>
-        <CardHeader className="flex justify-between items-center">
+        <CardHeader className="flex flex-wrap justify-between items-center">
           <CardTitle className="text-xl">
             Formulário de Avaliação
           </CardTitle>
 
           <Select value={activeTab} onValueChange={(value) => setActiveTab(value as EvaluationFormStep)} >
-            <SelectTrigger className="">
+            <SelectTrigger className="max-w-full">
               <SelectValue placeholder="Selecione a seção"  />
             </SelectTrigger>
             <SelectContent>

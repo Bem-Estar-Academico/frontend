@@ -80,7 +80,7 @@ const AppStaffSocialWorkersConsultarIvsIndexRoute =
   } as any)
 const EditaisEditalIdAnalisarInscricaoSubscriptionIdRoute =
   EditaisEditalIdAnalisarInscricaoSubscriptionIdRouteImport.update({
-    id: '/editais/$editalId/analisar/inscricao/$subscriptionId',
+    id: '/editais/$editalId/analisar/inscricao_/$subscriptionId',
     path: '/editais/$editalId/analisar/inscricao/$subscriptionId',
     getParentRoute: () => rootRouteImport,
   } as any)
@@ -130,7 +130,7 @@ export interface FileRoutesById {
   '/_app/editais/$id/inscricao': typeof AppEditaisIdInscricaoRoute
   '/_app/editais/$id/': typeof AppEditaisIdIndexRoute
   '/_app/_staff/_social-workers/consultar-ivs/$id': typeof AppStaffSocialWorkersConsultarIvsIdRoute
-  '/editais/$editalId/analisar/inscricao/$subscriptionId': typeof EditaisEditalIdAnalisarInscricaoSubscriptionIdRoute
+  '/editais/$editalId/analisar/inscricao_/$subscriptionId': typeof EditaisEditalIdAnalisarInscricaoSubscriptionIdRoute
   '/_app/_staff/_social-workers/consultar-ivs/': typeof AppStaffSocialWorkersConsultarIvsIndexRoute
 }
 export interface FileRouteTypes {
@@ -173,7 +173,7 @@ export interface FileRouteTypes {
     | '/_app/editais/$id/inscricao'
     | '/_app/editais/$id/'
     | '/_app/_staff/_social-workers/consultar-ivs/$id'
-    | '/editais/$editalId/analisar/inscricao/$subscriptionId'
+    | '/editais/$editalId/analisar/inscricao_/$subscriptionId'
     | '/_app/_staff/_social-workers/consultar-ivs/'
   fileRoutesById: FileRoutesById
 }
@@ -264,8 +264,8 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppStaffSocialWorkersConsultarIvsIndexRouteImport
       parentRoute: typeof AppStaffRoute
     }
-    '/editais/$editalId/analisar/inscricao/$subscriptionId': {
-      id: '/editais/$editalId/analisar/inscricao/$subscriptionId'
+    '/editais/$editalId/analisar/inscricao_/$subscriptionId': {
+      id: '/editais/$editalId/analisar/inscricao_/$subscriptionId'
       path: '/editais/$editalId/analisar/inscricao/$subscriptionId'
       fullPath: '/editais/$editalId/analisar/inscricao/$subscriptionId'
       preLoaderRoute: typeof EditaisEditalIdAnalisarInscricaoSubscriptionIdRouteImport

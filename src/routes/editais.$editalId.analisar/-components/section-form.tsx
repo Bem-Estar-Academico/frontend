@@ -169,13 +169,13 @@ export function SectionForm({ control } : {control: Control<any>}) {
   return (
     <Card>
       <Tabs className="h-full" value={activeTab} onValueChange={setActiveTab}>
-        <CardHeader className="flex justify-between items-center">
+        <CardHeader className="flex flex-wrap gap-2 justify-between items-center">
           <CardTitle className="text-xl">
             Inscrição do Estudante
           </CardTitle>
   
           <Select value={activeTab} onValueChange={setActiveTab} >
-            <SelectTrigger className="">
+            <SelectTrigger className="max-w-full">
               <SelectValue placeholder="Selecione a seção"  />
             </SelectTrigger>
             <SelectContent>
@@ -195,7 +195,7 @@ export function SectionForm({ control } : {control: Control<any>}) {
           </CardDescription> */}
         
         </CardHeader>
-        <CardContent className="mt-4">
+        <CardContent className="mt-6">
           {formData.sections.map((section, sectionIdx) => (
             <TabsContent value={section.id} className="mb-6 h-full overflow-auto" key={section.id}>
 

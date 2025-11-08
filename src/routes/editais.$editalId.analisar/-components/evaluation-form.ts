@@ -78,7 +78,7 @@ export const evaluationForm =  [
         ],
     },
     {
-        key: 'criteria5',
+        key: 'criteria9',
         question: 'Conexão de internet em casa',
         options: [
             {

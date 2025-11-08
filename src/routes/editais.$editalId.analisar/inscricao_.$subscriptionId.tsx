@@ -241,6 +241,8 @@ export function ReviewSubscription() {
         }
       })
     } else {
+      const requestedAppealDocuments = Object.entries(values.appeal_documents || {}).filter(([_, v]) => v === "required").map(([k, _]) => k);
+      // console.log("Appeal documents: ", appeal);
       updateReview({
           studentRegistrationId: Number.parseInt(studentRegistrationId),
           reviewId: review.id,
@@ -250,9 +252,9 @@ export function ReviewSubscription() {
             review: {
               notes: values.notes,
             },
-            appeal: {
-              "cad_unico": "a"
-            },
+            appeal: requestedAppealDocuments.length > 0 ? {
+              requested_documents: requestedAppealDocuments,
+            } : {},
             approved_food_allowance: values.approved_food_allowance === "true",
             approved_housing_allowance: values.approved_housing_allowance === "true",
             approved_daycare_allowance: values.approved_daycare_allowance === "true",
@@ -299,7 +301,7 @@ export function ReviewSubscription() {
                 <Button  variant={'ghost'}  asChild>
                   <Link to="/editais/$id" params={ { id: editalId } }> <IconArrowLeft size={18} /> Voltar</Link>
                 </Button>
-                <h2 className="text-lg font-semibold">Análisar Inscrição</h2>
+                <h2 className="text-lg font-semibold">Analisar Inscrição</h2>
                 <Badge className="ml-8 font-semibold">Inscrição #{studentRegistration.id}</Badge>
                 <Separator orientation="vertical" className="data-[orientation=vertical]:h-6" />
                 <div className="flex gap-12 items-center">

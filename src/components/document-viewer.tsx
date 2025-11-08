@@ -1,4 +1,4 @@
-import { IconFileX, IconLoader2 } from "@tabler/icons-react";
+import { IconFileX } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
 import { Spinner } from "./ui/spinner";
 
@@ -37,7 +37,8 @@ const DocumentViewer = ({ url, title }: DocumentViewerProps) => {
         </div>
       )}
       <iframe
-      src={`${url}#view=fitH`}
+      src={`${url}`}
+      allow="fullscreen"
       title={title || "Documento"}
       className="w-full h-full border-0"
       onLoad={() => setIsLoading(false)}

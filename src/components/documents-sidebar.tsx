@@ -13,9 +13,7 @@ import {
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar"
 import { ChevronDown, ChevronUp, Files } from "lucide-react"
-import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "./ui/dialog"
-import { Label } from "./ui/label"
-import { Input } from "./ui/input"
+import { Dialog, DialogClose, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "./ui/dialog"
 import { Button } from "./ui/button"
 import { useState } from "react"
 import DocumentViewer from "./document-viewer"
@@ -96,7 +94,7 @@ export function DocumentsSidebar({data, activeDocumentId}: Readonly<DocumentsSid
             </SidebarGroupContent>
           </SidebarGroup>
         </SidebarContent>
-        <DialogContent  className="px-6 sm:max-w-screen-md xl:max-w-screen-xl">
+        <DialogContent   className="px-6 sm:max-w-3xl xl:max-w-7xl">
           <DialogHeader>
             <DialogTitle>{selectedDocument?.title}</DialogTitle>
           </DialogHeader>

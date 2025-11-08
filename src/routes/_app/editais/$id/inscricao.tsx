@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { useState, useCallback, useEffect, useMemo } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -37,7 +37,6 @@ export function StudentRegistrationForm() {
     resolver: zodResolver(formSchema),
     defaultValues: getInitialValues(),
   })  
-  const navigate = useNavigate()
 
   const [activeTab, setActiveTab] = useState(formData.sections[0].id);
 

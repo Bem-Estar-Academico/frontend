@@ -1,3 +1,5 @@
+import type { Student } from "./student-dto"
+
 export type Review = {
   id: number,
   status: "PENDING" | "APPROVED" | "REJECTED" | "APPEAL" | "ANALISYS" | "CANCELLED",
@@ -18,5 +20,12 @@ export type Notice = {
 
 export type StudentRegistrationDTO = {
   notice: Notice,
-  review: Review,
+  review: Review, 
+  requested_daycare_allowance: boolean,
+  requested_food_allowance: boolean,
+  requested_graduation_scholarship: boolean,
+  requested_housing_allowance: boolean,
+  student: Student
+  answer: Record<string, any>,
+  id: number,
 }

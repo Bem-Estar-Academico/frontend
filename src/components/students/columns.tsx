@@ -110,7 +110,7 @@ export function getColumns(masked: boolean): ColumnDef<Item>[] {
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
                 <DropdownMenuItem className="cursor-pointer" asChild>
-                  <Link to={`/editais/$editalId/analisar/inscricao/$subscriptionId`} params={{ subscriptionId: String(registration.registration_id), editalId: String(registration.editalId)}}>
+                  <Link to={`/analisar/inscricao/$subscriptionId`} params={{ subscriptionId: String(registration.registration_id) }}>
                     Analisar
                   </Link>
                 </DropdownMenuItem>

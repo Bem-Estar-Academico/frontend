@@ -5,7 +5,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import z from "zod";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { FormFields } from "../inscricao_.$subscriptionId";
-import { useEffect } from "react";
 
 export const resultSchema = z.object({
     approved_food_allowance: z.string().optional(),

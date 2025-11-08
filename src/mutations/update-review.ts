@@ -10,7 +10,7 @@ export const updateReviewMutationOptions = mutationOptions({
 
         return response.data;
     },
-    onSuccess: (data, { studentRegistrationId }) => {
+    onSuccess: (_data, { studentRegistrationId }) => {
         queryClient.invalidateQueries({queryKey: ['student-registrations', studentRegistrationId, 'review']});
     }
 

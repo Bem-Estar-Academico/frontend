@@ -3,7 +3,6 @@ import RegistrationStatusGraphic from "@/components/registration-status-graphic"
 import { editalQueryOptions } from "@/queries/edital";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { noticeRegistrationsQueryOptions } from "@/queries/notice-registrations";
-import type { Registration } from "@/types/students-registration";
 
 import { Route } from ".";
 
@@ -26,17 +25,17 @@ export function StaffEditaisComponent() {
     { name: "Em Recurso", value: noticeRegistrations.appeal_count || 100, color: "var(--color-blue-500)" },
   ]
 
-  const statusTranslation: Record<
-    Registration["status"],
-    "Pendente" | "Deferido" | "Indeferido" | "Em Recurso" | "Em Análise"
-  > = {
-    PENDING: "Pendente",
-    APPROVED: "Deferido",
-    REJECTED: "Indeferido",
-    APPEAL: "Em Recurso",
-    REVIEW: "Em Análise",
-    CANCELLED: "Indeferido"
-  };
+  // const statusTranslation: Record<
+  //   Registration["status"],
+  //   "Pendente" | "Deferido" | "Indeferido" | "Em Recurso" | "Em Análise"
+  // > = {
+  //   PENDING: "Pendente",
+  //   APPROVED: "Deferido",
+  //   REJECTED: "Indeferido",
+  //   APPEAL: "Em Recurso",
+  //   REVIEW: "Em Análise",
+  //   CANCELLED: "Indeferido"
+  // };
 
   const registrations: Item[] = noticeRegistrations.registrations.map(
     (registration) => ({

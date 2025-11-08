@@ -36,11 +36,11 @@ export function StudentHome() {
   const { data: studentRegistrations, isLoading, error } = useQuery(studentRegistrationsQueryOptions());
 
   const currentRegistration = studentRegistrations?.filter(reg => 
-    reg.review.status === "PENDING" || reg.review.status === "REVIEW" || reg.review.status === "APPEAL"
+    reg.review?.status === "PENDING" || reg.review?.status === "ANALISYS" || reg.review?.status === "APPEAL"
   ) || [];
   
   const pastRegistrations = studentRegistrations?.filter(reg => 
-    reg.review.status === "APPROVED" || reg.review.status === "REJECTED"
+    reg.review?.status === "APPROVED" || reg.review?.status === "REJECTED"
   ) || [];
 
   if (isLoading) {
@@ -117,8 +117,8 @@ interface CurrentRegistrationCardProps {
 }
 
 function CurrentRegistrationCard({ registration }: CurrentRegistrationCardProps) {
-  const statusVariant = registration.review.status.toLowerCase() as "pending" | "review" | "appeal" | "approved" | "rejected"
-  const shouldUpload = registration.review.status === "REVIEW"
+  const statusVariant = registration.review?.status.toLowerCase() as "pending" | "review" | "appeal" | "approved" | "rejected"
+  const shouldUpload = registration.review?.status === "PENDING"
 
   return (
     <Card>

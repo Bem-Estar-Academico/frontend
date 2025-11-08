@@ -16,6 +16,7 @@ import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
 import { createStudentRegistrationMutationOptions } from "@/mutations/create-student-registration";
 import { CreateStudentRegistrationFormSidebar } from "./-sidebar";
 import { editalQueryOptions } from "@/queries/edital";
+import { api } from "@/api";
 
 
 export const Route = createFileRoute("/_app/editais/$id/inscricao")({
@@ -31,15 +32,14 @@ export function StudentRegistrationForm() {
 
   const { id } = Route.useParams()
   const { data: edital } = useSuspenseQuery(editalQueryOptions(Number(id)));
-  const { mutateAsync } = useMutation(createStudentRegistrationMutationOptions);
+  const { mutateAsync: createStudentRegistration } = useMutation(createStudentRegistrationMutationOptions);
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: getInitialValues(),
   })  
   const navigate = useNavigate()
 
-
-  const [activeTab, setActiveTab] = useState("1");
+  const [activeTab, setActiveTab] = useState(formData.sections[0].id);
 
   const beneficiosSection = useMemo(() => {
     if (!edital) return undefined;
@@ -220,7 +220,7 @@ export function StudentRegistrationForm() {
           <FormField
             control={form.control}
             key={question.id}
-            name={question.id}
+            name={`files.${question.id}`}
             render={({ field }) => (
               <FormItem className="space-y-3">
                 <FormLabel isRequired={question.required}>{question.question}</FormLabel>
@@ -255,17 +255,29 @@ export function StudentRegistrationForm() {
   const onSubmit = async (values: FormValues) => {
     try {
       const requested_benefits = (values.requested_benefits || []) as Array<string>;
+      const {files, ...answer} = values;
       const data = {
-        answer: values,
+        answer,
         requested_food_allowance: requested_benefits.includes('food_allowance'),
         requested_housing_allowance: requested_benefits.includes('housing_allowance'),
         requested_daycare_allowance: requested_benefits.includes('daycare_allowance'),
         requested_graduation_scholarship: requested_benefits.includes('graduation_scholarship'),
       }
-      await mutateAsync({ editalId: Number.parseInt(id), data});
+
+      const registration = await createStudentRegistration({ editalId: Number.parseInt(id), data});
+
+      if (files) {
+        const uploadPromises = Object.keys(files).map((key) => {
+          const formData = new FormData();
+          formData.append("file", files[key]);
+          formData.append("description", key);
+          return api.post(`/student-documents/registration/${registration.id}/upload`, formData);
+        });
+        await Promise.all(uploadPromises);
+      }
 
       toast.success("Inscrição realizada com sucesso!")
-      navigate({ to: "/" });
+      // navigate({ to: "/" });
     } catch(error: any) {
       console.error(error);
       toast.error("Ocorreu um erro ao enviar sua inscrição. Por favor, tente novamente.");
@@ -301,7 +313,7 @@ export function StudentRegistrationForm() {
               </div>
               {beneficiosSection.description && (
                 <div className="p-4">
-                  <p className="text-xs font-[400] text-gray-500">{beneficiosSection.description}</p>
+                  <p className="text-xs text-gray-500">{beneficiosSection.description}</p>
                 </div>
               )}
 
@@ -321,7 +333,7 @@ export function StudentRegistrationForm() {
               {/* Description */}
               {section.description && (
                 <div className="p-4">
-                  <p className="text-xs font-[400] text-gray-500">
+                  <p className="text-xs text-gray-500">
                     {section.description}
                   </p>
                 </div>

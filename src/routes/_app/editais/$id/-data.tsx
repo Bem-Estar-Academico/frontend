@@ -779,7 +779,7 @@ export const simpleFormData: FormDataStructure =  {
             { id: "outra", label: "Estou cursando ou concluí outra graduação." }
           ]
         },
-        { // ! Revisar pergunta, pois pode estar repetida.
+        { 
           id: "curso_instituicao",
           question: "Se está cursando ou concluiu outra graduação, especifique o curso e a instituição:",
           type: "text",
@@ -796,10 +796,18 @@ export const simpleFormData: FormDataStructure =  {
             { id: "pub_priv_bolsa", label: "Escola pública e escola privada com bolsa integral" },
             { id: "pub_priv", label: "Escola pública e escola privada" }
           ]
-        }
+        },
+        {
+          id: "documento_identificacao",
+          question: "RG ou CNH (frente e verso) em um único arquivo PDF.",
+          type: "file",
+          required: true,
+          accept: "application/pdf",
+          maxSize: 10485760
+        },
       ]
     },
-     {
+    {
       id: "saude_estudante_e_nucleo_familiar",
       title: "Saúde do Estudante e do Núcleo Familiar",
       questions: [
@@ -879,6 +887,14 @@ export const simpleFormData: FormDataStructure =  {
           type: "textarea",
           required: false,
           placeholder: "Comente se desejar..."
+        },
+        {
+          id: "comprovante_residencia",
+          question: "Comprovante de residência em um único arquivo PDF",
+          type: "file",
+          required: true,
+          accept: "application/pdf",
+          maxSize: 10485760
         }
       ]
     },

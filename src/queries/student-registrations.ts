@@ -2,8 +2,8 @@ import { api } from "@/api";
 import type { StudentRegistrationDTO } from "@/types/student-registration";
 import { queryOptions } from "@tanstack/react-query";
 
-export const studentRegistrationsQueryOptions = () => queryOptions({
-    queryKey: ['my-registrations'],
+export const studentRegistrationsQueryOptions = () => queryOptions({    
+    queryKey: ['profile', 'student-registrations'],
     queryFn: () => fetchStudentRegistrations()
 })
 

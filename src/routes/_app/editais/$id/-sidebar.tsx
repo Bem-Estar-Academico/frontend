@@ -38,7 +38,7 @@ export function CreateStudentRegistrationFormSidebar({
         case "checkbox-single":
           return value === true;
         case "file":
-          return value instanceof File;
+          return form.getValues(`files.${question.id}`) != null;
         default:
           return false;
       }

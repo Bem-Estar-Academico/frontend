@@ -1,10 +1,10 @@
-import { StudentDataTable } from "@/components/students/student-table";
+import { RegistrationsDataTable, type Item } from "@/components/students/registrations-data-table";
 import RegistrationStatusGraphic from "@/components/registration-status-graphic";
 import { editalQueryOptions } from "@/queries/edital";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { noticeRegistrationsQueryOptions } from "@/queries/notice-registrations";
 import type { Registration } from "@/types/students-registration";
-import type { RegistrationItem } from "@/types/notice-registrations";
+
 import { Route } from ".";
 
 export function StaffEditaisComponent() {
@@ -38,16 +38,16 @@ export function StaffEditaisComponent() {
     CANCELLED: "Indeferido"
   };
 
-  const students = noticeRegistrations.registrations.map(
-    (registration: RegistrationItem) => ({
-      id: registration.student.id,
+  const registrations: Item[] = noticeRegistrations.registrations.map(
+    (registration) => ({
+      registration_id: registration.id,
       cpf: registration.student.cpf,
-      nome: registration.student.full_name,
-      matricula: registration.student.registration_number,
-      status: registration.review ? statusTranslation[registration.review.status as Registration["status"]] : "Pendente",
-      progresso: registration.review ? registration.review.progress : 0,
-      documentos: registration.review ? registration.review.qtd_document : 0,
-      dataInscricao: registration.registration_date ? registration.registration_date : new Date().toISOString(),
+      full_name: registration.student.name,
+      registration_number: registration.student.registration_number,
+      status: registration.review.status,
+      qtd_documents: registration.review ? registration.review.qtd_document : 0,
+      registration_date: registration.registration_date ? registration.registration_date : new Date().toISOString(),
+      editalId: String(edital.id),
     })
   );
 
@@ -125,7 +125,7 @@ export function StaffEditaisComponent() {
         </div>
       </section>
       <section>
-        <StudentDataTable data={students} />
+        <RegistrationsDataTable data={registrations} />
       </section>
     </div>
   );

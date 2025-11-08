@@ -15,12 +15,12 @@ import { Route as AuthLoginRouteImport } from './routes/_auth/login'
 import { Route as AuthCadastroRouteImport } from './routes/_auth/cadastro'
 import { Route as AppStaffRouteImport } from './routes/_app/_staff'
 import { Route as AppEditaisIndexRouteImport } from './routes/_app/editais/index'
-import { Route as AnalisarInscricaoSubscriptionIdRouteImport } from './routes/analisar/inscricao.$subscriptionId'
 import { Route as AppEditaisCriarRouteImport } from './routes/_app/editais/criar'
 import { Route as AppEditaisIdIndexRouteImport } from './routes/_app/editais/$id/index'
 import { Route as AppEditaisIdInscricaoRouteImport } from './routes/_app/editais/$id/inscricao'
 import { Route as AppStaffCoordinatorEquipeRouteImport } from './routes/_app/_staff/_coordinator/equipe'
 import { Route as AppStaffSocialWorkersConsultarIvsIndexRouteImport } from './routes/_app/_staff/_social-workers/consultar-ivs/index'
+import { Route as EditaisEditalIdAnalisarInscricaoSubscriptionIdRouteImport } from './routes/editais.$editalId.analisar/inscricao_.$subscriptionId'
 import { Route as AppStaffSocialWorkersConsultarIvsIdRouteImport } from './routes/_app/_staff/_social-workers/consultar-ivs/$id'
 
 const AppRoute = AppRouteImport.update({
@@ -51,12 +51,6 @@ const AppEditaisIndexRoute = AppEditaisIndexRouteImport.update({
   path: '/editais/',
   getParentRoute: () => AppRoute,
 } as any)
-const AnalisarInscricaoSubscriptionIdRoute =
-  AnalisarInscricaoSubscriptionIdRouteImport.update({
-    id: '/analisar/inscricao/$subscriptionId',
-    path: '/analisar/inscricao/$subscriptionId',
-    getParentRoute: () => rootRouteImport,
-  } as any)
 const AppEditaisCriarRoute = AppEditaisCriarRouteImport.update({
   id: '/editais/criar',
   path: '/editais/criar',
@@ -84,6 +78,12 @@ const AppStaffSocialWorkersConsultarIvsIndexRoute =
     path: '/consultar-ivs/',
     getParentRoute: () => AppStaffRoute,
   } as any)
+const EditaisEditalIdAnalisarInscricaoSubscriptionIdRoute =
+  EditaisEditalIdAnalisarInscricaoSubscriptionIdRouteImport.update({
+    id: '/editais/$editalId/analisar/inscricao/$subscriptionId',
+    path: '/editais/$editalId/analisar/inscricao/$subscriptionId',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const AppStaffSocialWorkersConsultarIvsIdRoute =
   AppStaffSocialWorkersConsultarIvsIdRouteImport.update({
     id: '/_social-workers/consultar-ivs/$id',
@@ -96,12 +96,12 @@ export interface FileRoutesByFullPath {
   '/cadastro': typeof AuthCadastroRoute
   '/login': typeof AuthLoginRoute
   '/editais/criar': typeof AppEditaisCriarRoute
-  '/analisar/inscricao/$subscriptionId': typeof AnalisarInscricaoSubscriptionIdRoute
   '/editais': typeof AppEditaisIndexRoute
   '/equipe': typeof AppStaffCoordinatorEquipeRoute
   '/editais/$id/inscricao': typeof AppEditaisIdInscricaoRoute
   '/editais/$id': typeof AppEditaisIdIndexRoute
   '/consultar-ivs/$id': typeof AppStaffSocialWorkersConsultarIvsIdRoute
+  '/editais/$editalId/analisar/inscricao/$subscriptionId': typeof EditaisEditalIdAnalisarInscricaoSubscriptionIdRoute
   '/consultar-ivs': typeof AppStaffSocialWorkersConsultarIvsIndexRoute
 }
 export interface FileRoutesByTo {
@@ -109,12 +109,12 @@ export interface FileRoutesByTo {
   '/cadastro': typeof AuthCadastroRoute
   '/login': typeof AuthLoginRoute
   '/editais/criar': typeof AppEditaisCriarRoute
-  '/analisar/inscricao/$subscriptionId': typeof AnalisarInscricaoSubscriptionIdRoute
   '/editais': typeof AppEditaisIndexRoute
   '/equipe': typeof AppStaffCoordinatorEquipeRoute
   '/editais/$id/inscricao': typeof AppEditaisIdInscricaoRoute
   '/editais/$id': typeof AppEditaisIdIndexRoute
   '/consultar-ivs/$id': typeof AppStaffSocialWorkersConsultarIvsIdRoute
+  '/editais/$editalId/analisar/inscricao/$subscriptionId': typeof EditaisEditalIdAnalisarInscricaoSubscriptionIdRoute
   '/consultar-ivs': typeof AppStaffSocialWorkersConsultarIvsIndexRoute
 }
 export interface FileRoutesById {
@@ -125,12 +125,12 @@ export interface FileRoutesById {
   '/_auth/cadastro': typeof AuthCadastroRoute
   '/_auth/login': typeof AuthLoginRoute
   '/_app/editais/criar': typeof AppEditaisCriarRoute
-  '/analisar/inscricao/$subscriptionId': typeof AnalisarInscricaoSubscriptionIdRoute
   '/_app/editais/': typeof AppEditaisIndexRoute
   '/_app/_staff/_coordinator/equipe': typeof AppStaffCoordinatorEquipeRoute
   '/_app/editais/$id/inscricao': typeof AppEditaisIdInscricaoRoute
   '/_app/editais/$id/': typeof AppEditaisIdIndexRoute
   '/_app/_staff/_social-workers/consultar-ivs/$id': typeof AppStaffSocialWorkersConsultarIvsIdRoute
+  '/editais/$editalId/analisar/inscricao/$subscriptionId': typeof EditaisEditalIdAnalisarInscricaoSubscriptionIdRoute
   '/_app/_staff/_social-workers/consultar-ivs/': typeof AppStaffSocialWorkersConsultarIvsIndexRoute
 }
 export interface FileRouteTypes {
@@ -140,12 +140,12 @@ export interface FileRouteTypes {
     | '/cadastro'
     | '/login'
     | '/editais/criar'
-    | '/analisar/inscricao/$subscriptionId'
     | '/editais'
     | '/equipe'
     | '/editais/$id/inscricao'
     | '/editais/$id'
     | '/consultar-ivs/$id'
+    | '/editais/$editalId/analisar/inscricao/$subscriptionId'
     | '/consultar-ivs'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -153,12 +153,12 @@ export interface FileRouteTypes {
     | '/cadastro'
     | '/login'
     | '/editais/criar'
-    | '/analisar/inscricao/$subscriptionId'
     | '/editais'
     | '/equipe'
     | '/editais/$id/inscricao'
     | '/editais/$id'
     | '/consultar-ivs/$id'
+    | '/editais/$editalId/analisar/inscricao/$subscriptionId'
     | '/consultar-ivs'
   id:
     | '__root__'
@@ -168,12 +168,12 @@ export interface FileRouteTypes {
     | '/_auth/cadastro'
     | '/_auth/login'
     | '/_app/editais/criar'
-    | '/analisar/inscricao/$subscriptionId'
     | '/_app/editais/'
     | '/_app/_staff/_coordinator/equipe'
     | '/_app/editais/$id/inscricao'
     | '/_app/editais/$id/'
     | '/_app/_staff/_social-workers/consultar-ivs/$id'
+    | '/editais/$editalId/analisar/inscricao/$subscriptionId'
     | '/_app/_staff/_social-workers/consultar-ivs/'
   fileRoutesById: FileRoutesById
 }
@@ -182,7 +182,7 @@ export interface RootRouteChildren {
   AppRoute: typeof AppRouteWithChildren
   AuthCadastroRoute: typeof AuthCadastroRoute
   AuthLoginRoute: typeof AuthLoginRoute
-  AnalisarInscricaoSubscriptionIdRoute: typeof AnalisarInscricaoSubscriptionIdRoute
+  EditaisEditalIdAnalisarInscricaoSubscriptionIdRoute: typeof EditaisEditalIdAnalisarInscricaoSubscriptionIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -229,13 +229,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppEditaisIndexRouteImport
       parentRoute: typeof AppRoute
     }
-    '/analisar/inscricao/$subscriptionId': {
-      id: '/analisar/inscricao/$subscriptionId'
-      path: '/analisar/inscricao/$subscriptionId'
-      fullPath: '/analisar/inscricao/$subscriptionId'
-      preLoaderRoute: typeof AnalisarInscricaoSubscriptionIdRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/_app/editais/criar': {
       id: '/_app/editais/criar'
       path: '/editais/criar'
@@ -270,6 +263,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/consultar-ivs'
       preLoaderRoute: typeof AppStaffSocialWorkersConsultarIvsIndexRouteImport
       parentRoute: typeof AppStaffRoute
+    }
+    '/editais/$editalId/analisar/inscricao/$subscriptionId': {
+      id: '/editais/$editalId/analisar/inscricao/$subscriptionId'
+      path: '/editais/$editalId/analisar/inscricao/$subscriptionId'
+      fullPath: '/editais/$editalId/analisar/inscricao/$subscriptionId'
+      preLoaderRoute: typeof EditaisEditalIdAnalisarInscricaoSubscriptionIdRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/_app/_staff/_social-workers/consultar-ivs/$id': {
       id: '/_app/_staff/_social-workers/consultar-ivs/$id'
@@ -322,7 +322,8 @@ const rootRouteChildren: RootRouteChildren = {
   AppRoute: AppRouteWithChildren,
   AuthCadastroRoute: AuthCadastroRoute,
   AuthLoginRoute: AuthLoginRoute,
-  AnalisarInscricaoSubscriptionIdRoute: AnalisarInscricaoSubscriptionIdRoute,
+  EditaisEditalIdAnalisarInscricaoSubscriptionIdRoute:
+    EditaisEditalIdAnalisarInscricaoSubscriptionIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

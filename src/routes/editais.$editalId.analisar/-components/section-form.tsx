@@ -1,10 +1,9 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import formData, { type FormQuestion } from "@/routes/_app/editais/$id/-data";
 import { useCallback, useState } from "react";
@@ -172,7 +171,7 @@ export function SectionForm({ control } : {control: Control<any>}) {
       <Tabs className="h-full" value={activeTab} onValueChange={setActiveTab}>
         <CardHeader className="flex justify-between items-center">
           <CardTitle className="text-xl">
-            Formulário de Inscrição
+            Inscrição do Estudante
           </CardTitle>
   
           <Select value={activeTab} onValueChange={setActiveTab} >

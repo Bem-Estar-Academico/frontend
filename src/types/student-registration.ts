@@ -1,8 +1,9 @@
 export type Review = {
   id: number,
-  status: "PENDING" | "REVIEW" | "APPEAL" | "APPROVED" | "REJECTED",
+  status: "PENDING" | "APPROVED" | "REJECTED" | "APPEAL" | "ANALISYS" | "CANCELLED",
   ivs: number,
   expires_at: string,
+  qtd_documents: number,
 }
 
 export type Notice = {

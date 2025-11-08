@@ -5,7 +5,7 @@ export interface Reviewer {
 
 export interface Review {
   progress: number;
-  status: string;
+  status: "PENDING" | "APPROVED" | "REJECTED" | "APPEAL" | "ANALISYS" | "CANCELLED";
   qtd_document: number;
   reviewer: Reviewer;
 }
@@ -13,7 +13,7 @@ export interface Review {
 export interface StudentInfo {
   id: number;
   cpf: string;
-  full_name: string;
+  name: string;
   registration_number: string;
   created_at: string;
 }

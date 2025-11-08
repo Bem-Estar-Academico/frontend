@@ -1,4 +1,6 @@
-import type { Student, StudentRegistration } from "./student-registration"
+import type { Student } from "./student-dto"
+import type { StudentRegistrationDTO } from "./student-registration"
+
 
 
 export type ReviewRegistration = {
@@ -28,6 +30,6 @@ export type Appeal = {
 export type ReviewRegistrationResponseDTO = ReviewRegistration & {
   
   social_worker: Pick<Student, 'id' | 'email' | 'full_name' | 'user_type'>,
-  student_registration: StudentRegistration,
+  student_registration: StudentRegistrationDTO,
   appeals: Appeal[]
 }

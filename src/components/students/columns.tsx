@@ -1,15 +1,15 @@
 import type { ColumnDef } from "@tanstack/react-table";
-import type { Student } from "./student-table";
 import { Button } from "@/components/ui/button";
 import { StatusBadge } from "../ui/status-badge";
 import { Files, MoreHorizontal } from "lucide-react";
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { Link } from "@tanstack/react-router";
 import { DataTableColumnHeader } from "../ui/data-table-column-header";
+import type { Item } from "./registrations-data-table";
 
 const MASK = "******"
 
-export function getColumns(masked: boolean): ColumnDef<Student>[] {
+export function getColumns(masked: boolean): ColumnDef<Item>[] {
   return [
     {
       accessorKey: "cpf",
@@ -25,20 +25,20 @@ export function getColumns(masked: boolean): ColumnDef<Student>[] {
       },
     },
     {
-      accessorKey: "nome",
+      accessorKey: "full_name",
       enableGlobalFilter: true,
       header: ({ column }) => <DataTableColumnHeader column={column} title="Nome" />,
       cell: ({ row }) => {
-        const value = row.getValue("nome") as string
+        const value = row.getValue("full_name") as string
         return <div className="text-center">{masked ? MASK : value}</div>
       },
     },
     {
-      accessorKey: "matricula",
+      accessorKey: "registration_number",
       header: ({ column }) => <DataTableColumnHeader title="Matrícula" column={column} />,
       enableGlobalFilter: true,
       cell: ({ row }) => {
-        const value = row.getValue("matricula") as string
+        const value = row.getValue("registration_number") as string
         return <div className="text-center">{masked ? MASK : value}</div>
       },
     },
@@ -66,49 +66,22 @@ export function getColumns(masked: boolean): ColumnDef<Student>[] {
       },
     },
     {
-      accessorKey: "progresso",
-      enableGlobalFilter: false,
-      header: ({ column }) => <DataTableColumnHeader title="Progresso" column={column} />,
-      cell: ({ row }) => {
-        const progress = row.getValue("progresso") as number
-        let progressColor = "bg-gray-400"
-        if (progress > 0 && progress < 50) progressColor = "bg-yellow-400"
-        if (progress >= 50 && progress < 100) progressColor = "bg-green-400"
-        if (progress === 100) {
-          const status = row.getValue("status") as string
-          progressColor = status === "Deferido" ? "bg-green-500" : "bg-red-500"
-        }
-
-        return (
-          <div className="flex items-center justify-center gap-2 min-w-[120px]">
-            <div className="h-1 w-[50%] rounded-full bg-gray-200 dark:bg-gray-700">
-              <div
-                style={{ width: `${progress}%` }}
-                className={`h-1 rounded-full ${progressColor}`}
-              />
-            </div>
-            <span className="text-xs text-gray-500">{`${progress}%`}</span>
-          </div>
-        )
-      },
-    },
-    {
-      accessorKey: "documentos",
+      accessorKey: "qtd_documents",
       header: ({ column }) => <DataTableColumnHeader title="Documentos" column={column} />,
       enableGlobalFilter: false,
       cell: ({ row }) => (
         <div className="flex items-center justify-center text-gray-600">
           <Files className="mr-2 h-4 w-4 text-gray-400" />
-          {row.getValue("documentos")}
+          {row.getValue("qtd_documents")}
         </div>
       ),
     },
     {
-      accessorKey: "dataInscricao",
+      accessorKey: "registration_date",
       enableGlobalFilter: false,
       header: ({ column }) => <DataTableColumnHeader title="Data de Inscrição" column={column} />,
       cell: ({ row }) => {
-        const date = new Date(row.getValue("dataInscricao"))
+        const date = new Date(row.getValue("registration_date"))
         const formattedDate = new Intl.DateTimeFormat("pt-BR", {
           day: "2-digit",
           month: "2-digit",
@@ -125,7 +98,7 @@ export function getColumns(masked: boolean): ColumnDef<Student>[] {
       id: "actions",
       enableGlobalFilter: false,
       cell: ({ row }) => {
-        const student = row.original
+        const registration = row.original
         return (
  
             <DropdownMenu>
@@ -136,8 +109,8 @@ export function getColumns(masked: boolean): ColumnDef<Student>[] {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <DropdownMenuItem className="cursor-pointer">
-                  <Link to={`/analisar/inscricao/$subscriptionId`} params={{ subscriptionId: String(student.id) }}>
+                <DropdownMenuItem className="cursor-pointer" asChild>
+                  <Link to={`/editais/$editalId/analisar/inscricao/$subscriptionId`} params={{ subscriptionId: String(registration.registration_id), editalId: String(registration.editalId)}}>
                     Analisar
                   </Link>
                 </DropdownMenuItem>

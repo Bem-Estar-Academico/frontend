@@ -3,17 +3,17 @@ import {
   type DocumentsSidebarProps,
 } from "@/components/documents-sidebar";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { IconArrowLeft } from "@tabler/icons-react";
 import { Separator } from "@/components/ui/separator"
 import {
   SidebarInset,
 } from "@/components/ui/sidebar"
 import { Button } from "@/components/ui/button";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { resultSchema, SectionResult } from "./-components/section-result";
+import { appeal_documents, resultSchema, SectionResult } from "./-components/section-result";
 import { SectionForm } from "./-components/section-form";
 import { criteriaSchema, SectionCriteria } from "./-components/section-criteria";
 import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
@@ -25,13 +25,21 @@ import { queryClient } from "@/main";
 import { studentRegistrationQueryOptions } from "@/queries/student-registration";
 import { Badge } from "@/components/ui/badge";
 import { studentRegistrationDocumentsQueryOptions } from "@/queries/student-documents";
+import { SectionEvaluationForm } from "./-components/section-evaluation-form";
+import { scoresSchema } from "./-components/section-scores-form";
+import { useEffect } from "react";
 
-export const Route = createFileRoute("/analisar/inscricao/$subscriptionId")({
-  component: ReviewSubscription,
+export const Route = createFileRoute("/editais/$editalId/analisar/inscricao/$subscriptionId")({
+  component: () => (
+    <>
+      <title>Análise da Inscrição</title>
+      <ReviewSubscription />
+    </>
+  ),
   loader: async ({ params }) => {
-    const { subscriptionId } = params;
+    const { subscriptionId, editalId } = params;
     await Promise.all([
-      queryClient.ensureQueryData(editalQueryOptions(Number.parseInt(subscriptionId))),
+      queryClient.ensureQueryData(editalQueryOptions(Number.parseInt(editalId))),
       queryClient.ensureQueryData(studentRegistrationReviewQueryOptions(Number.parseInt(subscriptionId))),
       queryClient.ensureQueryData(studentRegistrationDocumentsQueryOptions(Number.parseInt(subscriptionId))),
     ]);
@@ -143,7 +151,7 @@ const simpleMockData: DocumentsSidebarProps["data"] = [
 const schema = z.object({
   status: z.string().nonempty("Status é obrigatório"),
   notes: z.string().optional(),
-}).merge(criteriaSchema).merge(resultSchema).superRefine((data, ctx) => {
+}).merge(criteriaSchema).merge(resultSchema).merge(scoresSchema).superRefine((data, ctx) => {
     if (data.status === "APPROVED") {
         const requiredError = {
             code: z.ZodIssueCode.custom,
@@ -169,11 +177,12 @@ export type FormFields = z.infer<typeof schema>;
 
 export function ReviewSubscription() {
   const studentRegistrationId = Route.useParams().subscriptionId;
-  const navigate = useNavigate();
+  const { editalId } = Route.useParams();
 
   const { data: studentRegistration } = useSuspenseQuery(studentRegistrationQueryOptions(Number.parseInt(studentRegistrationId)))
   const { data: review } = useSuspenseQuery(studentRegistrationReviewQueryOptions(Number.parseInt(studentRegistrationId)))
-  const { data: {documents, total} } = useSuspenseQuery(studentRegistrationDocumentsQueryOptions(Number.parseInt(studentRegistrationId)))
+  const { data: edital } = useSuspenseQuery(editalQueryOptions(Number.parseInt(editalId)))
+  const { data: { documents } } = useSuspenseQuery(studentRegistrationDocumentsQueryOptions(Number.parseInt(studentRegistrationId)))
   const { mutate: updateReview } = useMutation(updateReviewMutationOptions);
 
   const form = useForm<FormFields>({
@@ -181,8 +190,36 @@ export function ReviewSubscription() {
     defaultValues: {
       notes: "",
       criteria: [],
+      // appeal_documents: appeal_documents.reduce((acc, doc) => {
+      //   acc[doc.value] = undefined;
+      //   return acc;
+      // }, {} as Record<string, 'not-required' | 'required'>),
     },
   });
+
+ 
+  const selectedStatus = useWatch({ control: form.control, name: "status" });
+
+  useEffect(() => {
+    if (selectedStatus !== "APPEAL") {
+      form.resetField("appeal_documents");
+      form.clearErrors("appeal_documents");
+    }
+  }, [selectedStatus]);
+
+  const offeredAllowances = {
+    daycare_allowance: edital.daycare_allowance,
+    food_allowance: edital.food_allowance,
+    graduation_scholarship: edital.graduation_scholarship,
+    housing_allowance: edital.housing_allowance,
+  }
+
+  const requestedAllowances = {
+    daycare_allowance: studentRegistration.requested_daycare_allowance,
+    food_allowance: studentRegistration.requested_food_allowance,
+    graduation_scholarship: studentRegistration.requested_graduation_scholarship,
+    housing_allowance: studentRegistration.requested_housing_allowance,
+  }
 
   const onSubmit = async (values: FormFields) => {
     console.log("Form submitted ", values);
@@ -260,7 +297,7 @@ export function ReviewSubscription() {
               
               <div className="flex items-center gap-6">
                 <Button  variant={'ghost'}  asChild>
-                  <Link to="/editais"> <IconArrowLeft size={18} /> Voltar</Link>
+                  <Link to="/editais/$id" params={ { id: editalId } }> <IconArrowLeft size={18} /> Voltar</Link>
                 </Button>
                 <h2 className="text-lg font-semibold">Análisar Inscrição</h2>
                 <Badge className="ml-8 font-semibold">Inscrição #{studentRegistration.id}</Badge>
@@ -279,17 +316,6 @@ export function ReviewSubscription() {
               </div>
 
               <div className="flex items-center gap-4">
-                {/* Progresso */}
-                {/* <div className="flex items-center gap-2">
-                  <span className="text-xs text-gray-600">20%</span>
-                  <div className="w-24 h-2 bg-gray-200 rounded-full overflow-hidden">
-                    <div
-                      className="h-full bg-red-500"
-                      style={{ width: "20%" }}
-                    ></div>
-                  </div>
-                </div> */}
-
                 {/* Status */}
                 {/* <span className="px-2 py-1 text-xs rounded-md border border-gray-300 bg-gray-100 text-gray-700">
                   Em Análise
@@ -297,22 +323,18 @@ export function ReviewSubscription() {
               </div>
             </div>
           </header>
+
           <Separator />
+          
           <form className="bg-gray-100 h-full grid grid-cols-2 grid-rows-[auto,1fr] gap-6 flex-1 overflow-hidden p-6" onSubmit={form.handleSubmit(onSubmit, onError)}>
             <SectionForm control={form.control} />
-            <SectionCriteria control={form.control} />
-            <SectionResult control={form.control} />
+            <SectionEvaluationForm control={form.control} />
+            <SectionResult control={form.control} offeredAllowances={offeredAllowances} requestedAllowances={requestedAllowances} />
             <div className="col-span-2 h-fit flex justify-end">
               <Button className="w-full max-w-xs mt-4">Finalizar</Button>
             </div>
-            {/* <div className="grid auto-rows-min gap-4 md:grid-cols-3">
-              <div className="bg-muted/50 aspect-video rounded-xl" />
-              <div className="bg-muted/50 aspect-video rounded-xl" />
-              <div className="bg-muted/50 aspect-video rounded-xl" />
-            </div>
-            <div className="bg-muted/50 min-h-[100vh] flex-1 rounded-xl md:min-h-min" /> */}
           </form>
         </SidebarInset>
-    </SidebarProvider>
+    </SidebarProvider> 
   )
 }

@@ -10,7 +10,7 @@ import { DataTableColumnHeader } from "../ui/data-table-column-header";
 const MASK = "*****"
 
 function maskCPF(cpf: string): string {
-  const cleanCPF = cpf.replace(/\D/g, '');
+  const cleanCPF = cpf.replaceAll(/\D/g, '');
   
   // quero o formato XXX.XXX.***-XX
   const visiblePart = cleanCPF.slice(0, 6);

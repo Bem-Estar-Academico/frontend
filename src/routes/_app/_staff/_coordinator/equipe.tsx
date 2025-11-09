@@ -25,6 +25,7 @@ import { useSuspenseQuery } from "@tanstack/react-query"
 import { editaisQueryOptions } from "@/queries/editais"
 import { teamProgressQueryOptions } from "@/queries/team-progress"
 import { Separator } from "@/components/ui/separator"
+import { noticeStatisticsQueryOptions } from "@/queries/edital"
 
 export const Route = createFileRoute("/_app/_staff/_coordinator/equipe")({
     component: () => (
@@ -44,7 +45,7 @@ interface KpiCardProps {
   description?: string
 }
 
-function KpiCard({ title, value, icon, description }: KpiCardProps) {
+function KpiCard({ title, value, icon, description }: Readonly<KpiCardProps>) {
   return (
     <div className="flex items-center gap-4 w-2xs">
       <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-muted text-muted-foreground">
@@ -69,6 +70,7 @@ function RouteComponent() {
   const lastNotice = editais.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())[0];
 
   const { data: teamProgress } = useSuspenseQuery(teamProgressQueryOptions(lastNotice?.id));
+  const { data: editalStatistics } = useSuspenseQuery(noticeStatisticsQueryOptions(lastNotice?.id))
 
   const sortedData = React.useMemo(() => {
     const dataCopy = [...teamProgress].filter((user) => {return user.user_type != "COORDINATOR"});
@@ -91,10 +93,6 @@ function RouteComponent() {
       </div>
     )
   }
-
-  const totalApplications = 2000;
-  const analyzedCount = 1200;
-  const pendingCount = 800;
 
   return (
     <div className="w-full min-h-screen space-y-8 px-10 py-6 flex flex-col items-center">
@@ -119,21 +117,21 @@ function RouteComponent() {
           <CardContent className="space-y-6">
             <KpiCard
               title="Análises Pendentes"
-              value={pendingCount}
+              value={editalStatistics.pending_count}
               icon={<ClipboardList className="size-6 text-blue-300" />}
               description="Aguardando primeira avaliação"
             />
             <Separator className="max-w-2xs" />
             <KpiCard
               title="Análises Concluídas"
-              value={analyzedCount}
+              value={editalStatistics.approved_count+editalStatistics.rejected_count}
               icon={<ClipboardCheck className="size-6 text-green-500" />}
               description="Total de análises finalizadas"
             />
             <Separator className="max-w-2xs" />
             <KpiCard
               title="Total de Inscrições"
-              value={totalApplications}
+              value={editalStatistics.total_count}
               icon={<FileText className="size-6 text-indigo-600" />}
               description="Total no edital"
             />

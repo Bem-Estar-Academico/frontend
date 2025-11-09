@@ -37,7 +37,7 @@ export function EditalFilter({
   options,
   selectedValues,
   onChange,
-}: EditalFilterProps) {
+}: Readonly<EditalFilterProps>) {
   return (
     <Popover>
       <PopoverTrigger asChild>

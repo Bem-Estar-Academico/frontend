@@ -60,7 +60,7 @@ export function StudentRegistrationForm() {
         params: { id: id },
       });
     }
-  }, [edital, navigate, id]);
+  }, [edital, navigate, id, studentRegistrations]);
 
 
   const [activeTab, setActiveTab] = useState("beneficios");

@@ -16,6 +16,7 @@ import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
 import { createStudentRegistrationMutationOptions } from "@/mutations/create-student-registration";
 import { CreateStudentRegistrationFormSidebar } from "./-sidebar";
 import { editalQueryOptions } from "@/queries/edital";
+import { studentRegistrationsQueryOptions } from "@/queries/student-registrations";
 
 
 export const Route = createFileRoute("/_app/editais/$id/inscricao")({
@@ -29,14 +30,37 @@ export const Route = createFileRoute("/_app/editais/$id/inscricao")({
 
 export function StudentRegistrationForm() {
 
-  const { id } = Route.useParams()
+  const { id } = Route.useParams();
   const { data: edital } = useSuspenseQuery(editalQueryOptions(Number(id)));
+  const { data: studentRegistrations } = useSuspenseQuery(studentRegistrationsQueryOptions());
+
   const { mutateAsync } = useMutation(createStudentRegistrationMutationOptions);
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: getInitialValues(),
   })  
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (studentRegistrations.some(reg => reg.notice.id === edital.id)) {
+      toast.info("Você já está inscrito neste edital.");
+      navigate({ to: "/editais" });
+      return;
+    }
+
+    const now = new Date();
+    const startDate = new Date(edital.registration_start_date);
+    const endDate = new Date(edital.registration_end_date);
+    const isRegistrationOpen = now >= startDate && now <= endDate;
+
+    if (!isRegistrationOpen) {
+      toast.error("As inscrições para este edital estão fechadas.");
+      navigate({
+        to: "/editais/$id",
+        params: { id: id },
+      });
+    }
+  }, [edital, navigate, id]);
 
 
   const [activeTab, setActiveTab] = useState("beneficios");

@@ -17,6 +17,7 @@ import { editalQueryOptions } from "@/queries/edital";
 import { api } from "@/api";
 import { formSchema, type FormValues, getInitialValues } from "../_app/editais/$id/-schema";
 import formData, { type FormQuestion }  from "../_app/editais/$id/-data";
+import { useFormDraft } from "@/hooks/use-form-draft";
 
 export const Route = createFileRoute("/editais/$id/inscricao")({
     component: () => (

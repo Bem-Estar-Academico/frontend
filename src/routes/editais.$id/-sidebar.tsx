@@ -1,9 +1,9 @@
 import formData, { type FormQuestion }  from "../_app/editais/$id/-data";
 import { useWatch, useFormState } from "react-hook-form";
-import { useCallback, useMemo, useEffect, useRef, useState } from "react";
+import { useCallback, useMemo, useEffect, useRef } from "react";
 import type { FormValues } from "../_app/editais/$id/-schema";
-import { useDebounceCallback } from 'usehooks-ts'
 import { Badge } from "@/components/ui/badge";
+import { useFormDraft } from "@/hooks/use-form-draft";
 
 export type CreateStudentRegistrationFormSidebarProps = {
   title: string;
@@ -24,16 +24,7 @@ export function CreateStudentRegistrationFormSidebar({
   const { errors: formErrors } = useFormState({ control: form.control });
   // keep a snapshot (stringified) of the field value at the moment an error appears
   const errorSnapshots = useRef<Record<string, string>>({});
-  const [saveStatus, setSaveStatus] = useState<'synced' | 'saving' | 'dirty'>('synced');
-
-  const debouncedSaveFormValues = useDebounceCallback((values: FormValues) => {
-    setSaveStatus('saving');
-    setTimeout(() => {
-      const {files: _files, ...valuesToSave} = values;
-      localStorage.setItem('formValuesSnapshot', JSON.stringify(valuesToSave));
-      setSaveStatus('synced');
-    }, 2000);
-  }, 1000);
+  const { saveStatus } = useFormDraft({ form, type: 'REGISTRATION' });
 
   const isQuestionAnswered = useCallback((question: FormQuestion): boolean => {
     const value = form.getValues(question.id as keyof FormValues);
@@ -127,12 +118,6 @@ export function CreateStudentRegistrationFormSidebar({
       };
     });
   }, [formValues, formErrors, isQuestionAnswered, hasQuestionError, allSections]);
-
-  useEffect(() => {
-    // For debugging: log section progress whenever it changes
-    setSaveStatus('dirty');
-    debouncedSaveFormValues(formValues);
-  }, [formValues]);
 
   return (
     <div className="flex flex-col h-full w-64 border-r p-4">

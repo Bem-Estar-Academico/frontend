@@ -158,7 +158,7 @@ export function StaffEditaisComponent() {
           </div>
         </div>
 
-        <section >
+        <section>
           <h2 className="text-xl font-bold mb-4 pt-6 border-t">Lista de Estudantes Inscritos</h2>
           <StudentDataTable data={students} />
         </section>

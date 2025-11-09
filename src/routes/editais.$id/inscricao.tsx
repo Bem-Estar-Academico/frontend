@@ -6,8 +6,6 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import formData, { type FormQuestion } from "./-data";
-import { formSchema, getInitialValues, type FormValues } from "./-schema";
 import { useForm } from "react-hook-form";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -17,9 +15,10 @@ import { createStudentRegistrationMutationOptions } from "@/mutations/create-stu
 import { CreateStudentRegistrationFormSidebar } from "./-sidebar";
 import { editalQueryOptions } from "@/queries/edital";
 import { api } from "@/api";
+import { formSchema, type FormValues, getInitialValues } from "../_app/editais/$id/-schema";
+import formData, { type FormQuestion }  from "../_app/editais/$id/-data";
 
-
-export const Route = createFileRoute("/_app/editais/$id/inscricao")({
+export const Route = createFileRoute("/editais/$id/inscricao")({
     component: () => (
     <>
       <title>Questionário | BEA</title>
@@ -29,16 +28,15 @@ export const Route = createFileRoute("/_app/editais/$id/inscricao")({
 });
 
 export function StudentRegistrationForm() {
-
   const { id } = Route.useParams()
   const { data: edital } = useSuspenseQuery(editalQueryOptions(Number(id)));
   const { mutateAsync: createStudentRegistration } = useMutation(createStudentRegistrationMutationOptions);
   const form = useForm({
     resolver: zodResolver(formSchema),
-    defaultValues: getInitialValues(),
+    defaultValues: { ...getInitialValues(), ...JSON.parse(localStorage.getItem('formValuesSnapshot') || '{}') },
   })  
 
-  const [activeTab, setActiveTab] = useState(formData.sections[0].id);
+  const [activeTab, setActiveTab] = useState('beneficios');
 
   const beneficiosSection = useMemo(() => {
     if (!edital) return undefined;
@@ -226,6 +224,9 @@ export function StudentRegistrationForm() {
                 <FormControl>
                   <Input 
                     type="file" 
+                    ref={field.ref}
+                    name={field.name}
+                    onBlur={field.onBlur}
                     onChange={(e) => {
                       const file = e.target.files ? e.target.files[0] : null;
                       field.onChange(file);
@@ -244,12 +245,14 @@ export function StudentRegistrationForm() {
   }, [form])
 
   useEffect(() => {
-    form.setValue("has_food_allowance", edital.food_allowance);
-    form.setValue("has_housing_allowance", edital.housing_allowance);
-    form.setValue("has_daycare_allowance", edital.daycare_allowance);
-    form.setValue("has_graduation_scholarship", edital.graduation_scholarship);
-    }, [edital, form]);
-
+    form.reset({
+      ...form.getValues(),
+      has_food_allowance: edital.food_allowance,
+      has_housing_allowance: edital.housing_allowance,
+      has_daycare_allowance: edital.daycare_allowance,
+      has_graduation_scholarship: edital.graduation_scholarship,
+    });
+  }, [edital, form]);
 
   const onSubmit = async (values: FormValues) => {
     try {

@@ -10,7 +10,6 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import React from "react"
-import { ChartProgress } from "./-components/chart-progress"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import {
@@ -19,12 +18,12 @@ import {
   ClipboardCheck,
   ClipboardList,
   FileText,
+  TrendingUp,
 } from "lucide-react"
 import { SocialWorkerProgressDataTable } from "@/components/coordinator/social-worker-progress-datatable"
 import { useSuspenseQuery } from "@tanstack/react-query"
 import { editaisQueryOptions } from "@/queries/editais"
 import { teamProgressQueryOptions } from "@/queries/team-progress"
-import { Separator } from "@/components/ui/separator"
 import { noticeStatisticsQueryOptions } from "@/queries/edital"
 
 export const Route = createFileRoute("/_app/_staff/_coordinator/equipe")({
@@ -37,30 +36,6 @@ export const Route = createFileRoute("/_app/_staff/_coordinator/equipe")({
 })
 
 type OrderByOption = "highestProgress" | "lowestProgress" | "lastAnalysis"
-
-interface KpiCardProps {
-  title: string
-  value: string | number
-  icon: React.ReactNode
-  description?: string
-}
-
-function KpiCard({ title, value, icon, description }: Readonly<KpiCardProps>) {
-  return (
-    <div className="flex items-center gap-4 w-2xs">
-      <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-muted text-muted-foreground">
-        {icon}
-      </div>
-      <div className="">
-        <p className="text-sm font-medium text-muted-foreground">{title}</p>
-        <p className="text-2xl font-bold">{value}</p>
-        {description && (
-          <p className="text-xs text-muted-foreground">{description}</p>
-        )}
-      </div>
-    </div>
-  )
-}
 
 
 function RouteComponent() {
@@ -105,41 +80,43 @@ function RouteComponent() {
         </div>
       </header>
 
-      <div className="flex gap-6">
-        <div className="lg:col-span-1">
-          <ChartProgress totalPercent={33} />
-        </div>
+      <Card className="w-full">
+        <CardHeader>
+          <CardTitle>Visão Geral das Análises</CardTitle>
+        </CardHeader>
+        <CardContent className="flex justify-between">
+          <KpiCard
+            title="Progresso Atual"
+            value={
+              editalStatistics.total_count
+                ? `${(((editalStatistics.approved_count + editalStatistics.rejected_count) / editalStatistics.total_count) * 100).toFixed(1)}%`
+                : "0%"
+            }
+            icon={<TrendingUp className="size-6 text-emerald-400" />}
+            description="Progresso da equipe"
+          />
+          <KpiCard
+            title="Análises Pendentes"
+            value={editalStatistics.pending_count}
+            icon={<ClipboardList className="size-6 text-blue-300" />}
+            description="Aguardando primeira avaliação"
+          />
+          <KpiCard
+            title="Análises Concluídas"
+            value={editalStatistics.approved_count+editalStatistics.rejected_count}
+            icon={<ClipboardCheck className="size-6 text-green-500" />}
+            description="Total de análises finalizadas"
+          />
+          <KpiCard
+            title="Total de Inscrições"
+            value={editalStatistics.total_count}
+            icon={<FileText className="size-6 text-indigo-600" />}
+            description="Total no edital"
+          />            
+        </CardContent>
+      </Card>
 
-        <Card className="w-xs">
-          <CardHeader>
-            <CardTitle>Visão Geral das Análises</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            <KpiCard
-              title="Análises Pendentes"
-              value={editalStatistics.pending_count}
-              icon={<ClipboardList className="size-6 text-blue-300" />}
-              description="Aguardando primeira avaliação"
-            />
-            <Separator className="max-w-2xs" />
-            <KpiCard
-              title="Análises Concluídas"
-              value={editalStatistics.approved_count+editalStatistics.rejected_count}
-              icon={<ClipboardCheck className="size-6 text-green-500" />}
-              description="Total de análises finalizadas"
-            />
-            <Separator className="max-w-2xs" />
-            <KpiCard
-              title="Total de Inscrições"
-              value={editalStatistics.total_count}
-              icon={<FileText className="size-6 text-indigo-600" />}
-              description="Total no edital"
-            />
-          </CardContent>
-        </Card>
-      </div>
-
-      <section>
+      <section className="w-full">
         <Tabs defaultValue="grid">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0">
@@ -190,6 +167,30 @@ function RouteComponent() {
         </Tabs>
       </section>
       
+    </div>
+  )
+}
+
+interface KpiCardProps {
+  title: string
+  value: string | number
+  icon: React.ReactNode
+  description?: string
+}
+
+function KpiCard({ title, value, icon, description }: Readonly<KpiCardProps>) {
+  return (
+    <div className="flex items-center gap-4 w-2xs">
+      <div className="flex size-16 items-center justify-center rounded-lg bg-muted text-muted-foreground">
+        {icon}
+      </div>
+      <div className="">
+        <p className="text-sm font-medium text-muted-foreground">{title}</p>
+        <p className="text-2xl font-bold">{value}</p>
+        {description && (
+          <p className="text-xs text-muted-foreground">{description}</p>
+        )}
+      </div>
     </div>
   )
 }

@@ -12,7 +12,6 @@ const MASK = "*****"
 function maskCPF(cpf: string): string {
   const cleanCPF = cpf.replaceAll(/\D/g, '');
   
-  // quero o formato XXX.XXX.***-XX
   const visiblePart = cleanCPF.slice(0, 6);
   const hiddenPart = '***';
   const lastPart = cleanCPF.slice(9, 11);

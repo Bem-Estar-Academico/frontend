@@ -124,7 +124,7 @@ function RouteComponent() {
             <Separator className="max-w-2xs" />
             <KpiCard
               title="Análises Concluídas"
-              value={editalStatistics.approved_count+editalStatistics.rejected_count}
+              value={editalStatistics.approved_count + editalStatistics.rejected_count}
               icon={<ClipboardCheck className="size-6 text-green-500" />}
               description="Total de análises finalizadas"
             />

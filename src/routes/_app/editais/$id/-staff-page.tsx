@@ -73,8 +73,8 @@ export function StaffEditaisComponent() {
   }; 
   
   return (
-    <div className="min-h-screen">
-      <div className="max-w-7xl mx-auto p-6 space-y-8">
+    <div className="min-h-screen px-10 py-6">
+      <div className="mx-auto space-y-8">
         {/* CABEÇALHO DO EDITAL */}
         <header className="space-y-2 pb-4 border-b">
           <h1 className="text-2xl font-bold tracking-tight">{edital.title}</h1>
@@ -158,7 +158,7 @@ export function StaffEditaisComponent() {
           </div>
         </div>
 
-        <section >
+        <section>
           <h2 className="text-xl font-bold mb-4 pt-6 border-t">Lista de Estudantes Inscritos</h2>
           <StudentDataTable data={students} />
         </section>

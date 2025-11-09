@@ -196,6 +196,7 @@ export function SignupForm({
                       onClick={() => setShowPassword(!showPassword)}
                       className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
                       tabIndex={-1}
+                      aria-label={showPassword ? "Ocultar senha" : "Mostrar senha"}
                     >
                       {showPassword ? (
                         <EyeOff className="h-4 w-4" />
@@ -258,6 +259,7 @@ export function SignupForm({
                       onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                       className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
                       tabIndex={-1}
+                      aria-label={showConfirmPassword ? "Ocultar confirmação de senha" : "Mostrar confirmação de senha"}
                     >
                       {showConfirmPassword ? (
                         <EyeOff className="h-4 w-4" />

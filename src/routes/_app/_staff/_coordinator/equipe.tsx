@@ -42,13 +42,13 @@ function RouteComponent() {
   const [orderBy, setOrderBy] = React.useState<OrderByOption>("highestProgress");
   const { data: editais } = useSuspenseQuery(editaisQueryOptions);
 
-  const lastNotice = editais.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())[0];
+  const lastNotice = [...editais].sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())[0];
 
   const { data: teamProgress } = useSuspenseQuery(teamProgressQueryOptions(lastNotice?.id));
   const { data: editalStatistics } = useSuspenseQuery(noticeStatisticsQueryOptions(lastNotice?.id))
 
   const sortedData = React.useMemo(() => {
-    const dataCopy = [...teamProgress].filter((user) => {return user.user_type != "COORDINATOR"});
+    const dataCopy = [...teamProgress].filter((user) => {return user.user_type !== "COORDINATOR"});
     switch (orderBy) {
       case "highestProgress": 
         return dataCopy.sort((a, b) => b.progress - a.progress);

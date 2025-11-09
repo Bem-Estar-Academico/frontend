@@ -1,4 +1,3 @@
-import { Button } from "@/components/ui/button"
 import { CardSocialWorker } from "@/components/coordinator/card-social-worker"
 import { createFileRoute } from "@tanstack/react-router"
 import {
@@ -20,12 +19,12 @@ import {
   ClipboardCheck,
   ClipboardList,
   FileText,
-  Download,
 } from "lucide-react"
 import { SocialWorkerProgressDataTable } from "@/components/coordinator/social-worker-progress-datatable"
 import { useSuspenseQuery } from "@tanstack/react-query"
 import { editaisQueryOptions } from "@/queries/editais"
 import { teamProgressQueryOptions } from "@/queries/team-progress"
+import { Separator } from "@/components/ui/separator"
 
 export const Route = createFileRoute("/_app/_staff/_coordinator/equipe")({
     component: () => (
@@ -47,11 +46,11 @@ interface KpiCardProps {
 
 function KpiCard({ title, value, icon, description }: KpiCardProps) {
   return (
-    <div className="flex items-center gap-4">
+    <div className="flex items-center gap-4 w-2xs">
       <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-muted text-muted-foreground">
         {icon}
       </div>
-      <div>
+      <div className="">
         <p className="text-sm font-medium text-muted-foreground">{title}</p>
         <p className="text-2xl font-bold">{value}</p>
         {description && (
@@ -72,7 +71,7 @@ function RouteComponent() {
   const { data: teamProgress } = useSuspenseQuery(teamProgressQueryOptions(lastNotice?.id));
 
   const sortedData = React.useMemo(() => {
-    const dataCopy = [...teamProgress];
+    const dataCopy = [...teamProgress].filter((user) => {return user.user_type != "COORDINATOR"});
     switch (orderBy) {
       case "highestProgress": 
         return dataCopy.sort((a, b) => b.progress - a.progress);
@@ -98,42 +97,40 @@ function RouteComponent() {
   const pendingCount = 800;
 
   return (
-    <div className="w-full min-h-screen space-y-8 px-10 py-6">
+    <div className="w-full min-h-screen space-y-8 px-10 py-6 flex flex-col items-center">
       <header className="w-full flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Dashboard da Equipe</h1>
+          <h1 className="text-3xl font-bold tracking-tight">Equipe</h1>
           <p className="text-muted-foreground">
             Acompanhamento do edital: <strong>{lastNotice.title}</strong>
           </p>
         </div>
-        <Button variant="outline">
-          <Download className="mr-2 size-4" />
-          Gerar Relatório
-        </Button>
       </header>
 
-      <section className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="flex gap-6">
         <div className="lg:col-span-1">
-          <ChartProgress totalPercent={33} editalTitle={lastNotice.title} />
+          <ChartProgress totalPercent={33} />
         </div>
 
-        <Card className="lg:col-span-2">
+        <Card className="w-xs">
           <CardHeader>
             <CardTitle>Visão Geral das Análises</CardTitle>
           </CardHeader>
-          <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <CardContent className="space-y-6">
             <KpiCard
               title="Análises Pendentes"
               value={pendingCount}
               icon={<ClipboardList className="size-6 text-blue-300" />}
-              description="Aguardando primeira revisão"
+              description="Aguardando primeira avaliação"
             />
+            <Separator className="max-w-2xs" />
             <KpiCard
               title="Análises Concluídas"
               value={analyzedCount}
               icon={<ClipboardCheck className="size-6 text-green-500" />}
               description="Total de análises finalizadas"
             />
+            <Separator className="max-w-2xs" />
             <KpiCard
               title="Total de Inscrições"
               value={totalApplications}
@@ -142,7 +139,7 @@ function RouteComponent() {
             />
           </CardContent>
         </Card>
-      </section>
+      </div>
 
       <section>
         <Tabs defaultValue="grid">

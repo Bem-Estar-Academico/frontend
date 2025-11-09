@@ -29,7 +29,7 @@ const chartConfig = {
 
 export interface ChartProgressProps {
   totalPercent: number
-  editalTitle: string
+  editalTitle?: string
 }
 
 export function ChartProgress({ totalPercent, editalTitle }: ChartProgressProps) {

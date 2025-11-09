@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
 import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { useState, useCallback, useEffect, useMemo } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -16,10 +16,35 @@ import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
 import { createStudentRegistrationMutationOptions } from "@/mutations/create-student-registration";
 import { CreateStudentRegistrationFormSidebar } from "./-sidebar";
 import { editalQueryOptions } from "@/queries/edital";
+import { studentRegistrationsQueryOptions } from "@/queries/student-registrations";
 
 
 export const Route = createFileRoute("/_app/editais/$id/inscricao")({
-    component: () => (
+  beforeLoad: async ({context: { queryClient }, params }) => {
+    const { id } = params;
+    const edital = await queryClient.ensureQueryData(editalQueryOptions(Number(id)));
+    const studentRegistration = await queryClient.ensureQueryData(studentRegistrationsQueryOptions());
+
+    if (studentRegistration.some(reg => reg.notice.id === edital.id)) {
+      toast.info("Você já está inscrito neste edital.");
+      throw redirect({ to: "/editais" });
+    }
+
+    const now = new Date();
+    const startDate = new Date(edital.registration_start_date);
+    const endDate = new Date(edital.registration_end_date);
+    const isRegistrationOpen = now >= startDate && now <= endDate;
+
+    if (!isRegistrationOpen) {
+      toast.error("As inscrições para este edital estão fechadas.");
+      throw redirect({
+        to: "/editais/$id",
+        params: { id: id },
+      });
+    }
+
+  },
+  component: () => (
     <>
       <title>Questionário | BEA</title>
       <StudentRegistrationForm/>
@@ -29,17 +54,17 @@ export const Route = createFileRoute("/_app/editais/$id/inscricao")({
 
 export function StudentRegistrationForm() {
 
-  const { id } = Route.useParams()
+  const { id } = Route.useParams();
   const { data: edital } = useSuspenseQuery(editalQueryOptions(Number(id)));
+
   const { mutateAsync } = useMutation(createStudentRegistrationMutationOptions);
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: getInitialValues(),
   })  
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
-
-  const [activeTab, setActiveTab] = useState("1");
+  const [activeTab, setActiveTab] = useState("beneficios");
 
   const beneficiosSection = useMemo(() => {
     if (!edital) return undefined;

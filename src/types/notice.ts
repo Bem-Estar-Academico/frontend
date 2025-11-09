@@ -43,3 +43,13 @@ export type Notice = {
   documents: Document[]
   team_members: TeamMember[]
 }
+
+export interface NoticeStatisticsResponse {
+  pending_count: number;
+  review_count: number;
+  approved_count: number;
+  rejected_count: number;
+  appeal_count: number;
+  cancelled_count: number;
+  total_count: number;
+}

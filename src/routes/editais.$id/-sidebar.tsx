@@ -11,6 +11,7 @@ export type CreateStudentRegistrationFormSidebarProps = {
   form: any;
   changeTab: (tab: string) => void;
   beneficiosSection?: any;
+  editalId: number;
 }
 
 export function CreateStudentRegistrationFormSidebar({
@@ -18,13 +19,14 @@ export function CreateStudentRegistrationFormSidebar({
   form, 
   changeTab, 
   activeTab,
-  beneficiosSection
+  beneficiosSection,
+  editalId
 }: CreateStudentRegistrationFormSidebarProps) {
   const formValues = useWatch({ control: form.control });
   const { errors: formErrors } = useFormState({ control: form.control });
   // keep a snapshot (stringified) of the field value at the moment an error appears
   const errorSnapshots = useRef<Record<string, string>>({});
-  const { saveStatus } = useFormDraft({ form, type: 'REGISTRATION' });
+  const { saveStatus } = useFormDraft({ form, type: 'REGISTRATION',  editalId});
 
   const isQuestionAnswered = useCallback((question: FormQuestion): boolean => {
     const value = form.getValues(question.id as keyof FormValues);

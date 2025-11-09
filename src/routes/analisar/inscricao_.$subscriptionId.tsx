@@ -1,9 +1,8 @@
 import {
   DocumentsSidebar,
 } from "@/components/documents-sidebar";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { IconArrowLeft } from "@tabler/icons-react";
+import { SidebarProvider } from "@/components/ui/sidebar";
+import { createFileRoute } from "@tanstack/react-router";
 import { Separator } from "@/components/ui/separator"
 import {
   SidebarInset,
@@ -22,11 +21,11 @@ import { editalQueryOptions } from "@/queries/edital";
 import { updateReviewMutationOptions } from "@/mutations/update-review";
 import { queryClient } from "@/main";
 import { studentRegistrationQueryOptions } from "@/queries/student-registration";
-import { Badge } from "@/components/ui/badge";
 import { studentRegistrationDocumentsQueryOptions } from "@/queries/student-documents";
 import { SectionEvaluationForm } from "./-components/section-evaluation-form";
 import { scoresSchema } from "./-components/section-scores-form";
 import { useEffect } from "react";
+import { ReviewHeader } from "./-components/review-header";
 
 export const Route = createFileRoute("/analisar/inscricao_/$subscriptionId")({
   component: () => (
@@ -284,46 +283,8 @@ export function ReviewSubscription() {
    return (
     <SidebarProvider>
         <DocumentsSidebar  data={documentsData} />
-        {/* activeDocumentId={selectedDocumentId} data={simpleMockData} onDocumentSelect={setSelectedDocumentId} */}
         <SidebarInset className="flex flex-col overflow-auto">
-          <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
-            <div className="flex items-center gap-2 px-4">
-              <SidebarTrigger className="-ml-1" />
-            
-              <Separator
-                orientation="vertical"
-                className="mr-2 data-[orientation=vertical]:h-4"
-              />
-              
-              <div className="flex items-center gap-6">
-                <Button  variant={'ghost'}  asChild>
-                  <Link to="/editais/$id" params={ { id: String(studentRegistration.notice.id) } }> <IconArrowLeft size={18} /> Voltar</Link>
-                </Button>
-                <h2 className="text-lg font-semibold">Analisar Inscrição</h2>
-                <Badge className="ml-8 font-semibold">Inscrição #{studentRegistration.id}</Badge>
-                <Separator orientation="vertical" className="data-[orientation=vertical]:h-6" />
-                <div className="flex gap-12 items-center">
-                  <span>{studentRegistration.student.full_name}</span>
-                  <div className="flex flex-col">
-                    <span className="text-sm text-muted-foreground">Matrícula</span>
-                    <span className="text-sm font-semibold">{studentRegistration.student.registration_number}</span>
-                  </div>
-                  <div className="flex flex-col">
-                    <span className="text-sm text-muted-foreground">CPF</span>
-                    <span className="text-sm font-semibold">{studentRegistration.student.cpf}</span>
-                  </div>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-4">
-                {/* Status */}
-                {/* <span className="px-2 py-1 text-xs rounded-md border border-gray-300 bg-gray-100 text-gray-700">
-                  Em Análise
-                </span> */}
-              </div>
-            </div>
-          </header>
-
+          <ReviewHeader form={form}  studentRegistration={studentRegistration} reviewId={review.id} />
           <Separator />
 
           <form className="bg-gray-100 h-full grid grid-cols-1 md:grid-cols-2 md:grid-rows-[auto,1fr] gap-6 flex-1 overflow-hidden p-6" onSubmit={form.handleSubmit(onSubmit, onError)}>

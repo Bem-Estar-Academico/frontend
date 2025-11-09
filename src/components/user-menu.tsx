@@ -37,7 +37,7 @@ export function UserMenu({ name }: Readonly<UserMenuProps>) {
         <DropdownMenuLabel>Minha Conta</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={auth?.logout}>
-          Log out
+          Sair
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

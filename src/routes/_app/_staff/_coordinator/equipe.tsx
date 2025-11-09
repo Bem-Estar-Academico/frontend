@@ -73,7 +73,7 @@ function RouteComponent() {
   const { data: editalStatistics } = useSuspenseQuery(noticeStatisticsQueryOptions(lastNotice?.id))
 
   const sortedData = React.useMemo(() => {
-    const dataCopy = [...teamProgress].filter((user) => {return user.user_type != "COORDINATOR"});
+    const dataCopy = [...teamProgress].filter((user) => {return user.user_type !== "COORDINATOR"});
     switch (orderBy) {
       case "highestProgress": 
         return dataCopy.sort((a, b) => b.progress - a.progress);

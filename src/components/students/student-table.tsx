@@ -152,10 +152,9 @@ export function StudentDataTable({ data, initialState, pageSizeOptions = DEFAULT
         </div>  
 
         <div className="flex items-center gap-2">
-          <Button variant="secondary" className="cursor-pointer" onClick={() => setMaskPersonal((v) => !v)}>
-            {maskPersonal ? <Eye className="size-4" /> : <EyeOff className="size-4" />}
+          <Button variant="outline" className="cursor-pointer" onClick={() => setMaskPersonal((v) => !v)}>
+            {maskPersonal ? <><Eye />Mostrar</> : <><EyeOff />Esconder</>}
           </Button>
-          <Button variant="secondary" className="cursor-pointer">Exportar</Button>
         </div>
       </div>
 

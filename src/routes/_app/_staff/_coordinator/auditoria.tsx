@@ -1,7 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { useState } from 'react'
-import { Search, Download } from 'lucide-react'
-import { Button } from '@/components/ui/button'
+import { Search } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Filter } from '@/components/filter'
 import { mockEvents } from './-data'
@@ -34,16 +33,6 @@ const actionTypeOptions = [
   { label: 'Status Alterado', value: 'STATUS_CHANGED' },
 ]
 
-const entityTypeOptions = [
-  { label: 'Edital', value: 'NOTICE' },
-  { label: 'Inscrição', value: 'REGISTRATION' },
-  { label: 'Análise', value: 'REVIEW' },
-  { label: 'Documento', value: 'DOCUMENT' },
-  { label: 'Usuário', value: 'USER' },
-  { label: 'Equipe', value: 'TEAM_MEMBER' },
-  { label: 'Sistema', value: 'SYSTEM' },
-]
-
 const userTypeOptions = [
   { label: 'Estudante', value: 'STUDENT' },
   { label: 'Coordenador', value: 'COORDINATOR' },
@@ -53,7 +42,6 @@ const userTypeOptions = [
 function RouteComponent() {
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedActionTypes, setSelectedActionTypes] = useState<Set<string>>(new Set())
-  const [selectedEntityTypes, setSelectedEntityTypes] = useState<Set<string>>(new Set())
   const [selectedUserTypes, setSelectedUserTypes] = useState<Set<string>>(new Set())
 
   const filteredEvents = mockEvents.filter((event) => {
@@ -75,10 +63,6 @@ function RouteComponent() {
       return false
     }
 
-    if (selectedEntityTypes.size > 0 && !selectedEntityTypes.has(event.entity_type)) {
-      return false
-    }
-
     if (selectedUserTypes.size > 0 && !selectedUserTypes.has(event.user.user_type)) {
       return false
     }
@@ -94,10 +78,6 @@ function RouteComponent() {
             <h1 className="text-2xl font-bold mb-1">Auditoria de Ações</h1>
             <p className="text-muted-foreground text-sm">Rastreie todas as ações realizadas nos Editais</p>
           </div>
-          <Button variant="outline">
-            <Download />
-            Exportar
-          </Button>
         </div>
 
         <div className="flex gap-4 mb-6 mt-6 items-center">
@@ -119,12 +99,12 @@ function RouteComponent() {
             onChange={setSelectedActionTypes}
           />
 
-          <Filter
+          {/* <Filter
             title="Entidade"
             options={entityTypeOptions}
             selectedValues={selectedEntityTypes}
             onChange={setSelectedEntityTypes}
-          />
+          /> */}
 
           <Filter
             title="Tipo de Usuário"

@@ -7,7 +7,7 @@ import { Link } from '@tanstack/react-router'
 import { useState, useMemo } from 'react';
 import { studentRegistrationsQueryOptions } from '@/queries/student-registrations';
 import type { EditalResponseDTO } from '@/types/edital-response-dto';
-import { EditalFilter } from '@/components/edital-filter';
+import { Filter } from '@/components/filter';
 import { CheckCircle2, XCircle, Utensils, Home, Baby, GraduationCap } from 'lucide-react';
 
 export function StudentEditaisList() {
@@ -85,7 +85,7 @@ export function StudentEditaisList() {
           className="max-w-sm"
         />
         
-        <EditalFilter
+        <Filter
           title="Status"
           options={statusOptions}
           selectedValues={statusFilter}
@@ -95,7 +95,7 @@ export function StudentEditaisList() {
           }}
         />
 
-        <EditalFilter
+        <Filter
           title="Benefícios"
           options={benefitsOptions}
           selectedValues={benefitsFilter}

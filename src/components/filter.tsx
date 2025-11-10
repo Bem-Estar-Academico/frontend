@@ -19,25 +19,25 @@ import {
 } from "@/components/ui/popover"
 import { Separator } from "@/components/ui/separator"
 
-interface EditalFilterOption {
+interface FilterOption {
   label: string
   value: string
   icon?: React.ReactNode
 }
 
-interface EditalFilterProps {
+interface FilterProps {
   title: string
-  options: EditalFilterOption[]
+  options: FilterOption[]
   selectedValues: Set<string>
   onChange: (values: Set<string>) => void
 }
 
-export function EditalFilter({
+export function Filter({
   title,
   options,
   selectedValues,
   onChange,
-}: Readonly<EditalFilterProps>) {
+}: Readonly<FilterProps>) {
   return (
     <Popover>
       <PopoverTrigger asChild>

@@ -68,6 +68,9 @@ function HeaderCoordinatorLinks() {
       <Link to="/consultar-ivs" className="hover:text-gray-600 transition">
         Consultar IVS
       </Link>
+      <Link to="/auditoria" className="hover:text-gray-600 transition">
+        Auditoria
+      </Link>
     </>
   )
 }

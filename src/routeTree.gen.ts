@@ -20,6 +20,7 @@ import { Route as AppEditaisCriarRouteImport } from './routes/_app/editais/criar
 import { Route as AppEditaisIdIndexRouteImport } from './routes/_app/editais/$id/index'
 import { Route as AppEditaisIdInscricaoRouteImport } from './routes/_app/editais/$id/inscricao'
 import { Route as AppStaffCoordinatorEquipeRouteImport } from './routes/_app/_staff/_coordinator/equipe'
+import { Route as AppStaffCoordinatorAuditoriaRouteImport } from './routes/_app/_staff/_coordinator/auditoria'
 import { Route as AppStaffSocialWorkersConsultarIvsIndexRouteImport } from './routes/_app/_staff/_social-workers/consultar-ivs/index'
 import { Route as AppStaffSocialWorkersConsultarIvsIdRouteImport } from './routes/_app/_staff/_social-workers/consultar-ivs/$id'
 
@@ -78,6 +79,12 @@ const AppStaffCoordinatorEquipeRoute =
     path: '/equipe',
     getParentRoute: () => AppStaffRoute,
   } as any)
+const AppStaffCoordinatorAuditoriaRoute =
+  AppStaffCoordinatorAuditoriaRouteImport.update({
+    id: '/_coordinator/auditoria',
+    path: '/auditoria',
+    getParentRoute: () => AppStaffRoute,
+  } as any)
 const AppStaffSocialWorkersConsultarIvsIndexRoute =
   AppStaffSocialWorkersConsultarIvsIndexRouteImport.update({
     id: '/_social-workers/consultar-ivs/',
@@ -98,6 +105,7 @@ export interface FileRoutesByFullPath {
   '/editais/criar': typeof AppEditaisCriarRoute
   '/analisar/inscricao/$subscriptionId': typeof AnalisarInscricaoSubscriptionIdRoute
   '/editais': typeof AppEditaisIndexRoute
+  '/auditoria': typeof AppStaffCoordinatorAuditoriaRoute
   '/equipe': typeof AppStaffCoordinatorEquipeRoute
   '/editais/$id/inscricao': typeof AppEditaisIdInscricaoRoute
   '/editais/$id': typeof AppEditaisIdIndexRoute
@@ -111,6 +119,7 @@ export interface FileRoutesByTo {
   '/editais/criar': typeof AppEditaisCriarRoute
   '/analisar/inscricao/$subscriptionId': typeof AnalisarInscricaoSubscriptionIdRoute
   '/editais': typeof AppEditaisIndexRoute
+  '/auditoria': typeof AppStaffCoordinatorAuditoriaRoute
   '/equipe': typeof AppStaffCoordinatorEquipeRoute
   '/editais/$id/inscricao': typeof AppEditaisIdInscricaoRoute
   '/editais/$id': typeof AppEditaisIdIndexRoute
@@ -127,6 +136,7 @@ export interface FileRoutesById {
   '/_app/editais/criar': typeof AppEditaisCriarRoute
   '/analisar/inscricao/$subscriptionId': typeof AnalisarInscricaoSubscriptionIdRoute
   '/_app/editais/': typeof AppEditaisIndexRoute
+  '/_app/_staff/_coordinator/auditoria': typeof AppStaffCoordinatorAuditoriaRoute
   '/_app/_staff/_coordinator/equipe': typeof AppStaffCoordinatorEquipeRoute
   '/_app/editais/$id/inscricao': typeof AppEditaisIdInscricaoRoute
   '/_app/editais/$id/': typeof AppEditaisIdIndexRoute
@@ -142,6 +152,7 @@ export interface FileRouteTypes {
     | '/editais/criar'
     | '/analisar/inscricao/$subscriptionId'
     | '/editais'
+    | '/auditoria'
     | '/equipe'
     | '/editais/$id/inscricao'
     | '/editais/$id'
@@ -155,6 +166,7 @@ export interface FileRouteTypes {
     | '/editais/criar'
     | '/analisar/inscricao/$subscriptionId'
     | '/editais'
+    | '/auditoria'
     | '/equipe'
     | '/editais/$id/inscricao'
     | '/editais/$id'
@@ -170,6 +182,7 @@ export interface FileRouteTypes {
     | '/_app/editais/criar'
     | '/analisar/inscricao/$subscriptionId'
     | '/_app/editais/'
+    | '/_app/_staff/_coordinator/auditoria'
     | '/_app/_staff/_coordinator/equipe'
     | '/_app/editais/$id/inscricao'
     | '/_app/editais/$id/'
@@ -264,6 +277,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppStaffCoordinatorEquipeRouteImport
       parentRoute: typeof AppStaffRoute
     }
+    '/_app/_staff/_coordinator/auditoria': {
+      id: '/_app/_staff/_coordinator/auditoria'
+      path: '/auditoria'
+      fullPath: '/auditoria'
+      preLoaderRoute: typeof AppStaffCoordinatorAuditoriaRouteImport
+      parentRoute: typeof AppStaffRoute
+    }
     '/_app/_staff/_social-workers/consultar-ivs/': {
       id: '/_app/_staff/_social-workers/consultar-ivs/'
       path: '/consultar-ivs'
@@ -282,12 +302,14 @@ declare module '@tanstack/react-router' {
 }
 
 interface AppStaffRouteChildren {
+  AppStaffCoordinatorAuditoriaRoute: typeof AppStaffCoordinatorAuditoriaRoute
   AppStaffCoordinatorEquipeRoute: typeof AppStaffCoordinatorEquipeRoute
   AppStaffSocialWorkersConsultarIvsIdRoute: typeof AppStaffSocialWorkersConsultarIvsIdRoute
   AppStaffSocialWorkersConsultarIvsIndexRoute: typeof AppStaffSocialWorkersConsultarIvsIndexRoute
 }
 
 const AppStaffRouteChildren: AppStaffRouteChildren = {
+  AppStaffCoordinatorAuditoriaRoute: AppStaffCoordinatorAuditoriaRoute,
   AppStaffCoordinatorEquipeRoute: AppStaffCoordinatorEquipeRoute,
   AppStaffSocialWorkersConsultarIvsIdRoute:
     AppStaffSocialWorkersConsultarIvsIdRoute,

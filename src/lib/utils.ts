@@ -14,3 +14,27 @@ export function cpfMask(value: string) {
     .replace(/(\d{3})(\d{1,2})/, "$1-$2")
     .replace(/(-\d{2})\d+$/, "$1");
 }
+
+export function formatDate(date: string | null) {
+  if (!date) return "A decidir";
+  return new Date(date).toLocaleDateString("pt-BR", { 
+    day: '2-digit', 
+    month: 'long', 
+    year: 'numeric' 
+  });
+};
+
+export function formatDateTime(date: string | Date | null) {
+  if (!date) return "—";
+
+  const parsedDate = typeof date === "string" ? new Date(date) : date;
+
+  return parsedDate.toLocaleString("pt-BR", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+  });
+}

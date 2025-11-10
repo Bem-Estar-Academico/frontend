@@ -15,6 +15,7 @@ export const Route = createFileRoute("/_app/_staff/_social-workers/consultar-ivs
   ),
 });
 
+
 export function IVS() {
   const { data } = useSuspenseQuery(ivsQueryOptions);
 

@@ -32,6 +32,8 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { DataTablePagination } from "@/components/ui/data-table-pagination"
 import { Link } from "@tanstack/react-router";
 import { DataTableColumnHeader } from "@/components/ui/data-table-column-header";
+import { exportIvsQueryOptions } from "@/queries/ivs"
+import { queryClient } from "@/main"
 
 const MASK = "******"
 
@@ -137,6 +139,19 @@ export function getColumns(masked: boolean): ColumnDef<StudentIVS>[] {
   ]
 }
 
+async function downloadIvsCsv() {
+  const blob = await queryClient.fetchQuery(exportIvsQueryOptions);
+
+  const url = window.URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'Lista de IVS Válidos.csv';
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  window.URL.revokeObjectURL(url);
+}
+
 export type StudentIVS = {
   id: number
   cpf: string
@@ -221,9 +236,9 @@ export function IVSDataTable({ data, initialState, pageSizeOptions = DEFAULT_PAG
 
         <div className="flex items-center gap-2">
           <Button variant="secondary" className="cursor-pointer" onClick={() => setMaskPersonal((v) => !v)}>
-            <EyeOff className="size-[16px]" />
+            <EyeOff />
           </Button>
-          <Button variant="secondary" className="cursor-pointer">Exportar</Button>
+          <Button variant="secondary" className="cursor-pointer" onClick={() => downloadIvsCsv()}>Exportar</Button>
         </div>
       </div>
 

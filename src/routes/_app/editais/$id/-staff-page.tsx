@@ -1,17 +1,19 @@
-import { StudentDataTable } from "@/components/students/student-table";
+import { RegistrationsDataTable, type Item } from "@/components/students/registrations-data-table";
 import RegistrationStatusGraphic from "@/components/registration-status-graphic";
 import { editalQueryOptions } from "@/queries/edital";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { noticeRegistrationsQueryOptions } from "@/queries/notice-registrations";
-import type { Registration } from "@/types/students-registration";
-import type { RegistrationItem } from "@/types/notice-registrations";
+
 import { Route } from ".";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Calendar, BarChart3 } from "lucide-react";
+import { Calendar, BarChart3, Pencil } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Link } from "@tanstack/react-router";
 
 export function StaffEditaisComponent() {
   const { id } = Route.useParams();
+  const { auth } = Route.useRouteContext();
   const { data: edital } = useSuspenseQuery(editalQueryOptions(Number(id)));
   const { data: noticeRegistrations } = useSuspenseQuery(
     noticeRegistrationsQueryOptions(Number(id))
@@ -20,6 +22,8 @@ export function StaffEditaisComponent() {
   if (!edital) {
     return <p>Edital não encontrado</p>;
   }
+
+  const isCoordinator = auth?.hasRole("COORDINATOR");
 
   const beneficios = [
     { label: 'Auxílio Alimentação', enabled: edital.food_allowance },
@@ -38,28 +42,29 @@ export function StaffEditaisComponent() {
     { name: "Em Recurso", value: noticeRegistrations.appeal_count || 0, color: "var(--color-blue-500)" },
   ]; 
 
-  const statusTranslation: Record<
-    Registration["status"],
-    "Pendente" | "Deferido" | "Indeferido" | "Em Recurso" | "Em Análise"
-  > = {
-    PENDING: "Pendente",
-    APPROVED: "Deferido",
-    REJECTED: "Indeferido",
-    APPEAL: "Em Recurso",
-    REVIEW: "Em Análise",
-    CANCELLED: "Indeferido"
-  };
+  // const statusTranslation: Record<
+  //   Registration["status"],
+  //   "Pendente" | "Deferido" | "Indeferido" | "Em Recurso" | "Em Análise"
+  // > = {
+  //   PENDING: "Pendente",
+  //   APPROVED: "Deferido",
+  //   REJECTED: "Indeferido",
+  //   APPEAL: "Em Recurso",
+  //   REVIEW: "Em Análise",
+  //   CANCELLED: "Indeferido"
+  // };
 
-  const students = noticeRegistrations.registrations.map(
-    (registration: RegistrationItem) => ({
-      id: registration.student.id,
+  const registrations: Item[] = noticeRegistrations.registrations.map(
+    (registration) => ({
+      registration_id: registration.id,
       cpf: registration.student.cpf,
-      nome: registration.student.name,
-      matricula: registration.student.registration_number,
-      status: registration.review ? statusTranslation[registration.review.status as Registration["status"]] : "Pendente",
-      assistenteSocial: registration.review ? registration.review.reviewer.name : "A definir",
-      documentos: registration.review ? registration.review.qtd_document : 0,
-      dataInscricao: registration.registration_date ? registration.registration_date : new Date().toISOString(),
+      full_name: registration.student.name,
+      registration_number: registration.student.registration_number,
+      socialWorker: registration.review?.reviewer.name || 'A definir',
+      status: registration.review.status,
+      qtd_documents: registration.review ? registration.review.qtd_document : 0,
+      registration_date: registration.registration_date ? registration.registration_date : new Date().toISOString(),
+      editalId: String(edital.id),
     })
   );
 
@@ -77,21 +82,34 @@ export function StaffEditaisComponent() {
       <div className="mx-auto space-y-8">
         {/* CABEÇALHO DO EDITAL */}
         <header className="space-y-2 pb-4 border-b">
-          <h1 className="text-2xl font-bold tracking-tight">{edital.title}</h1>
-          <p className="text-sm text-muted-foreground">{edital.description}</p>
-          {beneficiosOfertados.length > 0 && (
-            <div className="flex flex-wrap gap-2 pt-2">
-              {beneficiosOfertados.map((beneficio) => (
-                <Badge 
-                  key={beneficio.label}
-                  variant="default"
-                  className="px-3 py-1 text-sm font-medium bg-indigo-500 hover:bg-indigo-600 text-white"
-                >
-                  {beneficio.label}
-                </Badge>
-              ))}
+          <div className="flex items-start justify-between">
+            <div className="space-y-2 flex-1">
+              <h1 className="text-2xl font-bold tracking-tight">{edital.title}</h1>
+              <p className="text-sm text-muted-foreground">{edital.description}</p>
+              {beneficiosOfertados.length > 0 && (
+                <div className="flex flex-wrap gap-2 pt-2">
+                  {beneficiosOfertados.map((beneficio) => (
+                    <Badge 
+                      key={beneficio.label}
+                      variant="default"
+                      className="px-3 py-1 text-sm font-medium bg-indigo-500 hover:bg-indigo-600 text-white"
+                    >
+                      {beneficio.label}
+                    </Badge>
+                  ))}
+                </div>
+              )}
             </div>
-          )}
+            
+            {isCoordinator && (
+              <Link to="/editais/$id/editar" params={{ id }}>
+                <Button variant="outline" className="flex items-center gap-2">
+                  <Pencil className="w-4 h-4" />
+                  Editar 
+                </Button>
+              </Link>
+            )}
+          </div>
         </header>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-7">
@@ -158,12 +176,12 @@ export function StaffEditaisComponent() {
           </div>
         </div>
 
-        <section>
-          <h2 className="text-xl font-bold mb-4 pt-6 border-t">Lista de Estudantes Inscritos</h2>
-          <StudentDataTable data={students} />
-        </section>
-      </div>
+      <section>
+        <h2 className="text-xl font-bold mb-4 pt-6 border-t">Lista de Estudantes Inscritos</h2>
+        <RegistrationsDataTable data={registrations} />
+      </section>
     </div>
+  </div>
   );
 }
 

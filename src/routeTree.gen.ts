@@ -15,10 +15,11 @@ import { Route as AuthLoginRouteImport } from './routes/_auth/login'
 import { Route as AuthCadastroRouteImport } from './routes/_auth/cadastro'
 import { Route as AppStaffRouteImport } from './routes/_app/_staff'
 import { Route as AppEditaisIndexRouteImport } from './routes/_app/editais/index'
-import { Route as AnalisarInscricaoSubscriptionIdRouteImport } from './routes/analisar.inscricao.$subscriptionId'
+import { Route as EditaisIdInscricaoRouteImport } from './routes/editais.$id/inscricao'
+import { Route as AnalisarInscricaoSubscriptionIdRouteImport } from './routes/analisar/inscricao_.$subscriptionId'
 import { Route as AppEditaisCriarRouteImport } from './routes/_app/editais/criar'
 import { Route as AppEditaisIdIndexRouteImport } from './routes/_app/editais/$id/index'
-import { Route as AppEditaisIdInscricaoRouteImport } from './routes/_app/editais/$id/inscricao'
+import { Route as AppEditaisIdEditarRouteImport } from './routes/_app/editais/$id/editar'
 import { Route as AppStaffCoordinatorEquipeRouteImport } from './routes/_app/_staff/_coordinator/equipe'
 import { Route as AppStaffCoordinatorAuditoriaRouteImport } from './routes/_app/_staff/_coordinator/auditoria'
 import { Route as AppStaffSocialWorkersConsultarIvsIndexRouteImport } from './routes/_app/_staff/_social-workers/consultar-ivs/index'
@@ -52,9 +53,14 @@ const AppEditaisIndexRoute = AppEditaisIndexRouteImport.update({
   path: '/editais/',
   getParentRoute: () => AppRoute,
 } as any)
+const EditaisIdInscricaoRoute = EditaisIdInscricaoRouteImport.update({
+  id: '/editais/$id/inscricao',
+  path: '/editais/$id/inscricao',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AnalisarInscricaoSubscriptionIdRoute =
   AnalisarInscricaoSubscriptionIdRouteImport.update({
-    id: '/analisar/inscricao/$subscriptionId',
+    id: '/analisar/inscricao_/$subscriptionId',
     path: '/analisar/inscricao/$subscriptionId',
     getParentRoute: () => rootRouteImport,
   } as any)
@@ -68,9 +74,9 @@ const AppEditaisIdIndexRoute = AppEditaisIdIndexRouteImport.update({
   path: '/editais/$id/',
   getParentRoute: () => AppRoute,
 } as any)
-const AppEditaisIdInscricaoRoute = AppEditaisIdInscricaoRouteImport.update({
-  id: '/editais/$id/inscricao',
-  path: '/editais/$id/inscricao',
+const AppEditaisIdEditarRoute = AppEditaisIdEditarRouteImport.update({
+  id: '/editais/$id/editar',
+  path: '/editais/$id/editar',
   getParentRoute: () => AppRoute,
 } as any)
 const AppStaffCoordinatorEquipeRoute =
@@ -104,10 +110,11 @@ export interface FileRoutesByFullPath {
   '/login': typeof AuthLoginRoute
   '/editais/criar': typeof AppEditaisCriarRoute
   '/analisar/inscricao/$subscriptionId': typeof AnalisarInscricaoSubscriptionIdRoute
+  '/editais/$id/inscricao': typeof EditaisIdInscricaoRoute
   '/editais': typeof AppEditaisIndexRoute
   '/auditoria': typeof AppStaffCoordinatorAuditoriaRoute
   '/equipe': typeof AppStaffCoordinatorEquipeRoute
-  '/editais/$id/inscricao': typeof AppEditaisIdInscricaoRoute
+  '/editais/$id/editar': typeof AppEditaisIdEditarRoute
   '/editais/$id': typeof AppEditaisIdIndexRoute
   '/consultar-ivs/$id': typeof AppStaffSocialWorkersConsultarIvsIdRoute
   '/consultar-ivs': typeof AppStaffSocialWorkersConsultarIvsIndexRoute
@@ -118,10 +125,11 @@ export interface FileRoutesByTo {
   '/login': typeof AuthLoginRoute
   '/editais/criar': typeof AppEditaisCriarRoute
   '/analisar/inscricao/$subscriptionId': typeof AnalisarInscricaoSubscriptionIdRoute
+  '/editais/$id/inscricao': typeof EditaisIdInscricaoRoute
   '/editais': typeof AppEditaisIndexRoute
   '/auditoria': typeof AppStaffCoordinatorAuditoriaRoute
   '/equipe': typeof AppStaffCoordinatorEquipeRoute
-  '/editais/$id/inscricao': typeof AppEditaisIdInscricaoRoute
+  '/editais/$id/editar': typeof AppEditaisIdEditarRoute
   '/editais/$id': typeof AppEditaisIdIndexRoute
   '/consultar-ivs/$id': typeof AppStaffSocialWorkersConsultarIvsIdRoute
   '/consultar-ivs': typeof AppStaffSocialWorkersConsultarIvsIndexRoute
@@ -134,11 +142,12 @@ export interface FileRoutesById {
   '/_auth/cadastro': typeof AuthCadastroRoute
   '/_auth/login': typeof AuthLoginRoute
   '/_app/editais/criar': typeof AppEditaisCriarRoute
-  '/analisar/inscricao/$subscriptionId': typeof AnalisarInscricaoSubscriptionIdRoute
+  '/analisar/inscricao_/$subscriptionId': typeof AnalisarInscricaoSubscriptionIdRoute
+  '/editais/$id/inscricao': typeof EditaisIdInscricaoRoute
   '/_app/editais/': typeof AppEditaisIndexRoute
   '/_app/_staff/_coordinator/auditoria': typeof AppStaffCoordinatorAuditoriaRoute
   '/_app/_staff/_coordinator/equipe': typeof AppStaffCoordinatorEquipeRoute
-  '/_app/editais/$id/inscricao': typeof AppEditaisIdInscricaoRoute
+  '/_app/editais/$id/editar': typeof AppEditaisIdEditarRoute
   '/_app/editais/$id/': typeof AppEditaisIdIndexRoute
   '/_app/_staff/_social-workers/consultar-ivs/$id': typeof AppStaffSocialWorkersConsultarIvsIdRoute
   '/_app/_staff/_social-workers/consultar-ivs/': typeof AppStaffSocialWorkersConsultarIvsIndexRoute
@@ -151,10 +160,11 @@ export interface FileRouteTypes {
     | '/login'
     | '/editais/criar'
     | '/analisar/inscricao/$subscriptionId'
+    | '/editais/$id/inscricao'
     | '/editais'
     | '/auditoria'
     | '/equipe'
-    | '/editais/$id/inscricao'
+    | '/editais/$id/editar'
     | '/editais/$id'
     | '/consultar-ivs/$id'
     | '/consultar-ivs'
@@ -165,10 +175,11 @@ export interface FileRouteTypes {
     | '/login'
     | '/editais/criar'
     | '/analisar/inscricao/$subscriptionId'
+    | '/editais/$id/inscricao'
     | '/editais'
     | '/auditoria'
     | '/equipe'
-    | '/editais/$id/inscricao'
+    | '/editais/$id/editar'
     | '/editais/$id'
     | '/consultar-ivs/$id'
     | '/consultar-ivs'
@@ -180,11 +191,12 @@ export interface FileRouteTypes {
     | '/_auth/cadastro'
     | '/_auth/login'
     | '/_app/editais/criar'
-    | '/analisar/inscricao/$subscriptionId'
+    | '/analisar/inscricao_/$subscriptionId'
+    | '/editais/$id/inscricao'
     | '/_app/editais/'
     | '/_app/_staff/_coordinator/auditoria'
     | '/_app/_staff/_coordinator/equipe'
-    | '/_app/editais/$id/inscricao'
+    | '/_app/editais/$id/editar'
     | '/_app/editais/$id/'
     | '/_app/_staff/_social-workers/consultar-ivs/$id'
     | '/_app/_staff/_social-workers/consultar-ivs/'
@@ -196,6 +208,7 @@ export interface RootRouteChildren {
   AuthCadastroRoute: typeof AuthCadastroRoute
   AuthLoginRoute: typeof AuthLoginRoute
   AnalisarInscricaoSubscriptionIdRoute: typeof AnalisarInscricaoSubscriptionIdRoute
+  EditaisIdInscricaoRoute: typeof EditaisIdInscricaoRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -242,8 +255,15 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppEditaisIndexRouteImport
       parentRoute: typeof AppRoute
     }
-    '/analisar/inscricao/$subscriptionId': {
-      id: '/analisar/inscricao/$subscriptionId'
+    '/editais/$id/inscricao': {
+      id: '/editais/$id/inscricao'
+      path: '/editais/$id/inscricao'
+      fullPath: '/editais/$id/inscricao'
+      preLoaderRoute: typeof EditaisIdInscricaoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/analisar/inscricao_/$subscriptionId': {
+      id: '/analisar/inscricao_/$subscriptionId'
       path: '/analisar/inscricao/$subscriptionId'
       fullPath: '/analisar/inscricao/$subscriptionId'
       preLoaderRoute: typeof AnalisarInscricaoSubscriptionIdRouteImport
@@ -263,11 +283,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppEditaisIdIndexRouteImport
       parentRoute: typeof AppRoute
     }
-    '/_app/editais/$id/inscricao': {
-      id: '/_app/editais/$id/inscricao'
-      path: '/editais/$id/inscricao'
-      fullPath: '/editais/$id/inscricao'
-      preLoaderRoute: typeof AppEditaisIdInscricaoRouteImport
+    '/_app/editais/$id/editar': {
+      id: '/_app/editais/$id/editar'
+      path: '/editais/$id/editar'
+      fullPath: '/editais/$id/editar'
+      preLoaderRoute: typeof AppEditaisIdEditarRouteImport
       parentRoute: typeof AppRoute
     }
     '/_app/_staff/_coordinator/equipe': {
@@ -325,7 +345,7 @@ interface AppRouteChildren {
   AppStaffRoute: typeof AppStaffRouteWithChildren
   AppEditaisCriarRoute: typeof AppEditaisCriarRoute
   AppEditaisIndexRoute: typeof AppEditaisIndexRoute
-  AppEditaisIdInscricaoRoute: typeof AppEditaisIdInscricaoRoute
+  AppEditaisIdEditarRoute: typeof AppEditaisIdEditarRoute
   AppEditaisIdIndexRoute: typeof AppEditaisIdIndexRoute
 }
 
@@ -333,7 +353,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppStaffRoute: AppStaffRouteWithChildren,
   AppEditaisCriarRoute: AppEditaisCriarRoute,
   AppEditaisIndexRoute: AppEditaisIndexRoute,
-  AppEditaisIdInscricaoRoute: AppEditaisIdInscricaoRoute,
+  AppEditaisIdEditarRoute: AppEditaisIdEditarRoute,
   AppEditaisIdIndexRoute: AppEditaisIdIndexRoute,
 }
 
@@ -345,6 +365,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthCadastroRoute: AuthCadastroRoute,
   AuthLoginRoute: AuthLoginRoute,
   AnalisarInscricaoSubscriptionIdRoute: AnalisarInscricaoSubscriptionIdRoute,
+  EditaisIdInscricaoRoute: EditaisIdInscricaoRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

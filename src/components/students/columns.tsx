@@ -1,11 +1,11 @@
 import type { ColumnDef } from "@tanstack/react-table";
-import type { Row } from "./student-table";
 import { Button } from "@/components/ui/button";
 import { StatusBadge } from "../ui/status-badge";
 import { Files, MoreHorizontal } from "lucide-react";
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { Link } from "@tanstack/react-router";
 import { DataTableColumnHeader } from "../ui/data-table-column-header";
+import type { Item } from "./registrations-data-table";
 
 const MASK = "*****"
 
@@ -19,7 +19,7 @@ function maskCPF(cpf: string): string {
   return `${visiblePart.slice(0, 3)}.${visiblePart.slice(3, 6)}.${hiddenPart}-${lastPart}`;
 }
 
-export function getColumns(masked: boolean): ColumnDef<Row>[] {
+export function getColumns(masked: boolean): ColumnDef<Item>[] {
   return [
     {
       accessorKey: "cpf",
@@ -35,20 +35,20 @@ export function getColumns(masked: boolean): ColumnDef<Row>[] {
       },
     },
     {
-      accessorKey: "nome",
+      accessorKey: "full_name",
       enableGlobalFilter: true,
       header: ({ column }) => <DataTableColumnHeader column={column} title="Nome" />,
       cell: ({ row }) => {
-        const value = row.getValue("nome") as string
+        const value = row.getValue("full_name") as string
         return <div className="text-center">{masked ? MASK : value}</div>
       },
     },
     {
-      accessorKey: "matricula",
+      accessorKey: "registration_number",
       header: ({ column }) => <DataTableColumnHeader title="Matrícula" column={column} />,
       enableGlobalFilter: true,
       cell: ({ row }) => {
-        const value = row.getValue("matricula") as string
+        const value = row.getValue("registration_number") as string
         return <div className="text-center">{masked ? MASK : value}</div>
       },
     },
@@ -76,32 +76,35 @@ export function getColumns(masked: boolean): ColumnDef<Row>[] {
       },
     },
     {
-      accessorKey: "assistenteSocial",
-      header: ({ column }) => <DataTableColumnHeader title="Assistente Social" column={column} />,
+      accessorKey: "socialWorker",
       enableGlobalFilter: false,
-      cell: ({ row }) => (
-        <div className="text-center">
-          {row.getValue("assistenteSocial")}
-        </div>
-      ),
+      header: ({ column }) => <DataTableColumnHeader title="Assistente Social" column={column} />,
+      cell: ({ row }) => {
+       
+        return (
+          <div className="text-center">
+            {row.getValue("socialWorker")}
+          </div>
+        )
+      },
     },
     {
-      accessorKey: "documentos",
+      accessorKey: "qtd_documents",
       header: ({ column }) => <DataTableColumnHeader title="Documentos" column={column} />,
       enableGlobalFilter: false,
       cell: ({ row }) => (
         <div className="flex items-center justify-center text-gray-600">
           <Files className="mr-2 h-4 w-4 text-gray-400" />
-          {row.getValue("documentos")}
+          {row.getValue("qtd_documents")}
         </div>
       ),
     },
     {
-      accessorKey: "dataInscricao",
+      accessorKey: "registration_date",
       enableGlobalFilter: false,
       header: ({ column }) => <DataTableColumnHeader title="Data de Inscrição" column={column} />,
       cell: ({ row }) => {
-        const date = new Date(row.getValue("dataInscricao"))
+        const date = new Date(row.getValue("registration_date"))
         const formattedDate = new Intl.DateTimeFormat("pt-BR", {
           day: "2-digit",
           month: "2-digit",
@@ -118,29 +121,31 @@ export function getColumns(masked: boolean): ColumnDef<Row>[] {
       id: "actions",
       enableGlobalFilter: false,
       cell: ({ row }) => {
-        const student = row.original
+        const registration = row.original
         return (
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="h-8 w-8 p-0 cursor-pointer">
-                <span className="sr-only">Abrir menu</span>
-                <MoreHorizontal className="h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem className="cursor-pointer">
-                <Link to={`/analisar/inscricao/$subscriptionId`} params={{ subscriptionId: String(student.id) }}>
-                  Analisar
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                className="cursor-pointer"
-                disabled
-              >
-                Ver informações
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+ 
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="h-8 w-8 p-0 cursor-pointer">
+                  <span className="sr-only">Abrir menu</span>
+                  <MoreHorizontal className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem className="cursor-pointer" asChild>
+                  <Link to={`/analisar/inscricao/$subscriptionId`} params={{ subscriptionId: String(registration.registration_id) }}>
+                    Analisar
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  className="cursor-pointer"
+                  disabled
+                >
+                  Ver informações
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+         
         )
       },
       enableHiding: false,

@@ -5,7 +5,7 @@ export interface Reviewer {
 
 export interface Review {
   progress: number;
-  status: string;
+  status: "PENDING" | "APPROVED" | "REJECTED" | "APPEAL" | "REVIEW" | "CANCELLED";
   qtd_document: number;
   reviewer: Reviewer;
 }

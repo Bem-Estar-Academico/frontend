@@ -38,6 +38,8 @@ import {
 import { Skeleton } from "@/components/ui/skeleton"
 import { DataTablePagination } from "@/components/ui/data-table-pagination"
 import { getColumns } from "./columns"
+import type { Student } from "@/types/student-dto"
+import type { Review } from "@/types/student-registration"
 
 const statusOptions = [
   {
@@ -67,27 +69,23 @@ const statusOptions = [
   },
 ]
 
-export type Row = {
-  id: number
-  cpf: string
-  nome: string
-  matricula: string
-  status: "Pendente" | "Em Análise" | "Em Recurso" | "Deferido" | "Indeferido"
-  assistenteSocial: string
-  documentos: number
-  dataInscricao: string
+export type Item = Pick<Student,  "full_name" | "cpf" | "registration_number"> & Pick<Review, 'status' | 'qtd_documents'> & {
+  registration_date: string;
+  registration_id: number;
+  editalId: string;
+  socialWorker: string;
 }
 
-export interface StudentDataTableProps {
+export interface RegistrationsDataTableProps {
   initialState?: InitialTableState;
   pageSizeOptions?: number[];
-  data: Row[];
+  data: Item[];
   isLoading?: boolean;
 }
 
 const DEFAULT_PAGE_SIZE_OPTIONS = [8, 16, 24, 32, 40]
 
-export function StudentDataTable({ data, initialState, pageSizeOptions = DEFAULT_PAGE_SIZE_OPTIONS, isLoading = false }: Readonly<StudentDataTableProps>) {
+export function RegistrationsDataTable({ data, initialState, pageSizeOptions = DEFAULT_PAGE_SIZE_OPTIONS, isLoading = false }: Readonly<RegistrationsDataTableProps>) {
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({})
@@ -113,7 +111,7 @@ export function StudentDataTable({ data, initialState, pageSizeOptions = DEFAULT
     [isLoading, columns]
   );
 
-  const table = useReactTable<Row>({
+  const table = useReactTable<Item>({
     data: tableData,
     columns: tableColumns,
     onSortingChange: setSorting,

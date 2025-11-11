@@ -6,8 +6,6 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import formData, { type FormQuestion } from "./-data";
-import { formSchema, getInitialValues, type FormValues } from "./-schema";
 import { useForm } from "react-hook-form";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -16,10 +14,13 @@ import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
 import { createStudentRegistrationMutationOptions } from "@/mutations/create-student-registration";
 import { CreateStudentRegistrationFormSidebar } from "./-sidebar";
 import { editalQueryOptions } from "@/queries/edital";
+import { api } from "@/api";
+import { formSchema, type FormValues, getInitialValues } from "../_app/editais/$id/-schema";
+import formData, { type FormQuestion }  from "../_app/editais/$id/-data";
 import { studentRegistrationsQueryOptions } from "@/queries/student-registrations";
 
 
-export const Route = createFileRoute("/_app/editais/$id/inscricao")({
+export const Route = createFileRoute("/editais/$id/inscricao")({
   beforeLoad: async ({context: { queryClient }, params }) => {
     const { id } = params;
     const edital = await queryClient.ensureQueryData(editalQueryOptions(Number(id)));
@@ -57,7 +58,7 @@ export function StudentRegistrationForm() {
   const { id } = Route.useParams();
   const { data: edital } = useSuspenseQuery(editalQueryOptions(Number(id)));
 
-  const { mutateAsync } = useMutation(createStudentRegistrationMutationOptions);
+  const { mutateAsync: createStudentRegistration } = useMutation(createStudentRegistrationMutationOptions);
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: getInitialValues(),
@@ -67,6 +68,7 @@ export function StudentRegistrationForm() {
   const [activeTab, setActiveTab] = useState("beneficios");
 
   const beneficiosSection = useMemo(() => {
+    console.log("edital no beneficiosSection:", edital);
     if (!edital) return undefined;
 
     const options: Array<{ id: string; label: string }> = [];
@@ -101,6 +103,8 @@ export function StudentRegistrationForm() {
       ],
     };
   }, [edital]);
+
+  console.log("beneficiosSection:", beneficiosSection);
 
   const renderQuestion = useCallback((question: FormQuestion) => {
       switch (question.type) {
@@ -245,13 +249,16 @@ export function StudentRegistrationForm() {
           <FormField
             control={form.control}
             key={question.id}
-            name={question.id}
+            name={`files.${question.id}`}
             render={({ field }) => (
               <FormItem className="space-y-3">
                 <FormLabel isRequired={question.required}>{question.question}</FormLabel>
                 <FormControl>
                   <Input 
                     type="file" 
+                    ref={field.ref}
+                    name={field.name}
+                    onBlur={field.onBlur}
                     onChange={(e) => {
                       const file = e.target.files ? e.target.files[0] : null;
                       field.onChange(file);
@@ -270,24 +277,45 @@ export function StudentRegistrationForm() {
   }, [form])
 
   useEffect(() => {
-    form.setValue("has_food_allowance", edital.food_allowance);
-    form.setValue("has_housing_allowance", edital.housing_allowance);
-    form.setValue("has_daycare_allowance", edital.daycare_allowance);
-    form.setValue("has_graduation_scholarship", edital.graduation_scholarship);
-    }, [edital, form]);
-
+    form.reset({
+      ...form.getValues(),
+      has_food_allowance: edital.food_allowance,
+      has_housing_allowance: edital.housing_allowance,
+      has_daycare_allowance: edital.daycare_allowance,
+      has_graduation_scholarship: edital.graduation_scholarship,
+    });
+  }, [edital, form]);
 
   const onSubmit = async (values: FormValues) => {
     try {
       const requested_benefits = (values.requested_benefits || []) as Array<string>;
+      const {files, ...answer} = values;
       const data = {
-        answer: values,
+        answer,
         requested_food_allowance: requested_benefits.includes('food_allowance'),
         requested_housing_allowance: requested_benefits.includes('housing_allowance'),
         requested_daycare_allowance: requested_benefits.includes('daycare_allowance'),
         requested_graduation_scholarship: requested_benefits.includes('graduation_scholarship'),
       }
-      await mutateAsync({ editalId: Number.parseInt(id), data});
+
+      const registration = await createStudentRegistration({ editalId: Number.parseInt(id), data});
+
+      if (files) {
+        const uploadPromises = Object.keys(files).map((key) => {
+          const formData = new FormData();
+          
+          // Renomeia o arquivo com base na chave
+          const originalFile = files[key];
+          const fileExtension = originalFile.name.split('.').pop();
+          const newFileName = `${key}.${fileExtension}`;
+          const renamedFile = new File([originalFile], newFileName, { type: originalFile.type });
+          
+          formData.append("file", renamedFile);
+          formData.append("description", key);
+          return api.post(`/student-documents/registration/${registration.id}/upload`, formData);
+        });
+        await Promise.all(uploadPromises);
+      }
 
       toast.success("Inscrição realizada com sucesso!")
       navigate({ to: "/" });
@@ -311,13 +339,13 @@ export function StudentRegistrationForm() {
         form={form} 
         changeTab={setActiveTab}
         beneficiosSection={beneficiosSection}
+        editalId={Number(id)}
       />
 
       {/* TABS */}
       <Form {...form}>
         <form className="flex-1 h-full " onSubmit={form.handleSubmit(onSubmit, onError)}>
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-
           {/* Benefícios tab (render only if edital offers any) */}
           {beneficiosSection && (
             <TabsContent value={beneficiosSection.id} className="mb-6">
@@ -326,7 +354,7 @@ export function StudentRegistrationForm() {
               </div>
               {beneficiosSection.description && (
                 <div className="p-4">
-                  <p className="text-xs font-[400] text-gray-500">{beneficiosSection.description}</p>
+                  <p className="text-xs text-gray-500">{beneficiosSection.description}</p>
                 </div>
               )}
 
@@ -346,7 +374,7 @@ export function StudentRegistrationForm() {
               {/* Description */}
               {section.description && (
                 <div className="p-4">
-                  <p className="text-xs font-[400] text-gray-500">
+                  <p className="text-xs text-gray-500">
                     {section.description}
                   </p>
                 </div>

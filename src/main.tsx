@@ -12,6 +12,7 @@ import { NotFoundComponent } from './components/not-found.tsx'
 import { ErrorComponent } from './components/error.tsx'
 import { AuthProvider, useAuth } from './contexts/auth.tsx'
 import { Toaster } from './components/ui/sonner.tsx'
+import { Spinner } from './components/ui/spinner.tsx'
 
 export const queryClient = new QueryClient()
 
@@ -27,7 +28,11 @@ export const router = createRouter({
   defaultPreloadStaleTime: 0,
   defaultNotFoundComponent: NotFoundComponent,
   defaultErrorComponent: ErrorComponent,
-  defaultPendingComponent: () => <div>Carregando...</div>,
+  defaultPendingComponent: () =>( 
+    <div className="flex items-center justify-center h-full w-full">
+      <Spinner className='size-12' />
+    </div>
+  ),
 })
 
 // Register the router instance for type safety

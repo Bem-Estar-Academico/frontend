@@ -98,7 +98,7 @@ function EditEdital() {
       housing_allowance: values.benefit.includes("auxilio_moradia"),
       daycare_allowance: values.benefit.includes("auxilio_creche"),
       graduation_scholarship: values.benefit.includes("bolsa_pro_graduando"),
-      // team_members: values.social_workers
+      team_members: values.social_workers
     }
 
     await updateNoticeMutation.mutateAsync(payload)

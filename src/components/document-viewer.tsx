@@ -1,4 +1,6 @@
 import { IconFileX } from "@tabler/icons-react";
+import { useEffect, useState } from "react";
+import { Spinner } from "./ui/spinner";
 
 interface DocumentViewerProps {
   url: string | null;
@@ -6,6 +8,14 @@ interface DocumentViewerProps {
 }
 
 const DocumentViewer = ({ url, title }: DocumentViewerProps) => {
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    if (url) {
+      setIsLoading(true);
+    }
+  }, [url]);
+
   if (!url) {
     return (
       <div className="flex flex-col h-full items-center justify-center text-muted-foreground bg-muted">
@@ -19,11 +29,22 @@ const DocumentViewer = ({ url, title }: DocumentViewerProps) => {
   }
 
   return (
-    <iframe
-      src={`${url}#view=fitH`}
+    <div className="relative w-full h-full">
+      {isLoading && (
+        <div className="absolute inset-0 flex flex-col items-center justify-center bg-muted text-muted-foreground z-10">
+          <Spinner className="size-16"/>
+          <div className="font-medium text-lg mt-4">Carregando documento...</div>
+        </div>
+      )}
+      <iframe
+      src={`${url}`}
+      allow="fullscreen"
       title={title || "Documento"}
       className="w-full h-full border-0"
-    />
+      onLoad={() => setIsLoading(false)}
+      />
+    </div>
+  
   );
 };
 

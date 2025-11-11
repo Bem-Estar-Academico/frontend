@@ -1,10 +1,9 @@
-import { StudentDataTable } from "@/components/students/student-table";
+import { RegistrationsDataTable, type Item } from "@/components/students/registrations-data-table";
 import RegistrationStatusGraphic from "@/components/registration-status-graphic";
 import { editalQueryOptions } from "@/queries/edital";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { noticeRegistrationsQueryOptions } from "@/queries/notice-registrations";
-import type { Registration } from "@/types/students-registration";
-import type { RegistrationItem } from "@/types/notice-registrations";
+
 import { Route } from ".";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -43,28 +42,29 @@ export function StaffEditaisComponent() {
     { name: "Em Recurso", value: noticeRegistrations.appeal_count || 0, color: "var(--color-blue-500)" },
   ]; 
 
-  const statusTranslation: Record<
-    Registration["status"],
-    "Pendente" | "Deferido" | "Indeferido" | "Em Recurso" | "Em Análise"
-  > = {
-    PENDING: "Pendente",
-    APPROVED: "Deferido",
-    REJECTED: "Indeferido",
-    APPEAL: "Em Recurso",
-    REVIEW: "Em Análise",
-    CANCELLED: "Indeferido"
-  };
+  // const statusTranslation: Record<
+  //   Registration["status"],
+  //   "Pendente" | "Deferido" | "Indeferido" | "Em Recurso" | "Em Análise"
+  // > = {
+  //   PENDING: "Pendente",
+  //   APPROVED: "Deferido",
+  //   REJECTED: "Indeferido",
+  //   APPEAL: "Em Recurso",
+  //   REVIEW: "Em Análise",
+  //   CANCELLED: "Indeferido"
+  // };
 
-  const students = noticeRegistrations.registrations.map(
-    (registration: RegistrationItem) => ({
-      id: registration.student.id,
+  const registrations: Item[] = noticeRegistrations.registrations.map(
+    (registration) => ({
+      registration_id: registration.id,
       cpf: registration.student.cpf,
-      nome: registration.student.name,
-      matricula: registration.student.registration_number,
-      status: registration.review ? statusTranslation[registration.review.status as Registration["status"]] : "Pendente",
-      assistenteSocial: registration.review ? registration.review.reviewer.name : "A definir",
-      documentos: registration.review ? registration.review.qtd_document : 0,
-      dataInscricao: registration.registration_date ? registration.registration_date : new Date().toISOString(),
+      full_name: registration.student.name,
+      registration_number: registration.student.registration_number,
+      socialWorker: registration.review?.reviewer.name || 'A definir',
+      status: registration.review.status,
+      qtd_documents: registration.review ? registration.review.qtd_document : 0,
+      registration_date: registration.registration_date ? registration.registration_date : new Date().toISOString(),
+      editalId: String(edital.id),
     })
   );
 
@@ -176,12 +176,12 @@ export function StaffEditaisComponent() {
           </div>
         </div>
 
-        <section>
-          <h2 className="text-xl font-bold mb-4 pt-6 border-t">Lista de Estudantes Inscritos</h2>
-          <StudentDataTable data={students} />
-        </section>
-      </div>
+      <section>
+        <h2 className="text-xl font-bold mb-4 pt-6 border-t">Lista de Estudantes Inscritos</h2>
+        <RegistrationsDataTable data={registrations} />
+      </section>
     </div>
+  </div>
   );
 }
 

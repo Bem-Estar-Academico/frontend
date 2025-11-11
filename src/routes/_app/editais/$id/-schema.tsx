@@ -55,7 +55,6 @@ const schemaShape = formData.sections
             (file) => acceptedTypes.includes(file.type),
             `Tipo de arquivo inválido. Somente ${acceptedTypes.join(', ')} são aceitos.`
           );
-          
         fieldSchema = q.required 
           ? fileSchema 
           : fileSchema.optional().nullable();
@@ -65,7 +64,16 @@ const schemaShape = formData.sections
         fieldSchema = z.any();
     }
 
-    acc[q.id] = fieldSchema;
+    if (q.type === 'file') {
+      if (!acc['files']){
+        acc['files'] = z.object({});
+      }
+
+      acc['files'] = (acc['files'] as z.ZodObject<any>).extend({ [q.id]: fieldSchema });
+    } else {
+      acc[q.id] = fieldSchema;
+    }
+    
     return acc;
   }, {} as Record<string, z.ZodTypeAny>);
 

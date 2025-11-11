@@ -19,6 +19,7 @@ import { Route as EditaisIdInscricaoRouteImport } from './routes/editais.$id/ins
 import { Route as AnalisarInscricaoSubscriptionIdRouteImport } from './routes/analisar/inscricao_.$subscriptionId'
 import { Route as AppEditaisCriarRouteImport } from './routes/_app/editais/criar'
 import { Route as AppEditaisIdIndexRouteImport } from './routes/_app/editais/$id/index'
+import { Route as AppEditaisIdEditarRouteImport } from './routes/_app/editais/$id/editar'
 import { Route as AppStaffCoordinatorEquipeRouteImport } from './routes/_app/_staff/_coordinator/equipe'
 import { Route as AppStaffSocialWorkersConsultarIvsIndexRouteImport } from './routes/_app/_staff/_social-workers/consultar-ivs/index'
 import { Route as AppStaffSocialWorkersConsultarIvsIdRouteImport } from './routes/_app/_staff/_social-workers/consultar-ivs/$id'
@@ -72,6 +73,11 @@ const AppEditaisIdIndexRoute = AppEditaisIdIndexRouteImport.update({
   path: '/editais/$id/',
   getParentRoute: () => AppRoute,
 } as any)
+const AppEditaisIdEditarRoute = AppEditaisIdEditarRouteImport.update({
+  id: '/editais/$id/editar',
+  path: '/editais/$id/editar',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppStaffCoordinatorEquipeRoute =
   AppStaffCoordinatorEquipeRouteImport.update({
     id: '/_coordinator/equipe',
@@ -100,6 +106,7 @@ export interface FileRoutesByFullPath {
   '/editais/$id/inscricao': typeof EditaisIdInscricaoRoute
   '/editais': typeof AppEditaisIndexRoute
   '/equipe': typeof AppStaffCoordinatorEquipeRoute
+  '/editais/$id/editar': typeof AppEditaisIdEditarRoute
   '/editais/$id': typeof AppEditaisIdIndexRoute
   '/consultar-ivs/$id': typeof AppStaffSocialWorkersConsultarIvsIdRoute
   '/consultar-ivs': typeof AppStaffSocialWorkersConsultarIvsIndexRoute
@@ -113,6 +120,7 @@ export interface FileRoutesByTo {
   '/editais/$id/inscricao': typeof EditaisIdInscricaoRoute
   '/editais': typeof AppEditaisIndexRoute
   '/equipe': typeof AppStaffCoordinatorEquipeRoute
+  '/editais/$id/editar': typeof AppEditaisIdEditarRoute
   '/editais/$id': typeof AppEditaisIdIndexRoute
   '/consultar-ivs/$id': typeof AppStaffSocialWorkersConsultarIvsIdRoute
   '/consultar-ivs': typeof AppStaffSocialWorkersConsultarIvsIndexRoute
@@ -129,6 +137,7 @@ export interface FileRoutesById {
   '/editais/$id/inscricao': typeof EditaisIdInscricaoRoute
   '/_app/editais/': typeof AppEditaisIndexRoute
   '/_app/_staff/_coordinator/equipe': typeof AppStaffCoordinatorEquipeRoute
+  '/_app/editais/$id/editar': typeof AppEditaisIdEditarRoute
   '/_app/editais/$id/': typeof AppEditaisIdIndexRoute
   '/_app/_staff/_social-workers/consultar-ivs/$id': typeof AppStaffSocialWorkersConsultarIvsIdRoute
   '/_app/_staff/_social-workers/consultar-ivs/': typeof AppStaffSocialWorkersConsultarIvsIndexRoute
@@ -144,6 +153,7 @@ export interface FileRouteTypes {
     | '/editais/$id/inscricao'
     | '/editais'
     | '/equipe'
+    | '/editais/$id/editar'
     | '/editais/$id'
     | '/consultar-ivs/$id'
     | '/consultar-ivs'
@@ -157,6 +167,7 @@ export interface FileRouteTypes {
     | '/editais/$id/inscricao'
     | '/editais'
     | '/equipe'
+    | '/editais/$id/editar'
     | '/editais/$id'
     | '/consultar-ivs/$id'
     | '/consultar-ivs'
@@ -172,6 +183,7 @@ export interface FileRouteTypes {
     | '/editais/$id/inscricao'
     | '/_app/editais/'
     | '/_app/_staff/_coordinator/equipe'
+    | '/_app/editais/$id/editar'
     | '/_app/editais/$id/'
     | '/_app/_staff/_social-workers/consultar-ivs/$id'
     | '/_app/_staff/_social-workers/consultar-ivs/'
@@ -258,6 +270,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppEditaisIdIndexRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/editais/$id/editar': {
+      id: '/_app/editais/$id/editar'
+      path: '/editais/$id/editar'
+      fullPath: '/editais/$id/editar'
+      preLoaderRoute: typeof AppEditaisIdEditarRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/_staff/_coordinator/equipe': {
       id: '/_app/_staff/_coordinator/equipe'
       path: '/equipe'
@@ -304,6 +323,7 @@ interface AppRouteChildren {
   AppStaffRoute: typeof AppStaffRouteWithChildren
   AppEditaisCriarRoute: typeof AppEditaisCriarRoute
   AppEditaisIndexRoute: typeof AppEditaisIndexRoute
+  AppEditaisIdEditarRoute: typeof AppEditaisIdEditarRoute
   AppEditaisIdIndexRoute: typeof AppEditaisIdIndexRoute
 }
 
@@ -311,6 +331,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppStaffRoute: AppStaffRouteWithChildren,
   AppEditaisCriarRoute: AppEditaisCriarRoute,
   AppEditaisIndexRoute: AppEditaisIndexRoute,
+  AppEditaisIdEditarRoute: AppEditaisIdEditarRoute,
   AppEditaisIdIndexRoute: AppEditaisIdIndexRoute,
 }
 

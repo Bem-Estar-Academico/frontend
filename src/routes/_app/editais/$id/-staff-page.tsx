@@ -7,10 +7,13 @@ import { noticeRegistrationsQueryOptions } from "@/queries/notice-registrations"
 import { Route } from ".";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Calendar, BarChart3 } from "lucide-react";
+import { Calendar, BarChart3, Pencil } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Link } from "@tanstack/react-router";
 
 export function StaffEditaisComponent() {
   const { id } = Route.useParams();
+  const { auth } = Route.useRouteContext();
   const { data: edital } = useSuspenseQuery(editalQueryOptions(Number(id)));
   const { data: noticeRegistrations } = useSuspenseQuery(
     noticeRegistrationsQueryOptions(Number(id))
@@ -19,6 +22,8 @@ export function StaffEditaisComponent() {
   if (!edital) {
     return <p>Edital não encontrado</p>;
   }
+
+  const isCoordinator = auth?.hasRole("COORDINATOR");
 
   const beneficios = [
     { label: 'Auxílio Alimentação', enabled: edital.food_allowance },
@@ -77,21 +82,34 @@ export function StaffEditaisComponent() {
       <div className="mx-auto space-y-8">
         {/* CABEÇALHO DO EDITAL */}
         <header className="space-y-2 pb-4 border-b">
-          <h1 className="text-2xl font-bold tracking-tight">{edital.title}</h1>
-          <p className="text-sm text-muted-foreground">{edital.description}</p>
-          {beneficiosOfertados.length > 0 && (
-            <div className="flex flex-wrap gap-2 pt-2">
-              {beneficiosOfertados.map((beneficio) => (
-                <Badge 
-                  key={beneficio.label}
-                  variant="default"
-                  className="px-3 py-1 text-sm font-medium bg-indigo-500 hover:bg-indigo-600 text-white"
-                >
-                  {beneficio.label}
-                </Badge>
-              ))}
+          <div className="flex items-start justify-between">
+            <div className="space-y-2 flex-1">
+              <h1 className="text-2xl font-bold tracking-tight">{edital.title}</h1>
+              <p className="text-sm text-muted-foreground">{edital.description}</p>
+              {beneficiosOfertados.length > 0 && (
+                <div className="flex flex-wrap gap-2 pt-2">
+                  {beneficiosOfertados.map((beneficio) => (
+                    <Badge 
+                      key={beneficio.label}
+                      variant="default"
+                      className="px-3 py-1 text-sm font-medium bg-indigo-500 hover:bg-indigo-600 text-white"
+                    >
+                      {beneficio.label}
+                    </Badge>
+                  ))}
+                </div>
+              )}
             </div>
-          )}
+            
+            {isCoordinator && (
+              <Link to="/editais/$id/editar" params={{ id }}>
+                <Button variant="outline" className="flex items-center gap-2">
+                  <Pencil className="w-4 h-4" />
+                  Editar 
+                </Button>
+              </Link>
+            )}
+          </div>
         </header>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-7">

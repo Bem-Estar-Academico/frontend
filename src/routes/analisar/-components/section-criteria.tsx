@@ -25,7 +25,7 @@ export const eligibilityCriteria = [
   {
     id: "vulnerabilidade",
     label:
-      "Integrante de grupo familiar em situação de vunerabilidade socioeconômica, observado o limite de renda bruta familiar mensal per capita de até 1 (um) salário mínimo",
+      "Integrante de grupo familiar em situação de vulnerabilidade socioeconômica, observado o limite de renda bruta familiar mensal per capita de até 1 (um) salário mínimo",
   },
   {
     id: "quilombola",

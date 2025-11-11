@@ -41,9 +41,10 @@ export function AuthProvider({ children }: Readonly<AuthProviderProps>) {
   const { mutateAsync: loginMutateAsync } = useMutation(loginMutationOptions);
 
   useEffect(() => {
+    let interceptorId: number;
     if (user) {
       console.log("Setting up interceptor for token expiration handling.");
-      api.interceptors.response.use(
+      interceptorId = api.interceptors.response.use(
         (response) => response,
         (error) => {
             if (error.response?.status === 401 && window.location.pathname !== '/login') {
@@ -53,6 +54,13 @@ export function AuthProvider({ children }: Readonly<AuthProviderProps>) {
             return Promise.reject(error);
         }
       );
+    }
+
+    return () => {
+      if (interceptorId !== undefined) {
+        console.log("Ejecting interceptor for token expiration handling.");
+        api.interceptors.response.eject(interceptorId);
+      }
     }
   }, [user])
 

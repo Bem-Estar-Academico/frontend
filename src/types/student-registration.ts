@@ -2,7 +2,7 @@ import type { Student } from "./student-dto"
 
 export type Review = {
   id: number,
-  status: "PENDING" | "APPROVED" | "REJECTED" | "APPEAL" | "ANALISYS" | "CANCELLED",
+  status: "PENDING" | "APPROVED" | "REJECTED" | "APPEAL" | "REVIEW" | "CANCELLED",
   ivs: number,
   expires_at: string,
   qtd_documents: number,

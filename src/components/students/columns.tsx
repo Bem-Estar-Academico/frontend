@@ -7,7 +7,17 @@ import { Link } from "@tanstack/react-router";
 import { DataTableColumnHeader } from "../ui/data-table-column-header";
 import type { Item } from "./registrations-data-table";
 
-const MASK = "******"
+const MASK = "*****"
+
+function maskCPF(cpf: string): string {
+  const cleanCPF = cpf.replaceAll(/\D/g, '');
+  
+  const visiblePart = cleanCPF.slice(0, 6);
+  const hiddenPart = '***';
+  const lastPart = cleanCPF.slice(9, 11);
+
+  return `${visiblePart.slice(0, 3)}.${visiblePart.slice(3, 6)}.${hiddenPart}-${lastPart}`;
+}
 
 export function getColumns(masked: boolean): ColumnDef<Item>[] {
   return [
@@ -19,7 +29,7 @@ export function getColumns(masked: boolean): ColumnDef<Item>[] {
         const value = row.getValue("cpf") as string
         return (
           <div className="text-center">
-            {masked ? MASK : value}
+            {masked ? maskCPF(value) : value}
           </div>
         )
       },
@@ -61,6 +71,19 @@ export function getColumns(masked: boolean): ColumnDef<Item>[] {
         return (
           <div className="flex justify-center">
             <StatusBadge variant={map[value]} />
+          </div>
+        )
+      },
+    },
+    {
+      accessorKey: "socialWorker",
+      enableGlobalFilter: false,
+      header: ({ column }) => <DataTableColumnHeader title="Assistente Social" column={column} />,
+      cell: ({ row }) => {
+       
+        return (
+          <div className="text-center">
+            {row.getValue("socialWorker")}
           </div>
         )
       },
@@ -109,7 +132,7 @@ export function getColumns(masked: boolean): ColumnDef<Item>[] {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <DropdownMenuItem className="cursor-pointer" asChild>
+                <DropdownMenuItem className="cursor-pointer">
                   <Link to={`/analisar/inscricao/$subscriptionId`} params={{ subscriptionId: String(registration.registration_id) }}>
                     Analisar
                   </Link>

@@ -45,7 +45,7 @@ export function StudentHome() {
   const { data: studentRegistrations, isLoading, error } = useQuery(studentRegistrationsQueryOptions());
 
   const currentRegistration = studentRegistrations?.filter(reg => 
-    reg.review?.status === "PENDING" || reg.review?.status === "ANALISYS" || reg.review?.status === "APPEAL"
+    reg.review?.status === "PENDING" || reg.review?.status === "REVIEW" || reg.review?.status === "APPEAL"
   ) || [];
   
   const pastRegistrations = studentRegistrations?.filter(reg => 
@@ -76,7 +76,7 @@ export function StudentHome() {
   }
 
   return (
-    <div className="flex p-5 justify-center bg-linear-to-b from-cyan-200 to-blue-50 h-full">
+    <div className="flex p-5 justify-center bg-linear-to-b from-cyan-200 to-blue-50 min-h-full">
       <div className="flex w-full max-w-xl flex-col gap-6">
         <Tabs defaultValue="current-registration" className="flex gap-5">
           <TabsList className="w-full">

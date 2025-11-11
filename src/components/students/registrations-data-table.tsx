@@ -13,6 +13,7 @@ import {
   type VisibilityState,
 } from "@tanstack/react-table"
 import {
+  Eye,
   EyeOff,
 } from "lucide-react"
 
@@ -72,6 +73,7 @@ export type Item = Pick<Student,  "full_name" | "cpf" | "registration_number"> &
   registration_date: string;
   registration_id: number;
   editalId: string;
+  socialWorker: string;
 }
 
 export interface RegistrationsDataTableProps {
@@ -149,7 +151,7 @@ export function RegistrationsDataTable({ data, initialState, pageSizeOptions = D
 
         <div className="flex items-center gap-2">
           <Button variant="secondary" className="cursor-pointer" onClick={() => setMaskPersonal((v) => !v)}>
-            <EyeOff className="size-[16px]" />
+            {maskPersonal ? <Eye className="size-4" /> : <EyeOff className="size-4" />}
           </Button>
           <Button variant="secondary" className="cursor-pointer">Exportar</Button>
         </div>

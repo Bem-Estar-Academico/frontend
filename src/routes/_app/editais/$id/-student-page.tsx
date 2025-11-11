@@ -41,8 +41,8 @@ export function StudentEditaisComponent() {
     const isOpen = isEditalOpen(edital);
 
     return (
-        <div className="min-h-screen">
-        <div className="max-w-7xl mx-auto p-6 space-y-6">
+        <div className="min-h-screen px-10 py-6">
+        <div className="mx-auto space-y-6">
             <Card>
                 <CardHeader>
                     <div className="flex items-center justify-between gap-6 flex-wrap">

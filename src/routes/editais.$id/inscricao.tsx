@@ -12,12 +12,15 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
 import { createStudentRegistrationMutationOptions } from "@/mutations/create-student-registration";
-import { CreateStudentRegistrationFormSidebar } from "./-sidebar";
 import { editalQueryOptions } from "@/queries/edital";
 import { api } from "@/api";
 import { formSchema, type FormValues, getInitialValues } from "../_app/editais/$id/-schema";
 import formData, { type FormQuestion }  from "../_app/editais/$id/-data";
 import { studentRegistrationsQueryOptions } from "@/queries/student-registrations";
+import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { StudentFormSidebar } from "./-app-sidebar";
+import { Link } from "@tanstack/react-router";
+import { IconArrowLeft } from "@tabler/icons-react";
 
 
 export const Route = createFileRoute("/editais/$id/inscricao")({
@@ -103,8 +106,6 @@ export function StudentRegistrationForm() {
       ],
     };
   }, [edital]);
-
-  console.log("beneficiosSection:", beneficiosSection);
 
   const renderQuestion = useCallback((question: FormQuestion) => {
       switch (question.type) {
@@ -330,34 +331,27 @@ export function StudentRegistrationForm() {
     toast.error("Por favor, verifique as seções e corrija os erros no formulário antes de enviar.");
   };
 
+  const currentSection = (formData.sections.find(section => section.id === activeTab) || beneficiosSection) as typeof formData.sections[0];
+
   return (
-    <div className="flex h-full">
-      {/* SIDEBAR */}
-      <CreateStudentRegistrationFormSidebar 
-        title={edital.title} 
+   <SidebarProvider>
+      <StudentFormSidebar  
+      title={edital.title} 
         activeTab={activeTab} 
         form={form} 
         changeTab={setActiveTab}
         beneficiosSection={beneficiosSection}
-        editalId={Number(id)}
-      />
-
+        editalId={Number(id)} />
+      <SidebarInset>  
+      {/* SIDEBAR */}
       {/* TABS */}
       <Form {...form}>
+        <Header title={currentSection?.title} description={currentSection?.description} />
         <form className="flex-1 h-full " onSubmit={form.handleSubmit(onSubmit, onError)}>
         <Tabs value={activeTab} onValueChange={setActiveTab}>
           {/* Benefícios tab (render only if edital offers any) */}
           {beneficiosSection && (
             <TabsContent value={beneficiosSection.id} className="mb-6">
-              <div className="p-4 border-b">
-                <p className="text-md font-medium">{beneficiosSection.title}</p>
-              </div>
-              {beneficiosSection.description && (
-                <div className="p-4">
-                  <p className="text-xs text-gray-500">{beneficiosSection.description}</p>
-                </div>
-              )}
-
               <div className="overflow-auto max-h-full grid grid-cols-2 px-8 py-4 gap-8">
                 {beneficiosSection.questions.map((question) => renderQuestion(question))}
               </div>
@@ -366,22 +360,8 @@ export function StudentRegistrationForm() {
 
           {formData.sections.map((section, sectionIdx) => (
             <TabsContent value={section.id} className="mb-6" key={section.id}>
-              {/* Title */}
-              <div className="p-4 border-b">
-                <p className="text-md font-medium">{section.title}</p>
-              </div>
-
-              {/* Description */}
-              {section.description && (
-                <div className="p-4">
-                  <p className="text-xs text-gray-500">
-                    {section.description}
-                  </p>
-                </div>
-              )}
-            
               {/* Form Content */}
-              <div className="overflow-auto max-h-full grid grid-cols-2 px-8 py-4 gap-8">
+              <div className="overflow-auto max-h-full grid md:grid-cols-2 px-8 py-4 gap-8">
                 {/* Alert */}
                 {section.alert && (
                   <div className={`col-span-2 ${
@@ -423,8 +403,33 @@ export function StudentRegistrationForm() {
         </Tabs>
       </form>
       </Form>
-    </div>
+      </SidebarInset>
+   </SidebarProvider>
   );
+}
+
+interface HeaderProps {
+  title: string;
+  description?: string;
+}
+
+function Header({ title, description }: HeaderProps) {
+  return (
+    <div className="p-4 border-b flex items-center justify-between md:justify-start gap-2">
+      <div className="flex items-center gap-4">
+        <SidebarTrigger className="-ml-1" />
+        <Button variant={'ghost'} asChild>
+          <Link to="/editais/$id" params={{ id: Route.useParams().id }}>
+            <IconArrowLeft size={18} /> Voltar
+          </Link>
+        </Button>
+      </div>
+      <div className="flex flex-col gap-2 ml-6">
+        <p className="text-md md:text-lg font-semibold">Seção {title}</p>
+        {/* {description && <p className="text-sm text-gray-500">{description}</p>} */}
+      </div>
+    </div>
+  )
 }
 
 export default StudentRegistrationForm;

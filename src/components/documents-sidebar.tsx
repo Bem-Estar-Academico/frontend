@@ -13,9 +13,14 @@ import {
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar"
 import { ChevronDown, ChevronUp, Files } from "lucide-react"
+import { Dialog, DialogClose, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "./ui/dialog"
+import { Button } from "./ui/button"
+import { useState } from "react"
+import DocumentViewer from "./document-viewer"
 
 type Document = {
   id: string
+  url: string
   title: string
   items?: Document[]
 }
@@ -26,12 +31,21 @@ export interface DocumentsSidebarProps {
     title: string;
     items: Document[]
   }>
-   onDocumentSelect?: (id: string) => void
 }
 
-export function DocumentsSidebar({data, activeDocumentId, onDocumentSelect}: Readonly<DocumentsSidebarProps>) {
+export function DocumentsSidebar({data, activeDocumentId}: Readonly<DocumentsSidebarProps>) {
+  const [selectedDocumentId, setSelectedDocumentId] = useState<string | undefined>(undefined);
+  const selectedDocument = data
+    .flatMap((section) => section.items)
+    .find((doc) => doc.id === selectedDocumentId);
+
+  const onDocumentSelect = (id: string) => {
+    setSelectedDocumentId(id);
+  }
+  
   return (
     <Sidebar>
+      <Dialog open={!!selectedDocumentId} onOpenChange={() => setSelectedDocumentId(undefined)}>
         <SidebarHeader>
           <SidebarMenu>
             <SidebarMenuItem>
@@ -48,38 +62,52 @@ export function DocumentsSidebar({data, activeDocumentId, onDocumentSelect}: Rea
             </SidebarMenuItem>
           </SidebarMenu>
         </SidebarHeader>
-      <SidebarContent>
-        <SidebarGroup>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {data.map((section, index) => (
-              <Collapsible
-                key={section.title}
-                defaultOpen={index === 0}
-                className="group/collapsible"
-              >
-                <SidebarMenuItem>
-                  <CollapsibleTrigger asChild>
-                    <SidebarMenuButton className='font-medium'>
-                      {section.title}
-                      <ChevronDown className="ml-auto group-data-[state=open]/collapsible:hidden" />
-                      <ChevronUp className="ml-auto group-data-[state=closed]/collapsible:hidden" />
-                    </SidebarMenuButton>
-                  </CollapsibleTrigger>
-                  {section.items?.length ? (
-                    <CollapsibleContent>
-                      <SidebarMenuSub>
-                        {renderDocuments(section.items, activeDocumentId, onDocumentSelect)}
-                      </SidebarMenuSub>
-                    </CollapsibleContent>
-                  ) : null}
-                </SidebarMenuItem>
-              </Collapsible>
-            ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-      </SidebarContent>
+        <SidebarContent>
+          <SidebarGroup>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                {data.map((section, index) => (
+                <Collapsible
+                  key={section.title}
+                  defaultOpen={index === 0}
+                  className="group/collapsible"
+                >
+                  <SidebarMenuItem>
+                    <CollapsibleTrigger asChild>
+                      <SidebarMenuButton className='font-medium'>
+                        {section.title}
+                        <ChevronDown className="ml-auto group-data-[state=open]/collapsible:hidden" />
+                        <ChevronUp className="ml-auto group-data-[state=closed]/collapsible:hidden" />
+                      </SidebarMenuButton>
+                    </CollapsibleTrigger>
+                    {section.items?.length ? (
+                      <CollapsibleContent>
+                        <SidebarMenuSub>
+                          {renderDocuments(section.items, activeDocumentId, onDocumentSelect)}
+                        </SidebarMenuSub>
+                      </CollapsibleContent>
+                    ) : null}
+                  </SidebarMenuItem>
+                </Collapsible>
+              ))}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        </SidebarContent>
+        <DialogContent   className="px-6 sm:max-w-3xl xl:max-w-7xl">
+          <DialogHeader>
+            <DialogTitle>{selectedDocument?.title}</DialogTitle>
+          </DialogHeader>
+          <div className="h-[600px]">
+           <DocumentViewer url={selectedDocument?.url || null} />
+          </div>
+          <DialogFooter>
+            <DialogClose asChild>
+              <Button variant="outline">Close</Button>
+            </DialogClose>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </Sidebar>
   )
 }
@@ -118,13 +146,14 @@ function renderDocuments(
       );
     }
     return (
-      <SidebarMenuSubItem key={doc.id}>
+      <SidebarMenuSubItem className="" key={doc.id}>
         <SidebarMenuSubButton
           asChild
           isActive={activeDocumentId === doc.id}
           onClick={() => handleDocumentClick(doc.id)}
           style={{ paddingLeft: `${level * 1.5 + 1}rem` }}
-          className={level > 0 ? "text-xs" : ""}
+          className={`data-[active=true]:bg-zinc-300 cursor-pointer h-auto p-1 ${level > 0 ? "text-xs" : ""}`}
+          // data-[active=true]:bg-sidebar-accent
         >
           <p>{doc.title}</p>
         </SidebarMenuSubButton>

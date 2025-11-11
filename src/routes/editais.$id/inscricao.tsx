@@ -413,7 +413,7 @@ interface HeaderProps {
   description?: string;
 }
 
-function Header({ title, description }: HeaderProps) {
+function Header({ title }: HeaderProps) {
   const { id } = Route.useParams();
   return (
     <div className="p-4 border-b flex items-center justify-between md:justify-start gap-2">

@@ -85,28 +85,23 @@ function EditEdital() {
   })
   
   async function onSubmit(values: EditalFormData) {
-    try {
-      const payload: UpdateNoticeDTO = {
-        title: values.title,
-        registration_start_date: values.applicationStart.toISOString(),
-        registration_end_date: values.applicationEnd?.toISOString(),
-        appeal_start_date: values.appealStart?.toISOString(),
-        appeal_end_date: values.appealEnd?.toISOString(),
-        preliminary_result_date: values.preliminaryResult?.toISOString(),
-        final_result_date: values.finalResult?.toISOString(),
-        description: values.description,
-        food_allowance: values.benefit.includes("auxilio_alimentacao"),
-        housing_allowance: values.benefit.includes("auxilio_moradia"),
-        daycare_allowance: values.benefit.includes("auxilio_creche"),
-        graduation_scholarship: values.benefit.includes("bolsa_pro_graduando"),
-        team_members: values.social_workers
-      }
-
-      await updateNoticeMutation.mutateAsync(payload)
-      
-    } catch (error: any) {
-        console.error("Erro no onSubmit:", error)
+    const payload: UpdateNoticeDTO = {
+      title: values.title,
+      registration_start_date: values.applicationStart.toISOString(),
+      registration_end_date: values.applicationEnd?.toISOString(),
+      appeal_start_date: values.appealStart?.toISOString(),
+      appeal_end_date: values.appealEnd?.toISOString(),
+      preliminary_result_date: values.preliminaryResult?.toISOString(),
+      final_result_date: values.finalResult?.toISOString(),
+      description: values.description,
+      food_allowance: values.benefit.includes("auxilio_alimentacao"),
+      housing_allowance: values.benefit.includes("auxilio_moradia"),
+      daycare_allowance: values.benefit.includes("auxilio_creche"),
+      graduation_scholarship: values.benefit.includes("bolsa_pro_graduando"),
+      // team_members: values.social_workers
     }
+
+    await updateNoticeMutation.mutateAsync(payload)
   }
 
   if (isLoadingNotice) {

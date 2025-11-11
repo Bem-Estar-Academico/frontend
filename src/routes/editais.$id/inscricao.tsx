@@ -21,6 +21,7 @@ import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/s
 import { StudentFormSidebar } from "./-app-sidebar";
 import { Link } from "@tanstack/react-router";
 import { IconArrowLeft } from "@tabler/icons-react";
+import { Spinner } from "@/components/ui/spinner";
 
 
 export const Route = createFileRoute("/editais/$id/inscricao")({
@@ -67,6 +68,8 @@ export function StudentRegistrationForm() {
     defaultValues: getInitialValues(),
   })  
   const navigate = useNavigate();
+
+  console.log("edital no form:", form.getValues());
 
   const [activeTab, setActiveTab] = useState("beneficios");
 
@@ -288,6 +291,7 @@ export function StudentRegistrationForm() {
   }, [edital, form]);
 
   const onSubmit = async (values: FormValues) => {
+   
     try {
       const requested_benefits = (values.requested_benefits || []) as Array<string>;
       const {files, ...answer} = values;
@@ -333,6 +337,7 @@ export function StudentRegistrationForm() {
 
   const currentSection = (formData.sections.find(section => section.id === activeTab) || beneficiosSection) as typeof formData.sections[0];
 
+  const isSubmitting = form.formState.isSubmitting;
   return (
    <SidebarProvider>
       <StudentFormSidebar  
@@ -392,8 +397,9 @@ export function StudentRegistrationForm() {
                 {/* Botão de Envio */}
                 {sectionIdx === formData.sections.length - 1 && (
                   <div className="col-span-2 flex justify-end pt-8">
-                    <Button type="submit">
-                      Enviar Cadastro
+                    <Button disabled={isSubmitting} type="button" onClick={onSubmit}>
+                      {isSubmitting && <Spinner className='size-12' />}
+                      {isSubmitting ? 'Enviando...' : 'Enviar Inscrição'}
                     </Button>
                   </div>
                 )}

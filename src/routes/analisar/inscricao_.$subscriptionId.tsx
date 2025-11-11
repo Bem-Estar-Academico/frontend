@@ -44,108 +44,7 @@ export const Route = createFileRoute("/analisar/inscricao_/$subscriptionId")({
   }
 });
 
-// const mockData: DocumentsSidebarProps["data"] = [
-//   {
-//     title: "Documentos do Estudante",
-//     items: [
-//       {
-//         title: "Atestado Médico",
-//         id: "atestado-medico-estudante",
-//         url: "https://www.orimi.com/pdf-test.pdf",
-//         // url: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
-//       },
-//       {
-//         title: "Carteira de Trabalho",
-//         id: "carteira-de-trabalho-estudante",
-//         url: "https://www.orimi.com/pdf-test.pdf",
-//       },
-//       {
-//         title: "Certidão de Casamento",
-//         id: "certidao-de-casamento-estudante",
-//         url: "https://www.orimi.com/pdf-test.pdf",
-//       },
-//       {
-//         title: "Comprovante de Monitoria",
-//         id: "comprovante-de-monitoria-estudante",
-//         url: "https://s29.q4cdn.com/175625835/files/doc_downloads/test.pdf",
-//       },
-//       {
-//         title: "Histórico Escolar",
-//         id: "historico-escolar-estudante",
-//         url: "https://www.orimi.com/pdf-test.pdf",
-//       },
-//     ],
-//   },
-//   {
-//     title: "Documentação Pai",
-//     items: [
-//       {
-//         title: "Termo de Pensão Alimentícia",
-//         id: "termo-de-pensao-alimenticia-pai",
-//         url: "https://www.orimi.com/pdf-test.pdf",
-//       },
-//       {
-//         title: "Atestado Médico",
-//         id: "atestado-medico-pai",
-//         url: "https://s29.q4cdn.com/175625835/files/doc_downloads/test.pdf",
-//       },
-//     ],
-//   },
-//   {
-//     title: "Documentação Mãe",
-//     items: [
-//       {
-//         title: "Termo de Pensão Alimentícia",
-//         id: "termo-de-pensao-alimenticia-mae",
-//         url: "https://www.orimi.com/pdf-test.pdf",
-//       },
-//     ],
-//   },
-//   {
-//     title: "Documentação Avô",
-//     items: [
-//       {
-//         title: "Termo de Pensão Alimentícia",
-//         id: "termo-de-pensao-alimenticia-avo",
-//         url: "https://www.orimi.com/pdf-test.pdf",
-//       },
-//     ],
-//   },
-// ];
 
-// const simpleMockData: DocumentsSidebarProps["data"] = [
-//   {
-//     title: "Documentos do Estudante",
-//     items: [
-//       {
-//         title: "Atestado Médico",
-//         id: "atestado-medico-estudante",
-//         url: "https://www.orimi.com/pdf-test.pdf",
-//       },
-//       {
-//         title: "Carteira de Trabalho",
-//         id: "carteira-de-trabalho-estudante",
-//         url: "https://s29.q4cdn.com/175625835/files/doc_downloads/test.pdf",
-//       },
-//       {
-//         title: "Certidão de Casamento",
-//         id: "certidao-de-casamento-estudante",
-//         url: "https://www.orimi.com/pdf-test.pdf",
-//       },
-//       {
-//         title: "Comprovante de Monitoria",
-//         id: "comprovante-de-monitoria-estudante",
-//         url: "https://s29.q4cdn.com/175625835/files/doc_downloads/test.pdf",
-//       },
-//       {
-//         title: "Histórico Escolar",
-//         id: "historico-escolar-estudante",
-//         url: "https://www.orimi.com/pdf-test.pdf",
-//       },
-//     ],
-//   },
-// ]
-  
 const schema = z.object({
   status: z.string().nonempty("Status é obrigatório"),
   notes: z.string().optional(),
@@ -212,10 +111,10 @@ export function ReviewSubscription() {
   }
   
   const requestedAllowances = {
-    daycare_allowance: studentRegistration.requested_daycare_allowance,
-    food_allowance: studentRegistration.requested_food_allowance,
-    graduation_scholarship: studentRegistration.requested_graduation_scholarship,
-    housing_allowance: studentRegistration.requested_housing_allowance,
+    daycare_allowance: true,
+    food_allowance: true,
+    graduation_scholarship: true,
+    housing_allowance: true,
   }
 
   const onSubmit = async (values: FormFields) => {

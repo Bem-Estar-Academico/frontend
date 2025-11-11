@@ -68,4 +68,5 @@ export type UpdateNoticeDTO = {
     housing_allowance: boolean,
     daycare_allowance: boolean,
     graduation_scholarship: boolean
+    team_members: Array<number>
 }

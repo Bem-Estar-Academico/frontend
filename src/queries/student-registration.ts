@@ -9,5 +9,6 @@ import { queryOptions } from "@tanstack/react-query";
 
 export async function fetchStudentRegistration(studentRegistration: number) {
     const { data } = await api.get<StudentRegistrationDTO>(`/student-registrations/${studentRegistration}`);
+    console.log(data);
     return data;
 }

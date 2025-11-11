@@ -23,7 +23,7 @@ import { cpfMask } from "@/lib/utils"
 const formSchema = z
   .object({
     name: z.string().min(1, "O nome é obrigatório."),
-    student_registration: z
+    registration_number: z
       .string()
       .min(8, "A matrícula deve ter no mínimo 8 dígitos.")
       .regex(/^\d+$/, "A matrícula deve conter apenas números."),
@@ -52,7 +52,7 @@ export function SignupForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
-      student_registration: "",
+      registration_number: "",
       cpf: "",
       email: "",
       password: "",
@@ -64,7 +64,7 @@ export function SignupForm({
     try {
       await createStudentMutation.mutateAsync({
         full_name: values.name,
-        student_registration: values.student_registration,
+        registration_number: values.registration_number,
         cpf: values.cpf.replaceAll(".", "").replaceAll("-", ""),
         email: values.email,
         password: values.password,
@@ -154,7 +154,7 @@ export function SignupForm({
             />
 
             <Controller
-              name="student_registration"
+              name="registration_number"
               control={form.control}
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid}>

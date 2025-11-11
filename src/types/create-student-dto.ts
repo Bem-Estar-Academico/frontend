@@ -4,6 +4,6 @@ export type CreateStudentDTO = {
   full_name: string;
   is_active: boolean;
   password: string;
-  student_registration: string;
+  registration_number: string;
   user_type: "STUDENT"
 }

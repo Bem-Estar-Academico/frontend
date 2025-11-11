@@ -33,11 +33,11 @@ export function StaffEditaisComponent() {
   ];
 
   const beneficiosOfertados = beneficios.filter(b => b.enabled);
-  
+  console.log(noticeRegistrations)
   const chartData = [
     { name: "Pendente", value: noticeRegistrations.pending_count || 0, color: "var(--color-gray-500)" },
     { name: "Deferido", value: noticeRegistrations.approved_count || 0, color: "var(--color-green-600)" },
-    { name: "Indeferido", value: noticeRegistrations.reject_count || 0, color: "var(--color-red-600)" },
+    { name: "Indeferido", value: noticeRegistrations.rejected_count || 0, color: "var(--color-red-600)" },
     { name: "Em Análise", value: noticeRegistrations.review_count || 0, color: "var(--color-yellow-500)" },
     { name: "Em Recurso", value: noticeRegistrations.appeal_count || 0, color: "var(--color-blue-500)" },
   ]; 
@@ -67,7 +67,7 @@ export function StaffEditaisComponent() {
       editalId: String(edital.id),
     })
   );
-
+  console.log(noticeRegistrations.registrations[0])
   const formatDate = (date: string | null) => {
     if (!date) return "A decidir";
     return new Date(date).toLocaleDateString("pt-BR", { 

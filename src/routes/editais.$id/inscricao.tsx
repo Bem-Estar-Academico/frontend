@@ -39,7 +39,7 @@ export const Route = createFileRoute("/editais/$id/inscricao")({
     const endDate = new Date(edital.registration_end_date);
     const isRegistrationOpen = now >= startDate && now <= endDate;
 
-    if (!isRegistrationOpen) {
+    if (!isRegistrationOpen && edital.registration_end_date) {
       toast.error("As inscrições para este edital estão fechadas.");
       throw redirect({
         to: "/editais/$id",

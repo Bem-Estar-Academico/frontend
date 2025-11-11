@@ -29,7 +29,7 @@ export interface RegistrationsListResponse {
   registrations: RegistrationItem[];
   pending_count: number;
   approved_count: number;
-  reject_count: number;
+  rejected_count: number;
   review_count: number;
   appeal_count: number;
   cancelled_count: number;

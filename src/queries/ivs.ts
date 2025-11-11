@@ -17,3 +17,21 @@ export async function fetchIVS() {
 
     return data;
 }
+
+export const exportIvsQueryOptions = (params: { anonymous: boolean }) => queryOptions({
+    queryKey: ['ivs-csv'],
+    queryFn: () => fetchIvsCsv(params)
+})
+
+export async function fetchIvsCsv(params: { anonymous: boolean }) {
+  const response = await api.get('/ivs/export/excel', {
+    responseType: 'blob',
+    params: params,
+  });
+
+  if (!response.data) {
+    throw new Error('Arquivo CSV não encontrado');
+  }
+
+  return response.data;
+}

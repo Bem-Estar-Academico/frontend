@@ -414,12 +414,13 @@ interface HeaderProps {
 }
 
 function Header({ title, description }: HeaderProps) {
+  const { id } = Route.useParams();
   return (
     <div className="p-4 border-b flex items-center justify-between md:justify-start gap-2">
       <div className="flex items-center gap-4">
         <SidebarTrigger className="-ml-1" />
         <Button variant={'ghost'} asChild>
-          <Link to="/editais/$id" params={{ id: Route.useParams().id }}>
+          <Link to="/editais/$id" params={{ id }}>
             <IconArrowLeft size={18} /> Voltar
           </Link>
         </Button>

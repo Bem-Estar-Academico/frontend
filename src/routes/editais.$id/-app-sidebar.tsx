@@ -4,13 +4,7 @@ import * as React from "react"
 import {
   Sidebar,
   SidebarContent,
-  SidebarGroup,
-  SidebarGroupContent,
-  SidebarGroupLabel,
   SidebarHeader,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
   SidebarRail,
 } from "@/components/ui/sidebar"
 import { Badge } from "@/components/ui/badge";
@@ -124,7 +118,7 @@ const formValues = useWatch({ control: form.control });
 
   const sectionProgress = React.useMemo(() => {
     return allSections.map(section => {
-      const requiredQuestions = section.questions.filter((q: { required: FormQuestion; }) => q.required);
+      const requiredQuestions = section.questions.filter((q: FormQuestion) => q.required);
       const totalRequired = requiredQuestions.length;
       const answeredRequired = requiredQuestions.filter((q: FormQuestion) => isQuestionAnswered(q)).length;
       const hasErrors = section.questions.some((q: FormQuestion) => hasQuestionError(q));

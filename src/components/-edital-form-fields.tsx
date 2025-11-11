@@ -62,7 +62,7 @@ export function CheckboxItem({
           checked={field.value?.includes(item.id)}
           onCheckedChange={(checked) =>
             checked
-              ? field.onChange([...(field.value || []), item.id])
+              ? field.onChange([...field.value, item.id])
               : field.onChange((field.value || []).filter((v: string) => v !== item.id))
           }
         />

@@ -1,9 +1,9 @@
 import { api } from "@/api";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { isAxiosError } from "axios";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useWatch, type UseFormReturn } from "react-hook-form";
-import { useDebounceCallback } from 'usehooks-ts'
+import { useDebounceValue } from "usehooks-ts"
 
 type UseFormDraftProps = {
     form: UseFormReturn
@@ -40,20 +40,9 @@ export function useFormDraft(data: UseFormDraftProps) {
     const [saveStatus, setSaveStatus] = useState<'synced' | 'saving' | 'dirty'>('synced');
     const formValues = useWatch({ control: data.form.control });
 
-    const debouncedSaveFormValues = useDebounceCallback(async (values: any) => {
-        setSaveStatus('saving');
-        try {
-            if (data.type === 'REGISTRATION') {
-                await updateRegistrationDraft(data.editalId, values);
-            } else {
-                await updateReviewDraft(data.reviewId, values);
-            }
-            setSaveStatus('synced');
-        } catch (error) {
-            console.error('Error saving form draft:', error);
-            setSaveStatus('dirty');
-        }
-    }, 5000);
+    // debounce the whole formValues object so we only attempt save after user stops changing fields
+    const [debouncedValue, setValue] = useDebounceValue(formValues, 3000);
+    const mounted = useRef(false);
 
     useEffect(() => {
         if (draft && draft.content) {
@@ -64,8 +53,35 @@ export function useFormDraft(data: UseFormDraftProps) {
 
     useEffect(() => {
         setSaveStatus('dirty');
-        debouncedSaveFormValues(formValues);
-    }, [formValues]);
+        setValue(formValues);
+    }, [formValues, setValue]);
+
+    useEffect(() => {
+        // skip saving on first mount (e.g. after loading draft/reset)
+        if (!mounted.current) {
+            mounted.current = true;
+            return;
+        }
+
+        // nothing to save
+        if (debouncedValue == null) return;
+
+        console.log("Auto-saving form draft:", debouncedValue);
+        (async () => {
+            setSaveStatus('saving');
+            try {
+                if (data.type === 'REGISTRATION') {
+                    await updateRegistrationDraft(data.editalId, debouncedValue);
+                } else {
+                    await updateReviewDraft(data.reviewId, debouncedValue);
+                }
+                setSaveStatus('synced');
+            } catch (error) {
+                console.error('Error saving form draft:', error);
+                setSaveStatus('dirty');
+            }
+        })();
+    }, [debouncedValue]);
     
 
    return { saveStatus };

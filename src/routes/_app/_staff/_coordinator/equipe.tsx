@@ -150,18 +150,17 @@ function RouteComponent() {
             </CardHeader>
             
             <CardContent className="pt-4">
-                <TabsContent value="grid">
-                  <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-                    {sortedData.map((worker) => (
-                      <CardSocialWorker key={worker.email} data={worker} />
-                    ))}
-                  </div>
-                </TabsContent>
-                
-                <TabsContent value="list">
-                  <SocialWorkerProgressDataTable data={sortedData} />
-                </TabsContent>
+              <TabsContent value="grid">
+                <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+                  {sortedData.map((worker) => (
+                    <CardSocialWorker key={worker.email} data={worker} />
+                  ))}
+                </div>
+              </TabsContent>
               
+              <TabsContent value="list">
+                <SocialWorkerProgressDataTable data={sortedData} />
+              </TabsContent>
             </CardContent>
           </Card>
         </Tabs>

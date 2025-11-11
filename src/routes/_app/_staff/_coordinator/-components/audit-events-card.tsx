@@ -60,7 +60,7 @@ export function getActionColor(action: AuditLog['action']) {
 }
 
 export function renderNoticeCard(event: AuditLog) {
-  const metadata = event.metadata || {}
+  const meta_data = event.meta_data || {}
   
   return (
     <div className="flex-1">
@@ -68,14 +68,14 @@ export function renderNoticeCard(event: AuditLog) {
       <p className="text-xs text-muted-foreground mb-2">
         {event.user.full_name} • {formatDateTime(event.created_at)}
       </p>
-      {metadata.notice_title && (
+      {meta_data.notice_title && (
         <div className="mt-2 p-2 bg-muted rounded text-xs">
-          <span className="font-medium">Edital:</span> {metadata.notice_title}
+          <span className="font-medium">Edital:</span> {meta_data.notice_title}
         </div>
       )}
-      {metadata.changes && (
+      {meta_data.changes && (
         <div className="mt-2 p-2 bg-muted rounded text-xs">
-          <span className="font-medium">Alterações:</span> {metadata.changes}
+          <span className="font-medium">Alterações:</span> {meta_data.changes}
         </div>
       )}
     </div>
@@ -83,7 +83,7 @@ export function renderNoticeCard(event: AuditLog) {
 }
 
 export function renderRegistrationCard(event: AuditLog) {
-  const metadata = event.metadata || {}
+  const meta_data = event.meta_data || {}
   
   return (
     <div className="flex-1">
@@ -92,14 +92,14 @@ export function renderRegistrationCard(event: AuditLog) {
         {event.user.full_name} • {formatDateTime(event.created_at)}
       </p>
       <div className="flex gap-2 mt-2">
-        {metadata.notice_title && (
+        {meta_data.notice_title && (
           <div className="p-2 bg-muted rounded text-xs">
-            <span className="font-medium">Edital:</span> {metadata.notice_title}
+            <span className="font-medium">Edital:</span> {meta_data.notice_title}
           </div>
         )}
-        {metadata.student_name && (
+        {meta_data.student_name && (
           <div className="p-2 bg-muted rounded text-xs">
-            <span className="font-medium">Estudante:</span> {metadata.student_name}
+            <span className="font-medium">Estudante:</span> {meta_data.student_name}
           </div>
         )}
       </div>
@@ -108,7 +108,7 @@ export function renderRegistrationCard(event: AuditLog) {
 }
 
 export function renderReviewCard(event: AuditLog) {
-  const metadata = event.metadata || {}
+  const meta_data = event.meta_data || {}
   
   return (
     <div className="flex-1">
@@ -117,31 +117,31 @@ export function renderReviewCard(event: AuditLog) {
         {event.user.full_name} • {formatDateTime(event.created_at)}
       </p>
       <div className="space-y-2 mt-2">
-        {metadata.student_name && (
+        {meta_data.student_name && (
           <div className="p-2 bg-muted rounded text-xs">
-            <span className="font-medium">Estudante:</span> {metadata.student_name}
+            <span className="font-medium">Estudante:</span> {meta_data.student_name}
           </div>
         )}
-        {metadata.status && (
+        {meta_data.status && (
           <div className="flex items-center gap-2 p-2 bg-muted rounded text-xs">
             <span className="font-medium">Status:</span>
             <span className={`inline-flex items-center gap-1 ${
-              metadata.status === 'approved' ? 'text-green-600' : 
-              metadata.status === 'rejected' ? 'text-red-600' : 
+              meta_data.status === 'approved' ? 'text-green-600' : 
+              meta_data.status === 'rejected' ? 'text-red-600' : 
               'text-amber-600'
             }`}>
-              {metadata.status === 'approved' ? <CheckCircle className="w-3 h-3" /> : 
-               metadata.status === 'rejected' ? <XCircle className="w-3 h-3" /> : 
+              {meta_data.status === 'approved' ? <CheckCircle className="w-3 h-3" /> : 
+               meta_data.status === 'rejected' ? <XCircle className="w-3 h-3" /> : 
                <AlertCircle className="w-3 h-3" />}
-              {metadata.status === 'approved' ? 'Aprovado' : 
-               metadata.status === 'rejected' ? 'Reprovado' : 
+              {meta_data.status === 'approved' ? 'Aprovado' : 
+               meta_data.status === 'rejected' ? 'Reprovado' : 
                'Pendente'}
             </span>
           </div>
         )}
-        {metadata.comments && (
+        {meta_data.comments && (
           <div className="p-2 bg-muted rounded text-xs">
-            <span className="font-medium">Comentários:</span> {metadata.comments}
+            <span className="font-medium">Comentários:</span> {meta_data.comments}
           </div>
         )}
       </div>
@@ -150,7 +150,7 @@ export function renderReviewCard(event: AuditLog) {
 }
 
 export function renderAppealCard(event: AuditLog) {
-  const metadata = event.metadata || {}
+  const meta_data = event.meta_data || {}
   
   return (
     <div className="flex-1">
@@ -159,19 +159,19 @@ export function renderAppealCard(event: AuditLog) {
         {event.user.full_name} • {formatDateTime(event.created_at)}
       </p>
       <div className="space-y-2 mt-2">
-        {metadata.student_name && (
+        {meta_data.student_name && (
           <div className="p-2 bg-muted rounded text-xs">
-            <span className="font-medium">Estudante:</span> {metadata.student_name}
+            <span className="font-medium">Estudante:</span> {meta_data.student_name}
           </div>
         )}
-        {metadata.reason && (
+        {meta_data.reason && (
           <div className="p-2 bg-muted rounded text-xs">
-            <span className="font-medium">Motivo:</span> {metadata.reason}
+            <span className="font-medium">Motivo:</span> {meta_data.reason}
           </div>
         )}
-        {metadata.decision && (
+        {meta_data.decision && (
           <div className="p-2 bg-muted rounded text-xs">
-            <span className="font-medium">Decisão:</span> {metadata.decision}
+            <span className="font-medium">Decisão:</span> {meta_data.decision}
           </div>
         )}
       </div>
@@ -180,7 +180,7 @@ export function renderAppealCard(event: AuditLog) {
 }
 
 export function renderDocumentCard(event: AuditLog) {
-  const metadata = event.metadata || {}
+  const meta_data = event.meta_data || {}
   
   return (
     <div className="flex-1">
@@ -189,19 +189,19 @@ export function renderDocumentCard(event: AuditLog) {
         {event.user.full_name} • {formatDateTime(event.created_at)}
       </p>
       <div className="space-y-2 mt-2">
-        {metadata.document_name && (
+        {meta_data.document_name && (
           <div className="p-2 bg-muted rounded text-xs">
-            <span className="font-medium">Documento:</span> {metadata.document_name}
+            <span className="font-medium">Documento:</span> {meta_data.document_name}
           </div>
         )}
-        {metadata.document_type && (
+        {meta_data.document_type && (
           <div className="p-2 bg-muted rounded text-xs">
-            <span className="font-medium">Tipo:</span> {metadata.document_type}
+            <span className="font-medium">Tipo:</span> {meta_data.document_type}
           </div>
         )}
-        {metadata.file_size && (
+        {meta_data.file_size && (
           <div className="p-2 bg-muted rounded text-xs">
-            <span className="font-medium">Tamanho:</span> {metadata.file_size}
+            <span className="font-medium">Tamanho:</span> {meta_data.file_size}
           </div>
         )}
       </div>
@@ -210,7 +210,7 @@ export function renderDocumentCard(event: AuditLog) {
 }
 
 export function renderTeamMemberCard(event: AuditLog) {
-  const metadata = event.metadata || {}
+  const meta_data = event.meta_data || {}
   
   return (
     <div className="flex-1">
@@ -219,14 +219,14 @@ export function renderTeamMemberCard(event: AuditLog) {
         {event.user.full_name} • {formatDateTime(event.created_at)}
       </p>
       <div className="flex gap-2 mt-2">
-        {metadata.assigned_to && (
+        {meta_data.assigned_to && (
           <div className="p-2 bg-muted rounded text-xs">
-            <span className="font-medium">Atribuído para:</span> {metadata.assigned_to}
+            <span className="font-medium">Atribuído para:</span> {meta_data.assigned_to}
           </div>
         )}
-        {metadata.role && (
+        {meta_data.role && (
           <div className="p-2 bg-muted rounded text-xs">
-            <span className="font-medium">Função:</span> {metadata.role}
+            <span className="font-medium">Função:</span> {meta_data.role}
           </div>
         )}
       </div>
@@ -235,7 +235,7 @@ export function renderTeamMemberCard(event: AuditLog) {
 }
 
 export function renderStatusChangeCard(event: AuditLog) {
-  const metadata = event.metadata || {}
+  const meta_data = event.meta_data || {}
   
   return (
     <div className="flex-1">
@@ -244,14 +244,14 @@ export function renderStatusChangeCard(event: AuditLog) {
         {event.user.full_name} • {formatDateTime(event.created_at)}
       </p>
       <div className="flex gap-2 mt-2">
-        {metadata.old_status && (
+        {meta_data.old_status && (
           <div className="p-2 bg-muted rounded text-xs">
-            <span className="font-medium">De:</span> {metadata.old_status}
+            <span className="font-medium">De:</span> {meta_data.old_status}
           </div>
         )}
-        {metadata.new_status && (
+        {meta_data.new_status && (
           <div className="p-2 bg-muted rounded text-xs">
-            <span className="font-medium">Para:</span> {metadata.new_status}
+            <span className="font-medium">Para:</span> {meta_data.new_status}
           </div>
         )}
       </div>

@@ -34,6 +34,7 @@ import { Link } from "@tanstack/react-router";
 import { DataTableColumnHeader } from "@/components/ui/data-table-column-header";
 import { exportIvsQueryOptions } from "@/queries/ivs"
 import { queryClient } from "@/main"
+import { hideCpf } from "@/lib/utils"
 
 const MASK = "******"
 
@@ -48,7 +49,7 @@ export function getColumns(masked: boolean): ColumnDef<StudentIVS>[] {
         const value = row.getValue("cpf") as string
         return (
           <div className="text-center">
-            {masked ? MASK : value}
+            {masked ? hideCpf(value) : value}
           </div>
         )
       },
@@ -139,8 +140,8 @@ export function getColumns(masked: boolean): ColumnDef<StudentIVS>[] {
   ]
 }
 
-async function downloadIvsCsv() {
-  const blob = await queryClient.fetchQuery(exportIvsQueryOptions);
+async function downloadIvsCsv(anonymous: boolean) {
+  const blob = await queryClient.fetchQuery(exportIvsQueryOptions({ anonymous }));
 
   const url = window.URL.createObjectURL(blob);
   const a = document.createElement('a');
@@ -236,9 +237,9 @@ export function IVSDataTable({ data, initialState, pageSizeOptions = DEFAULT_PAG
 
         <div className="flex items-center gap-2">
           <Button variant="secondary" className="cursor-pointer" onClick={() => setMaskPersonal((v) => !v)}>
-            <EyeOff />
+            {maskPersonal ? <><Eye />Mostrar</> : <><EyeOff />Esconder</>}
           </Button>
-          <Button variant="secondary" className="cursor-pointer" onClick={() => downloadIvsCsv()}>Exportar</Button>
+          <Button variant="secondary" className="cursor-pointer" onClick={() => downloadIvsCsv(maskPersonal)}>Exportar</Button>
         </div>
       </div>
 

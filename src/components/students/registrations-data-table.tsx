@@ -69,7 +69,7 @@ const statusOptions = [
   },
 ]
 
-export type Item = Pick<Student,  "full_name" | "cpf" | "registration_number"> & Pick<Review, 'status' | 'qtd_documents'> & {
+export type Item = Pick<Student, "full_name" | "cpf" | "registration_number"> & Pick<Review, 'status' | 'qtd_documents'> & {
   registration_date: string;
   registration_id: number;
   editalId: string;

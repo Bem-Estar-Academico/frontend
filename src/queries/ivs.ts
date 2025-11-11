@@ -18,14 +18,15 @@ export async function fetchIVS() {
     return data;
 }
 
-export const exportIvsQueryOptions = queryOptions({
+export const exportIvsQueryOptions = (params: { anonymous: boolean }) => queryOptions({
     queryKey: ['ivs-csv'],
-    queryFn: fetchIvsCsv
+    queryFn: () => fetchIvsCsv(params)
 })
 
-export async function fetchIvsCsv() {
+export async function fetchIvsCsv(params: { anonymous: boolean }) {
   const response = await api.get('/ivs/export/excel', {
     responseType: 'blob',
+    params: params,
   });
 
   if (!response.data) {

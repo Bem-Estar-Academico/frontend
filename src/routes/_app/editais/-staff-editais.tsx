@@ -9,6 +9,8 @@ import { Pagination } from "@/components/ui/pagination";
 import { editaisQueryOptions } from "@/queries/editais";
 import type { EditalResponseDTO } from "@/types/edital-response-dto";
 import { useAuth } from "@/contexts/auth";
+import { Filter } from "@/components/filter";
+import { Baby, CheckCircle2, GraduationCap, Home, Utensils, XCircle } from "lucide-react";
 
 export function StaffEditais() {
   const { data: editais, isLoading, isError } = useQuery(editaisQueryOptions);
@@ -16,7 +18,28 @@ export function StaffEditais() {
 
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
+  const [statusFilter, setStatusFilter] = useState<Set<string>>(new Set());
+  const [benefitsFilter, setBenefitsFilter] = useState<Set<string>>(new Set());
+
   const pageSize = 5;
+
+  const statusOptions = [
+    { label: 'Aberto', value: 'open', icon: <CheckCircle2 className="size-4 text-green-600" /> },
+    { label: 'Fechado', value: 'closed', icon: <XCircle className="size-4 text-red-600" /> },
+  ];
+
+  const benefitsOptions = [
+    { label: 'Auxílio Alimentação', value: 'food_allowance', icon: <Utensils className="h-4 w-4" /> },
+    { label: 'Auxílio Moradia', value: 'housing_allowance', icon: <Home className="h-4 w-4" /> },
+    { label: 'Auxílio Creche', value: 'daycare_allowance', icon: <Baby className="h-4 w-4" /> },
+    { label: 'Bolsa Graduação', value: 'graduation_scholarship', icon: <GraduationCap className="h-4 w-4" /> },
+  ];
+
+  const isEditalOpen = (edital: EditalResponseDTO) => {
+    const now = new Date();
+    const registrationEndDate = new Date(edital.registration_end_date);
+    return !edital.registration_end_date || registrationEndDate >= now;
+  };
 
   const filteredEditais = useMemo(() => {
     if (!editais) return [];
@@ -25,9 +48,21 @@ export function StaffEditais() {
         edital.title.toLowerCase().includes(search.toLowerCase()) ||
         edital.description.toLowerCase().includes(search.toLowerCase());
 
-      return matchesSearch;
+      const isOpen = isEditalOpen(edital);
+      const matchesStatus =
+        statusFilter.size === 0 ||
+        (statusFilter.has('open') && isOpen) ||
+        (statusFilter.has('closed') && !isOpen);
+
+      const matchesBenefits =
+        benefitsFilter.size === 0 ||
+        Array.from(benefitsFilter).every((benefit) => 
+          edital[benefit as keyof EditalResponseDTO] === true
+        );
+
+      return matchesSearch && matchesStatus && matchesBenefits;
     });
-  }, [editais, search]);
+  }, [editais, search, statusFilter, benefitsFilter]);
 
   if (isLoading) return <p>Carregando editais...</p>;
   if (isError) return <p>Erro ao carregar editais.</p>;
@@ -38,18 +73,12 @@ export function StaffEditais() {
     page * pageSize
   );
 
-  const isEditalOpen = (edital: EditalResponseDTO) => {
-    const now = new Date();
-    const registrationEndDate = new Date(edital.registration_end_date);
-    return !edital.registration_end_date || registrationEndDate >= now;
-  };
 
   return (
     <div className="flex flex-1 flex-col gap-7 px-10 py-6">
-       <h1 className="font-bold text-2xl">Editais</h1>
-
-      <div className="max-h-fit flex flex-1 ">
-        <div className="flex flex-1 gap-5">
+      <h2 className="font-bold text-2xl">Editais</h2>
+      <div className="flex justify-between">
+        <div className="flex flex-1 gap-3 items-center">  
           <Input
             placeholder="Buscar edital"
             value={search}
@@ -57,18 +86,36 @@ export function StaffEditais() {
               setSearch(e.target.value);
               setPage(1);
             }}
+            className="max-w-sm"
+          />
+          
+          <Filter
+            title="Status"
+            options={statusOptions}
+            selectedValues={statusFilter}
+            onChange={(newValues) => {
+              setStatusFilter(newValues);
+              setPage(1);
+            }}
+          />
+
+          <Filter
+            title="Benefícios"
+            options={benefitsOptions}
+            selectedValues={benefitsFilter}
+            onChange={(newValues) => {
+              setBenefitsFilter(newValues);
+              setPage(1);
+            }}
           />
         </div>
-        {
-          user?.user_type === "COORDINATOR" && (
-             <div className="flex flex-1 justify-end gap-5">
-              <Link to="/editais/criar">
-                <Button variant="default">
-                  <IconPlus />
-                  Criar Edital
-                </Button>
-              </Link>
-            </div>
+        {user?.user_type === "COORDINATOR" && (
+            <Link to="/editais/criar">
+              <Button variant="default">
+                <IconPlus />
+                Criar Edital
+              </Button>
+            </Link>
           )
         }
       </div>

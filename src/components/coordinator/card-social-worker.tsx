@@ -37,7 +37,7 @@ export function CardSocialWorker({ data }: CardSocialWorkerProps) {
 
                 <div className='flex flex-col justify-center items-center'>
                     <h3 className="text-lg font-medium">{full_name}</h3>
-                    <p className="text-sm text-gray-500">{email}</p>
+                    <p className="text-xs truncate max-w-[180px] text-gray-500">{email}</p>
                 </div>
             </CardContent>
 

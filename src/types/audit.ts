@@ -29,9 +29,11 @@ export type AuditLog = {
   action: AuditAction;
   entity_type: AuditEntityType;
   entity_id: number;
+  ip_address: string;
+  user_agent: string; 
   user: User;
   description: string;
-  metadata?: Record<string, any>;
+  meta_data?: Record<string, any>;
   created_at: string;
 };
 
@@ -40,4 +42,6 @@ export type User = {
   email: string;
   full_name: string;
   user_type: "STUDENT" | "COORDINATOR" | "SOCIAL_WORKER";
+  cpf: string;
+  registration_number: string;
 };

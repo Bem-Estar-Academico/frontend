@@ -3,8 +3,9 @@ import { useState } from 'react'
 import { Search } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Filter } from '@/components/filter'
-import { mockEvents } from './-data'
 import { renderAuditCard, getActionIcon, getActionColor } from './-components/audit-events-card'
+import { auditQueryOptions } from '@/queries/audit'
+import { useSuspenseQuery } from '@tanstack/react-query'
 
 export const Route = createFileRoute('/_app/_staff/_coordinator/auditoria')({
   component: () => (
@@ -43,15 +44,16 @@ function RouteComponent() {
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedActionTypes, setSelectedActionTypes] = useState<Set<string>>(new Set())
   const [selectedUserTypes, setSelectedUserTypes] = useState<Set<string>>(new Set())
+  const { data: auditEventList } = useSuspenseQuery(auditQueryOptions)
 
-  const filteredEvents = mockEvents.filter((event) => {
+  const filteredEvents = auditEventList.filter((event) => {
     if (searchQuery) {
       const searchLower = searchQuery.toLowerCase()
       const matchesDescription = event.description.toLowerCase().includes(searchLower)
       const matchesUserName = event.user.full_name.toLowerCase().includes(searchLower)
       const matchesUserEmail = event.user.email.toLowerCase().includes(searchLower)
-      const matchesMetadata = event.metadata 
-        ? JSON.stringify(event.metadata).toLowerCase().includes(searchLower)
+      const matchesMetadata = event.meta_data 
+        ? JSON.stringify(event.meta_data).toLowerCase().includes(searchLower)
         : false
       
       if (!matchesDescription && !matchesUserName && !matchesUserEmail && !matchesMetadata) {

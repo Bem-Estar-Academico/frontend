@@ -6,18 +6,9 @@ import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuIte
 import { Link } from "@tanstack/react-router";
 import { DataTableColumnHeader } from "../ui/data-table-column-header";
 import type { Item } from "./registrations-data-table";
+import { hideCpf } from "@/lib/utils";
 
 const MASK = "*****"
-
-function maskCPF(cpf: string): string {
-  const cleanCPF = cpf.replaceAll(/\D/g, '');
-  
-  const visiblePart = cleanCPF.slice(0, 6);
-  const hiddenPart = '***';
-  const lastPart = cleanCPF.slice(9, 11);
-
-  return `${visiblePart.slice(0, 3)}.${visiblePart.slice(3, 6)}.${hiddenPart}-${lastPart}`;
-}
 
 export function getColumns(masked: boolean): ColumnDef<Item>[] {
   return [
@@ -29,7 +20,7 @@ export function getColumns(masked: boolean): ColumnDef<Item>[] {
         const value = row.getValue("cpf") as string
         return (
           <div className="text-center">
-            {masked ? maskCPF(value) : value}
+            {masked ? hideCpf(value) : value}
           </div>
         )
       },
@@ -60,17 +51,10 @@ export function getColumns(masked: boolean): ColumnDef<Item>[] {
         return value.includes(row.getValue(id));
       },
       cell: ({ row }) => {
-        const value = row.getValue("status") as string
-        const map: Record<string, "approved" | "rejected" | "pending" | "appeal" | "review"> = {
-          "Deferido": "approved",
-          "Indeferido": "rejected",
-          "Pendente": "pending",
-          "Recurso": "appeal",
-          "Em Análise": "review",
-        }
+        const value = (row.getValue("status") as string).toLowerCase() as any
         return (
           <div className="flex justify-center">
-            <StatusBadge variant={map[value]} />
+            <StatusBadge variant={value} />
           </div>
         )
       },

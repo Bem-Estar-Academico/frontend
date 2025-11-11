@@ -280,22 +280,22 @@ export function ReviewSubscription() {
     }
   ]
 
-   return (
+  return (
     <SidebarProvider>
-        <DocumentsSidebar  data={documentsData} />
-        <SidebarInset className="flex flex-col overflow-auto">
-          <ReviewHeader form={form}  studentRegistration={studentRegistration} reviewId={review.id} />
-          <Separator />
+      <DocumentsSidebar  data={documentsData} />
+      <SidebarInset className="flex flex-col overflow-auto">
+        <ReviewHeader form={form}  studentRegistration={studentRegistration} reviewId={review.id} />
+        <Separator />
 
-          <form className="bg-gray-100 h-full grid grid-cols-1 md:grid-cols-2 md:grid-rows-[auto,1fr] gap-6 flex-1 overflow-hidden p-6" onSubmit={form.handleSubmit(onSubmit, onError)}>
-            <SectionForm control={form.control} answer={studentRegistration.answer} />
-            <SectionEvaluationForm control={form.control} />
-            <SectionResult control={form.control} offeredAllowances={offeredAllowances} requestedAllowances={requestedAllowances} />
-            <div className="md:col-span-2 h-fit flex justify-end">
-              <Button className="w-full max-w-xs mt-4">Finalizar</Button>
-            </div>
-          </form>
-        </SidebarInset>
+        <form className="bg-gray-100 h-full grid grid-cols-1 md:grid-cols-2 md:grid-rows-[auto,1fr] gap-6 flex-1 overflow-hidden p-6" onSubmit={form.handleSubmit(onSubmit, onError)}>
+          <SectionForm control={form.control} answer={studentRegistration.answer} />
+          <SectionEvaluationForm control={form.control} />
+          <SectionResult control={form.control} offeredAllowances={offeredAllowances} requestedAllowances={requestedAllowances} />
+          <div className="md:col-span-2 h-fit flex justify-end">
+            <Button className="w-full max-w-xs mt-4">Finalizar</Button>
+          </div>
+        </form>
+      </SidebarInset>
     </SidebarProvider> 
   )
 }

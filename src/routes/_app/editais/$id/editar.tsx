@@ -67,7 +67,7 @@ function EditEdital() {
         finalResult: notice.final_result_date ? new Date(notice.final_result_date) : undefined,
       })
     }
-  }, [notice, form])
+  }, [notice])
 
   const updateNoticeMutation = useMutation({
     ...updateNoticeMutationOptions(noticeIdNum),

@@ -53,7 +53,7 @@ export function useFormDraft(data: UseFormDraftProps) {
             console.error('Error saving form draft:', error);
             setSaveStatus('dirty');
         }
-    }, 1000);
+    }, 5000);
 
     useEffect(() => {
         if (draft && draft.content) {

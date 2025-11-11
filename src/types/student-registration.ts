@@ -18,9 +18,16 @@ export type Notice = {
   preliminary_result_date: string
 }
 
+export type Appeal = {
+  id: number,
+  requested_documents: Record<string, any>,
+  fulfilled_at: string | null,
+  created_at: string,
+}
+
 export type StudentRegistrationDTO = {
   notice: Notice,
-  review: Review, 
+  review: Review & {appeals: Appeal[]}, 
   requested_daycare_allowance: boolean,
   requested_food_allowance: boolean,
   requested_graduation_scholarship: boolean,

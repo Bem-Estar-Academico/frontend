@@ -14,12 +14,21 @@ import {
 } from "@/components/ui/tabs"
 import { StatusBadge, variantText } from "@/components/ui/status-badge"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
-import { InputFile } from "@/components/ui/input-file"
 import { Alert, AlertTitle } from "@/components/ui/alert"
 import { AlertCircleIcon } from "lucide-react"
-import { useQuery } from "@tanstack/react-query"
+import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { studentRegistrationsQueryOptions } from "@/queries/student-registrations"
-import type { StudentRegistrationDTO } from "@/types/student-registration"
+import type { Appeal, StudentRegistrationDTO } from "@/types/student-registration"
+import { Button } from "@/components/ui/button"
+import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import z from "zod"
+import { Form, FormControl, FormField, FormItem, FormLabel } from "@/components/ui/form"
+import { Input } from "@/components/ui/input"
+import { toast } from "sonner"
+import { Spinner } from "@/components/ui/spinner"
+import { api } from "@/api"
+import { DOCUMENTS_MAP } from "@/data/documents"
 
 function getStatusMessage(status: keyof typeof variantText) {
   if (status === "pending") return "Sua documentação foi recebida, porém as informações e arquivos não foram analisados pela equipe responsável."
@@ -118,7 +127,8 @@ interface CurrentRegistrationCardProps {
 
 function CurrentRegistrationCard({ registration }: CurrentRegistrationCardProps) {
   const statusVariant = registration.review?.status.toLowerCase() as "pending" | "review" | "appeal" | "approved" | "rejected"
-  const shouldUpload = registration.review?.status === "PENDING"
+
+  const lastAppeal = registration.review.appeals.filter(appeal => !appeal.fulfilled_at).sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())[0];
 
   return (
     <Card>
@@ -141,29 +151,122 @@ function CurrentRegistrationCard({ registration }: CurrentRegistrationCardProps)
           {getStatusMessage(statusVariant)}
         </p>
 
-        {shouldUpload && (
-          <div>
-            <p className="text-base font-semibold">Documentos Solicitados:</p>
-            <Accordion type="single" collapsible className="w-full">
-              <AccordionItem value="item-1">
-                <AccordionTrigger>Atestado Médico</AccordionTrigger>
-                <AccordionContent className="flex flex-col gap-4 text-balance">
-                  <p>
-                    Se o seu recurso estiver relacionado a questões de saúde, é obrigatório
-                    anexar um atestado médico. Esse documento serve para comprovar a sua
-                    situação e garantir que sua solicitação seja analisada de forma justa e
-                    adequada.
-                  </p>
-                  <InputFile title="Arquivo" />
-                </AccordionContent>
-              </AccordionItem>
-            </Accordion>
-          </div>
+        {lastAppeal && (
+          <AppealForm appeal={lastAppeal} />
         )}
       </CardContent>
     </Card>
   )
 }
+
+
+interface AppealFormProps {
+  appeal: Appeal
+}
+
+function AppealForm({ appeal }: AppealFormProps) {
+  const queryClient = useQueryClient();
+  const formSchema = z.object(
+    Object.keys(appeal.requested_documents).reduce(
+      (acc, key) => {
+        acc[key] = z.any().refine((file) => file instanceof File, {
+          message: "Por favor, envie um arquivo válido.",
+        });
+        return acc;
+      },
+      {} as Record<string, z.ZodTypeAny>,
+    ),
+  );
+
+  const form = useForm({
+    resolver: zodResolver(formSchema),
+  });
+
+  const { isSubmitting } = form.formState;
+
+  const onSubmit = async (data: any) => {
+    try {
+
+      const formData = new FormData();
+      
+      // Adiciona todos os arquivos renomeados ao FormData
+      for (const [key, file] of Object.entries(data)) {
+        const originalFile = file as File;
+        const fileExtension = originalFile.name.split('.').pop();
+        const newFileName = `${key}.${fileExtension}`;
+        const renamedFile = new File([originalFile], newFileName, { type: originalFile.type });
+        
+        formData.append('files', renamedFile);
+      }
+
+      await api.post(`/student-documents/appeal/${appeal.id}/upload`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      toast.success("Documentos enviados com sucesso!");
+      const queryKey = studentRegistrationsQueryOptions().queryKey;
+      queryClient.invalidateQueries({ queryKey });
+    } catch (error) {
+      console.error(error);
+      toast.error("Erro ao enviar documentos. Tente novamente.");
+    }
+  };
+
+  const onError = (errors: any) => {
+    console.log(errors);
+  }
+
+  return (
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit, onError)}>
+      <p className="text-base font-semibold">Documentos Solicitados:</p>
+      <Accordion type="single" collapsible className="w-full">
+        {Object.entries(appeal.requested_documents).map(([key, value]) => (
+          <AccordionItem key={key} value={key}>
+            <AccordionTrigger>{DOCUMENTS_MAP[key] || key}</AccordionTrigger>
+            <AccordionContent className="flex flex-col gap-4 text-balance">
+              <p>
+                {typeof value === "string" ? value : "Por favor, envie o documento solicitado."}
+              </p>
+              <FormField
+              control={form.control}
+              key={key}
+              name={key}
+              render={({ field }) => (
+                <FormItem className="space-y-3">
+                  <FormLabel>Arquivo</FormLabel>
+                  <FormControl>
+                    <Input 
+                      type="file" 
+                      ref={field.ref}
+                      name={field.name}
+                      onBlur={field.onBlur}
+                      disabled={isSubmitting}
+                      onChange={(e) => {
+                        const file = e.target.files ? e.target.files[0] : null;
+                        field.onChange(file);
+                      }}
+                      accept={"application/pdf"}
+                    />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+            </AccordionContent>
+          </AccordionItem>
+        ))}
+      </Accordion>
+      <Button variant={'outline'} type="submit" className="mt-4" disabled={isSubmitting}>
+        {isSubmitting && <Spinner className="mr-2" />}
+        {isSubmitting ? "Enviando..." : "Enviar Documentos"}
+      </Button>
+      </form>
+    </Form>
+  )
+}
+
 
 interface PastRegistrationCardProps {
   registration: StudentRegistrationDTO

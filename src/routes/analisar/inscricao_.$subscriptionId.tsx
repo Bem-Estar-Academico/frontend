@@ -2,7 +2,7 @@ import {
   DocumentsSidebar,
 } from "@/components/documents-sidebar";
 import { SidebarProvider } from "@/components/ui/sidebar";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { Separator } from "@/components/ui/separator"
 import {
   SidebarInset,
@@ -26,6 +26,7 @@ import { SectionEvaluationForm } from "./-components/section-evaluation-form";
 import { scoresSchema } from "./-components/section-scores-form";
 import { useEffect } from "react";
 import { ReviewHeader } from "./-components/review-header";
+import { DOCUMENTS_MAP } from "@/data/documents";
 
 export const Route = createFileRoute("/analisar/inscricao_/$subscriptionId")({
   component: () => (
@@ -173,6 +174,7 @@ const schema = z.object({
 export type FormFields = z.infer<typeof schema>;
 
 export function ReviewSubscription() {
+  const navigate = useNavigate();
   const studentRegistrationId = Route.useParams().subscriptionId;
 
   const { data: studentRegistration } = useSuspenseQuery(studentRegistrationQueryOptions(Number.parseInt(studentRegistrationId)))
@@ -217,8 +219,6 @@ export function ReviewSubscription() {
   }
 
   const onSubmit = async (values: FormFields) => {
-    console.log("Form submitted ", values);
-
     if (values.status !== "APPEAL") {
       updateReview({
         studentRegistrationId: Number.parseInt(studentRegistrationId),
@@ -237,7 +237,6 @@ export function ReviewSubscription() {
       })
     } else {
       const requestedAppealDocuments = Object.entries(values.appeal_documents || {}).filter(([_, v]) => v === "required").map(([k, _]) => k);
-      
 
       updateReview({
           studentRegistrationId: Number.parseInt(studentRegistrationId),
@@ -261,7 +260,7 @@ export function ReviewSubscription() {
     }
 
     toast.success("Avaliação feita com sucesso!");
-    // navigate({to: "/editais"}); 
+    navigate({to: "/editais/$id", params: { id: edital.id.toString() }}); 
   }
 
   const onError = (errors: any) => {
@@ -273,7 +272,8 @@ export function ReviewSubscription() {
     {
       title: "Documentos do Estudante",
       items: documents.map((doc) => ({
-        title: doc.description,
+        // Remove extension from doc.name
+        title: DOCUMENTS_MAP[doc.name.replace(/\.[^/.]+$/, "")],
         id: `document-${doc.id}`,
         url: doc.file_url,
       })),

@@ -5,6 +5,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import z from "zod";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { FormFields } from "../inscricao_.$subscriptionId";
+import { appeal_documents } from "@/data/documents";
 
 export const resultSchema = z.object({
     approved_food_allowance: z.string().optional(),
@@ -355,18 +356,11 @@ export function SectionResult({control, offeredAllowances, requestedAllowances}:
   )
 }
 
-export const appeal_documents = [
-    { label: "Cadastro Único", value: "cad_unico"},
-    { label: "Comprovante de Renda", value: "comp_renda"},
-    { label: "Comprovante de Matrícula", value: "comp_matricula"},
-    { label: "Documento de Identificação", value: "doc_identificacao"},
-]
-
 function AppealSection({ control }: { control: Control<FormFields> }) {
     return(
         <div className="mt-14">
             <h5 className="mb-4 font-semibold">Documentos para Recurso</h5>
-            <FieldGroup>
+            <FieldGroup className="grid grid-cols-2">
                 {appeal_documents.map((doc) => (
                     <Controller
                         key={doc.value}

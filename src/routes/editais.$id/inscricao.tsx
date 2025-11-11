@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { useState, useCallback, useEffect, useMemo } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -33,12 +33,14 @@ export function StudentRegistrationForm() {
   const { mutateAsync: createStudentRegistration } = useMutation(createStudentRegistrationMutationOptions);
   const form = useForm({
     resolver: zodResolver(formSchema),
-    defaultValues: { ...getInitialValues(), ...JSON.parse(localStorage.getItem('formValuesSnapshot') || '{}') },
-  })  
+    defaultValues: { ...getInitialValues() },
+  }) 
+  const navigate = useNavigate();
 
   const [activeTab, setActiveTab] = useState('beneficios');
 
   const beneficiosSection = useMemo(() => {
+    console.log("edital no beneficiosSection:", edital);
     if (!edital) return undefined;
 
     const options: Array<{ id: string; label: string }> = [];
@@ -73,6 +75,8 @@ export function StudentRegistrationForm() {
       ],
     };
   }, [edital]);
+
+  console.log("beneficiosSection:", beneficiosSection);
 
   const renderQuestion = useCallback((question: FormQuestion) => {
       switch (question.type) {
@@ -271,7 +275,14 @@ export function StudentRegistrationForm() {
       if (files) {
         const uploadPromises = Object.keys(files).map((key) => {
           const formData = new FormData();
-          formData.append("file", files[key]);
+          
+          // Renomeia o arquivo com base na chave
+          const originalFile = files[key];
+          const fileExtension = originalFile.name.split('.').pop();
+          const newFileName = `${key}.${fileExtension}`;
+          const renamedFile = new File([originalFile], newFileName, { type: originalFile.type });
+          
+          formData.append("file", renamedFile);
           formData.append("description", key);
           return api.post(`/student-documents/registration/${registration.id}/upload`, formData);
         });
@@ -279,7 +290,7 @@ export function StudentRegistrationForm() {
       }
 
       toast.success("Inscrição realizada com sucesso!")
-      // navigate({ to: "/" });
+      navigate({ to: "/" });
     } catch(error: any) {
       console.error(error);
       toast.error("Ocorreu um erro ao enviar sua inscrição. Por favor, tente novamente.");
@@ -307,7 +318,6 @@ export function StudentRegistrationForm() {
       <Form {...form}>
         <form className="flex-1 h-full " onSubmit={form.handleSubmit(onSubmit, onError)}>
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-
           {/* Benefícios tab (render only if edital offers any) */}
           {beneficiosSection && (
             <TabsContent value={beneficiosSection.id} className="mb-6">

@@ -6,10 +6,12 @@ export const evaluationForm =  [
             {
                 key: 'yes',
                 label: 'Sim',
+                value: 1,
             },
             {
                 key: 'no',
                 label: 'Não',
+                value: 2,
             }
         ],
     },  
